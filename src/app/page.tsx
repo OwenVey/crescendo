@@ -9,7 +9,7 @@ export default function Home() {
       <div>Normal</div>
       <div className="italic">Italic</div>
       <Input type="file" className="w-72" />
-      <Button disabled>Button</Button>
+      <Button className="w-72">Button</Button>
     </main>
   );
 }

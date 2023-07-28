@@ -18,6 +18,7 @@ module.exports = {
         sans: ['var(--font-inter)', ...defaultTheme.fontFamily.sans],
       },
       colors: {
+        primary: colors.blue,
         gray: colors.neutral,
       },
       keyframes: {

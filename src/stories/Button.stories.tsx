@@ -51,6 +51,28 @@ export const AllVariants: Story = {
   ),
 };
 
+export const Sizes: Story = {
+  args: {
+    disabled: false,
+  },
+  render: ({ ...args }) => (
+    <div className="flex items-center space-x-4">
+      <Button {...args} size="icon">
+        <SearchIcon className="h-4 w-4" />
+      </Button>
+      <Button {...args} size="sm">
+        Button
+      </Button>
+      <Button {...args} size="default">
+        Button
+      </Button>
+      <Button {...args} size="lg">
+        Button
+      </Button>
+    </div>
+  ),
+};
+
 export const Disabled: Story = {
   args: {
     children: 'Button',
@@ -73,5 +95,12 @@ export const WithIcon: Story = {
         Search
       </>
     ),
+  },
+};
+
+export const Loading: Story = {
+  args: {
+    children: 'Button',
+    loading: true,
   },
 };
