@@ -1,22 +1,6 @@
-import type { Preview, Decorator } from '@storybook/react';
-import { withThemeByClassName } from '@storybook/addon-styling';
-import { inter } from '../src/app/fonts/inter';
+import type { Preview } from '@storybook/react';
 import '../src/app/globals.css';
-
-const themeBackground: Decorator = (Story) => {
-  const htmlElement = document.querySelector('html');
-  htmlElement?.classList.add(inter.variable);
-
-  return (
-    <>
-      <div
-        className={`${inter.variable} absolute left-0 top-0 flex h-full w-full items-center justify-center bg-neutral-50 dark:bg-neutral-950`}
-      >
-        <Story />
-      </div>
-    </>
-  );
-};
+import { themeDecorator } from './theme-decorator';
 
 const preview: Preview = {
   parameters: {
@@ -27,22 +11,30 @@ const preview: Preview = {
         date: /Date$/,
       },
     },
-    layout: 'centered',
+    layout: 'fullscreen',
     backgrounds: {
       disable: true,
     },
   },
-
-  decorators: [
-    withThemeByClassName({
-      themes: {
-        light: 'light',
-        dark: 'dark',
+  decorators: [themeDecorator],
+  globalTypes: {
+    theme: {
+      description: 'Global theme for components',
+      defaultValue: 'light',
+      type: 'string',
+      toolbar: {
+        title: 'Theme',
+        icon: 'sun',
+        items: [
+          { title: 'Light', value: 'light', icon: 'sun' },
+          { title: 'Dark', value: 'dark', icon: 'moon' },
+          { title: 'Split', value: 'split', icon: 'sidebyside' },
+          { title: 'Stacked', value: 'stacked', icon: 'stacked' },
+        ],
+        dynamicTitle: true,
       },
-      defaultTheme: 'light',
-    }),
-    themeBackground,
-  ],
+    },
+  },
 };
 
 export default preview;
