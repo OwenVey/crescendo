@@ -18,6 +18,15 @@ export const Primary: Story = {
   render: ({ ...args }) => <Input className="w-72" {...args} />,
 };
 
+export const WithLabel: Story = {
+  args: {
+    disabled: false,
+    label: 'Label',
+    placeholder: 'Placeholder',
+  },
+  render: ({ ...args }) => <Input className="w-72" {...args} />,
+};
+
 export const File: Story = {
   args: {
     disabled: false,

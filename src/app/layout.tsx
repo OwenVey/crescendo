@@ -15,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={cn(inter.variable)}>
+    <html suppressHydrationWarning lang="en" className={cn(inter.variable)}>
       <body className="bg-white dark:bg-gray-950">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
