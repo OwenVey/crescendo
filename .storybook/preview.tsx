@@ -1,14 +1,18 @@
 import type { Preview, Decorator } from '@storybook/react';
-
 import { withThemeByClassName } from '@storybook/addon-styling';
-
+import { inter } from '../src/app/fonts/inter';
 import '../src/app/globals.css';
 
-const themeBackground: Decorator = (StoryFn) => {
+const themeBackground: Decorator = (Story) => {
+  const htmlElement = document.querySelector('html');
+  htmlElement?.classList.add(inter.variable);
+
   return (
     <>
-      <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center bg-neutral-50 dark:bg-neutral-950">
-        <StoryFn />
+      <div
+        className={`${inter.variable} absolute left-0 top-0 flex h-full w-full items-center justify-center bg-neutral-50 dark:bg-neutral-950`}
+      >
+        <Story />
       </div>
     </>
   );

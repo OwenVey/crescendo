@@ -3,15 +3,21 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
+  staticDirs: [
+    {
+      from: '../src/app/fonts',
+      to: 'src/app/fonts',
+    },
+  ],
   addons: [
     '@storybook/addon-links',
     '@storybook/addon-essentials',
     '@storybook/addon-onboarding',
     '@storybook/addon-interactions',
-    ({
-          name: "@storybook/addon-styling",
-          options: {}
-        })
+    {
+      name: '@storybook/addon-styling',
+      options: {},
+    },
   ],
   framework: {
     name: '@storybook/nextjs',
