@@ -57,8 +57,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref,
   ) => {
-    console.log(loading);
-
     const Comp = asChild ? Slot : 'button';
     return (
       <Comp
