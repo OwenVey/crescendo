@@ -2,6 +2,7 @@ import type { Decorator } from '@storybook/react';
 import { inter } from '../src/app/fonts/inter';
 import { cn } from '../src/lib/utils';
 import type { ReactNode } from 'react';
+import { TooltipProvider } from '../src/components/ui/tooltip';
 
 type Theme = 'light' | 'dark' | 'split' | 'stacked';
 
@@ -17,16 +18,18 @@ function StoryContainer({
   dark?: boolean;
 }) {
   return (
-    <div
-      className={cn(
-        'grid place-items-center',
-        viewMode === 'story' ? 'min-h-screen' : 'p-8',
-        dark && 'dark bg-gray-950 [color-scheme:dark]',
-        className,
-      )}
-    >
-      {children}
-    </div>
+    <TooltipProvider>
+      <div
+        className={cn(
+          'grid place-items-center',
+          viewMode === 'story' ? 'min-h-screen' : 'p-8',
+          dark && 'dark bg-gray-950 [color-scheme:dark]',
+          className,
+        )}
+      >
+        {children}
+      </div>
+    </TooltipProvider>
   );
 }
 

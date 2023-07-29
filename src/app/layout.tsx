@@ -1,6 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { ThemeProvider } from '@/components/theme-provider';
+import { Providers } from '@/components/providers';
 import { inter } from './fonts/inter';
 import { cn } from '@/lib/utils';
 
@@ -17,9 +17,7 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning lang="en" className={cn(inter.variable)}>
       <body className="bg-white dark:bg-gray-950">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
-        </ThemeProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
