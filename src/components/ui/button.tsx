@@ -11,8 +11,8 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-primary-600 text-gray-50 hover:bg-primary-500 dark:bg-primary-500 dark:text-primary-50 dark:hover:bg-primary-400',
-        // 'bg-gray-900 text-gray-50 hover:bg-gray-700 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-300',
+          // 'bg-primary-600 text-gray-50 hover:bg-primary-500 dark:bg-primary-500 dark:text-primary-50 dark:hover:bg-primary-400',
+          'bg-gray-900 text-gray-50 hover:bg-gray-700 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-300',
         secondary:
           'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-50 dark:hover:bg-gray-700',
         destructive:
