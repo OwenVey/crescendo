@@ -14,14 +14,15 @@ import { objectToURLSearchParams } from '@/lib/utils';
 export function Sidebar() {
   const { data: session } = useSession();
   const [genres, setGenres] = useState<Array<string>>([]);
-  const [acousticness, setAcousticness] = useState([0, 1]);
+  const [acousticness, setAcousticness] = useState([0, 0.5, 1]);
   const [urlParams, setUrlParams] = useState('');
 
   useEffect(() => {
     const params = objectToURLSearchParams({
       genres,
       min_acousticness: acousticness[0],
-      max_acousticness: acousticness[1],
+      target_acousticness: acousticness[1],
+      max_acousticness: acousticness[2],
     });
 
     setUrlParams(params.toString());
@@ -43,13 +44,14 @@ export function Sidebar() {
 
           <div className="mb-4 mt-8 flex items-center justify-between">
             <Label htmlFor="acousticness">Acousticness</Label>
+
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              {acousticness[0]} &ndash; {acousticness[1]}
+              {acousticness[0]} &ndash; {acousticness[2]}
             </span>
           </div>
           <Slider
             id="acousticness"
-            defaultValue={[0, 1]}
+            defaultValue={[0, 0.5, 1]}
             max={1}
             step={0.01}
             value={acousticness}

@@ -10,13 +10,14 @@ type PageProps = {
 const SearchParamsSchema = z.object({
   genres: z.array(z.string()).optional(),
   min_acousticness: z.coerce.number().optional(),
+  target_acousticness: z.coerce.number().optional(),
   max_acousticness: z.coerce.number().optional(),
 });
 
 export default async function ReccomendationsPage({ searchParams }: PageProps) {
   const sdk = SpotifyApi.withClientCredentials(env.SPOTIFY_CLIENT_ID, env.SPOTIFY_CLIENT_SECRET);
 
-  const { genres, min_acousticness, max_acousticness } = SearchParamsSchema.parse(searchParams);
+  const { genres, min_acousticness, target_acousticness, max_acousticness } = SearchParamsSchema.parse(searchParams);
 
   // await new Promise((resolve) => setTimeout(resolve, 2000));
   const recommendations = await sdk.recommendations.get({
@@ -26,6 +27,7 @@ export default async function ReccomendationsPage({ searchParams }: PageProps) {
     seed_tracks: ['0c6xIDDpzE81m2q797ordA'],
     seed_genres: genres,
     min_acousticness,
+    target_acousticness,
     max_acousticness,
   });
 
