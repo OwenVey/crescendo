@@ -6,12 +6,7 @@ import { cn } from '@/lib/utils';
 import { Sidebar } from '@/components/sidebar';
 
 export const metadata: Metadata = {
-  title: 'Spotify App',
-  icons: {
-    icon: {
-      url: '/favicon.svg',
-    },
-  },
+  title: 'Crescendo',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -20,9 +15,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="h-full bg-gray-100 dark:bg-gray-900">
         <Providers>
           <Sidebar />
-
           <main className="pl-72">
-            <div className="p-8">{children}</div>
+            <div className="p-4">{children}</div>
           </main>
         </Providers>
       </body>

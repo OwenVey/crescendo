@@ -6,10 +6,10 @@ import { Button, Label, Slider } from '@/components/ui';
 import { GenreCombobox } from '@/components/genre-combobox';
 import { useEffect, useState } from 'react';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { SignOutButton } from '@/components/sign-out-button';
 
 import Link from 'next/link';
 import { SignInButton } from './sign-in-button';
+import { objectToURLSearchParams } from '@/lib/utils';
 
 export function Sidebar() {
   const { data: session } = useSession();
@@ -18,24 +18,24 @@ export function Sidebar() {
   const [urlParams, setUrlParams] = useState('');
 
   useEffect(() => {
-    setUrlParams(
-      new URLSearchParams({
-        genres: genres.map((s) => ['genres', s]).toString(),
-        min_acousticness: acousticness[0].toString(),
-        max_acousticness: acousticness[1].toString(),
-      }).toString(),
-    );
+    const params = objectToURLSearchParams({
+      genres,
+      min_acousticness: acousticness[0],
+      max_acousticness: acousticness[1],
+    });
+
+    setUrlParams(params.toString());
   }, [genres, acousticness]);
 
   return (
     <div className="fixed inset-y-0 z-50 flex w-72 flex-col">
       {/* Sidebar component, swap this element with another sidebar if you like */}
       <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 dark:border-gray-800 dark:bg-gray-950">
-        <div className="flex h-16 shrink-0 items-center justify-between">
-          <Link href="/">
+        <div className="flex h-16 shrink-0 items-center">
+          <Link href="/" className="flex items-center">
             <Image src={logo} alt="Logo" className="h-10 w-10" />
+            <span className="ml-2 text-xl font-bold">Crescendo</span>
           </Link>
-          <SignOutButton size="sm" />
         </div>
         <div className="flex flex-1 flex-col">
           <Label className="mb-2">Genres</Label>

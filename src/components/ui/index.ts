@@ -1,5 +1,6 @@
 export * from './badge';
 export * from './button';
+export * from './card';
 export * from './command';
 export * from './dialog';
 export * from './dropdown-menu';
@@ -8,6 +9,7 @@ export * from './label';
 export * from './popover';
 export * from './scroll-area';
 export * from './select';
+export * from './skeleton';
 export * from './slider';
 export * from './textarea';
 export * from './toggle';
