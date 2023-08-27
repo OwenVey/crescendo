@@ -183,7 +183,7 @@ export function GenreCombobox({ selectedGenres, updateGenres }: GenreComboboxPro
                   onSelect={() => {
                     if (selectedGenres.some((g) => g === genre.value)) {
                       updateGenres(selectedGenres.filter((g) => g !== genre.value));
-                    } else {
+                    } else if (selectedGenres.length < 5) {
                       updateGenres([...selectedGenres, genre.value]);
                     }
                     // setOpen(false);

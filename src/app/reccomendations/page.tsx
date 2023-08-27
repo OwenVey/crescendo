@@ -33,7 +33,7 @@ export default async function ReccomendationsPage({ searchParams }: PageProps) {
     <div>
       <pre className="text-xs">{JSON.stringify(searchParams, null, 2)}</pre>
 
-      <div className="flex flex-wrap gap-6">
+      <div className="flex flex-wrap gap-4">
         {recommendations.tracks.map((track) => (
           <TrackCard key={track.id} track={track} />
         ))}
