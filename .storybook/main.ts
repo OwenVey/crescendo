@@ -27,10 +27,7 @@ const config: StorybookConfig = {
     autodocs: 'tag',
   },
   webpackFinal: async (config) => {
-    config.resolve.plugins = [
-      ...(config.resolve.plugins || []),
-      new TsconfigPathsPlugin(),
-    ];
+    config.resolve.plugins = [...(config.resolve.plugins || []), new TsconfigPathsPlugin()];
 
     return config;
   },

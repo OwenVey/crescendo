@@ -15,8 +15,7 @@ const buttonVariants = cva(
           'bg-gray-900 text-gray-50 hover:bg-gray-700 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-300',
         secondary:
           'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-50 dark:hover:bg-gray-700',
-        destructive:
-          'bg-red-600 text-gray-50 hover:bg-red-500 dark:bg-red-500 dark:text-red-50 dark:hover:bg-red-400',
+        destructive: 'bg-red-600 text-gray-50 hover:bg-red-500 dark:bg-red-500 dark:text-red-50 dark:hover:bg-red-400',
         outline:
           'border border-gray-200  bg-white text-gray-900 hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-50',
         ghost:
@@ -45,30 +44,18 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      className,
-      variant,
-      size,
-      loading = false,
-      asChild = false,
-      children,
-      ...props
-    },
-    ref,
-  ) => {
+  ({ className, variant, size, loading = false, asChild = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';
     return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        disabled={loading}
-        {...props}
-      >
-        {loading && <LoaderIcon className="absolute h-4 w-4 animate-spin" />}
-        <span className={cn('flex items-center', loading && 'opacity-0')}>
-          {children}
-        </span>
+      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} disabled={loading} {...props}>
+        {loading ? (
+          <>
+            <LoaderIcon className="absolute h-4 w-4 animate-spin" />
+            <span className="opacity-0">{children}</span>
+          </>
+        ) : (
+          children
+        )}
       </Comp>
     );
   },

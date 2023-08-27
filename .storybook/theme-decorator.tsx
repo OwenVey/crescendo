@@ -77,12 +77,7 @@ export const themeDecorator: Decorator = (Story, context) => {
     }
     case 'stacked': {
       return (
-        <div
-          className={cn(
-            'grid grid-rows-2',
-            viewMode === 'story' && 'min-h-screen',
-          )}
-        >
+        <div className={cn('grid grid-rows-2', viewMode === 'story' && 'min-h-screen')}>
           <StoryContainer viewMode={viewMode} className="min-h-0">
             <Story />
           </StoryContainer>
