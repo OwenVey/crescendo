@@ -4,11 +4,10 @@ import { Check, ChevronsUpDown } from 'lucide-react';
 import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
+import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { Badge } from './ui';
-import { ScrollArea } from './ui/scroll-area';
 
 const GENRES = [
   { value: 'acoustic', label: 'Acoustic' },
@@ -175,31 +174,29 @@ export function GenreCombobox({ selectedGenres, updateGenres }: GenreComboboxPro
         <Command>
           <CommandInput placeholder="Search genre..." />
           <CommandEmpty>No genre found.</CommandEmpty>
-          <CommandGroup>
-            <ScrollArea className="h-72">
-              {GENRES.map((genre) => (
-                <CommandItem
-                  key={genre.value}
-                  onSelect={() => {
-                    if (selectedGenres.some((g) => g === genre.value)) {
-                      updateGenres(selectedGenres.filter((g) => g !== genre.value));
-                    } else if (selectedGenres.length < 5) {
-                      updateGenres([...selectedGenres, genre.value]);
-                    }
-                    // setOpen(false);
-                  }}
-                >
-                  <Check
-                    className={cn(
-                      'mr-2 h-4 w-4',
-                      selectedGenres.some((g) => g === genre.value) ? 'opacity-100' : 'opacity-0',
-                    )}
-                  />
-                  {genre.label}
-                </CommandItem>
-              ))}
-            </ScrollArea>
-          </CommandGroup>
+          <CommandList>
+            {GENRES.map((genre) => (
+              <CommandItem
+                key={genre.value}
+                onSelect={() => {
+                  if (selectedGenres.some((g) => g === genre.value)) {
+                    updateGenres(selectedGenres.filter((g) => g !== genre.value));
+                  } else if (selectedGenres.length < 5) {
+                    updateGenres([...selectedGenres, genre.value]);
+                  }
+                  // setOpen(false);
+                }}
+              >
+                <Check
+                  className={cn(
+                    'mr-2 h-4 w-4',
+                    selectedGenres.some((g) => g === genre.value) ? 'opacity-100' : 'opacity-0',
+                  )}
+                />
+                {genre.label}
+              </CommandItem>
+            ))}
+          </CommandList>
         </Command>
       </PopoverContent>
     </Popover>

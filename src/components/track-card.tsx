@@ -1,5 +1,7 @@
 import type { Track } from '@spotify/web-api-ts-sdk';
 import Image from 'next/image';
+import Link from 'next/link';
+import { SpotifyLogo } from './spotify-logo';
 
 type TrackCardProps = {
   track: Track;
@@ -7,15 +9,20 @@ type TrackCardProps = {
 
 export function TrackCard({ track }: TrackCardProps) {
   return (
-    <div className="group">
+    <Link href={track.uri} className="group">
       {track.album.images[0] ? (
-        <Image
-          className="h-52 w-52 rounded-2xl group-hover:opacity-75"
-          src={track.album.images[0]?.url}
-          width={208}
-          height={208}
-          alt={`Album cover for ${track.name}`}
-        />
+        <div className="relative rounded-2xl overflow-hidden">
+          <div className="absolute grid place-items-center inset-0 opacity-0 group-hover:opacity-100 bg-black/0 group-hover:bg-black/50 transition-all group-hover:backdrop-blur-sm">
+            <SpotifyLogo className="h-10 w-10 text-white" />
+          </div>
+          <Image
+            className="h-52 w-52"
+            src={track.album.images[0]?.url}
+            width={208}
+            height={208}
+            alt={`Album cover for ${track.name}`}
+          />
+        </div>
       ) : (
         <div className="h-52 w-52 rounded-2xl bg-red-200">no image</div>
       )}
@@ -25,6 +32,6 @@ export function TrackCard({ track }: TrackCardProps) {
           {track.artists.map((a) => a.name).join(', ')}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

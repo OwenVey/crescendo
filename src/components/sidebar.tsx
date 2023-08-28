@@ -4,8 +4,9 @@ import { ArtistCombobox } from '@/components/artist-combobox';
 import { GenreCombobox } from '@/components/genre-combobox';
 import { SignInButton } from '@/components/sign-in-button';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { Button, Label, Slider } from '@/components/ui';
+import { Button, Checkbox, Label, Slider } from '@/components/ui';
 import { objectToURLSearchParams } from '@/lib/utils';
+import type { Artist } from '@spotify/web-api-ts-sdk';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,20 +15,21 @@ import { useEffect, useState } from 'react';
 export function Sidebar() {
   const { data: session } = useSession();
   const [genres, setGenres] = useState<Array<string>>([]);
-  const [artists, setArtists] = useState<Array<string>>([]);
+  const [artists, setArtists] = useState<Array<Artist>>([]);
   const [acousticness, setAcousticness] = useState([0, 0.5, 1]);
   const [urlParams, setUrlParams] = useState('');
 
   useEffect(() => {
     const params = objectToURLSearchParams({
-      genres,
+      seed_artists: artists.map((a) => a.id),
+      seed_genres: genres,
       min_acousticness: acousticness[0],
       target_acousticness: acousticness[1],
       max_acousticness: acousticness[2],
     });
 
     setUrlParams(params.toString());
-  }, [genres, acousticness]);
+  }, [artists, genres, acousticness]);
 
   return (
     <div className="fixed inset-y-0 z-50 flex w-72 flex-col">
@@ -53,9 +55,10 @@ export function Sidebar() {
             </div>
 
             <div className="flex flex-col">
-              <div className="mb-2 flex items-center justify-between">
+              <div className="mb-2 flex items-center">
                 <Label htmlFor="acousticness">Acousticness</Label>
-                <span className="text-sm text-gray-500 dark:text-gray-400">
+                <Checkbox className="ml-2" />
+                <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
                   {acousticness[0]} &ndash; {acousticness[2]}
                 </span>
               </div>
