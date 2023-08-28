@@ -17,25 +17,25 @@ import {
 } from '@/components/ui';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import type { Artist } from '@spotify/web-api-ts-sdk';
+import type { Track } from '@spotify/web-api-ts-sdk';
 import { useDebounce } from 'usehooks-ts';
 
-type ArtistComboboxProps = {
-  selectedArtists: Array<Artist>;
-  updateSelectedArtists: (artists: Array<Artist>) => void;
+type TrackComboboxProps = {
+  selectedTracks: Array<Track>;
+  updateSelectedTracks: (tracks: Array<Track>) => void;
 };
 
-export function ArtistCombobox({ selectedArtists, updateSelectedArtists }: ArtistComboboxProps) {
+export function TracksCombobox({ selectedTracks, updateSelectedTracks }: TrackComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [searchText, setSearchText] = React.useState('');
   const debouncedSearchText = useDebounce(searchText, 500);
-  const [searchResults, setSearchResults] = React.useState<Array<Artist>>([]);
+  const [searchResults, setSearchResults] = React.useState<Array<Track>>([]);
   const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      const results: Array<Artist> = await (await fetch(`/api/artist?q=${debouncedSearchText}`)).json();
+      const results: Array<Track> = await (await fetch(`/api/track?q=${debouncedSearchText}`)).json();
       setSearchResults((prevResults) => {
         const mergedResults = prevResults.concat(results);
         const uniqueResults = mergedResults.filter(
@@ -52,46 +52,48 @@ export function ArtistCombobox({ selectedArtists, updateSelectedArtists }: Artis
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" role="combobox" aria-expanded={open} className="h-auto justify-between">
-          {selectedArtists.length > 0 ? (
+          {selectedTracks.length > 0 ? (
             <div className="flex flex-wrap gap-1">
-              {selectedArtists.map((artist) => (
-                <Badge key={artist.id} className="whitespace-nowrap">
-                  {searchResults.find((a) => a.id === artist.id)?.name}
+              {selectedTracks.map((track) => (
+                <Badge key={track.id} className="whitespace-nowrap">
+                  {searchResults.find((a) => a.id === track.id)?.name}
                 </Badge>
               ))}
             </div>
           ) : (
-            <span className="font-normal text-gray-500 dark:text-gray-400">Search artists...</span>
+            <span className="font-normal text-gray-500 dark:text-gray-400">Search tracks...</span>
           )}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="p-0" align="start">
         <Command>
-          <CommandInput value={searchText} onValueChange={setSearchText} placeholder="Search artists..." />
-          <CommandEmpty style={{ display: loading ? 'none' : '' }}>No artists found</CommandEmpty>
+          <CommandInput value={searchText} onValueChange={setSearchText} placeholder="Search tracks..." />
+          <CommandEmpty style={{ display: loading ? 'none' : '' }}>No tracks found</CommandEmpty>
           <CommandList>
             {loading && <CommandLoading />}
             {!loading &&
-              searchResults.map((artist) => (
+              searchResults.map((track) => (
                 <CommandItem
-                  key={artist.id}
-                  value={artist.name}
+                  key={track.id}
+                  value={track.name}
                   onSelect={() => {
-                    if (selectedArtists.some((a) => a.id === artist.id)) {
-                      updateSelectedArtists(selectedArtists.filter((a) => a.id !== artist.id));
-                    } else if (selectedArtists.length < 5) {
-                      updateSelectedArtists([...selectedArtists, artist]);
+                    if (selectedTracks.some((a) => a.id === track.id)) {
+                      updateSelectedTracks(selectedTracks.filter((a) => a.id !== track.id));
+                    } else if (selectedTracks.length < 5) {
+                      updateSelectedTracks([...selectedTracks, track]);
                     }
                   }}
                 >
                   <Check
                     className={cn(
-                      'mr-2 h-4 w-4',
-                      selectedArtists.some((a) => a.id === artist.id) ? 'opacity-100' : 'opacity-0',
+                      'mr-2 h-4 w-4 shrink-0',
+                      selectedTracks.some((a) => a.id === track.id) ? 'opacity-100' : 'opacity-0',
                     )}
                   />
-                  {artist.name}
+                  <div>
+                    {track.name} <span className="text-gray-500 dark:text-gray-400">by {track.artists[0].name}</span>
+                  </div>
                 </CommandItem>
               ))}
           </CommandList>

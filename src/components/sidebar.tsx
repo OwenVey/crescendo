@@ -4,6 +4,7 @@ import { ArtistCombobox } from '@/components/artist-combobox';
 import { GenreCombobox } from '@/components/genre-combobox';
 import { SignInButton } from '@/components/sign-in-button';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { TracksCombobox } from '@/components/tracks-combobox';
 import {
   Button,
   DropdownMenu,
@@ -14,7 +15,7 @@ import {
   Slider,
 } from '@/components/ui';
 import { objectToURLSearchParams } from '@/lib/utils';
-import type { Artist } from '@spotify/web-api-ts-sdk';
+import type { Artist, Track } from '@spotify/web-api-ts-sdk';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -22,22 +23,24 @@ import { useEffect, useState } from 'react';
 
 export function Sidebar() {
   const { data: session } = useSession();
-  const [genres, setGenres] = useState<Array<string>>([]);
-  const [artists, setArtists] = useState<Array<Artist>>([]);
+  const [seedArtists, setSeedArtists] = useState<Array<Artist>>([]);
+  const [seedTracks, setSeedTracks] = useState<Array<Track>>([]);
+  const [seedGenres, setSeedGenres] = useState<Array<string>>([]);
   const [acousticness, setAcousticness] = useState([0, 0.5, 1]);
   const [urlParams, setUrlParams] = useState('');
 
   useEffect(() => {
     const params = objectToURLSearchParams({
-      seed_artists: artists.map((a) => a.id),
-      seed_genres: genres,
+      seed_artists: seedArtists.map(({ id }) => id),
+      seed_tracks: seedTracks.map(({ id }) => id),
+      seed_genres: seedGenres,
       min_acousticness: acousticness[0],
       target_acousticness: acousticness[1],
       max_acousticness: acousticness[2],
     });
 
     setUrlParams(params.toString());
-  }, [artists, genres, acousticness]);
+  }, [seedArtists, seedTracks, seedGenres, acousticness]);
 
   return (
     <div className="fixed inset-y-0 z-50 flex w-72 flex-col">
@@ -54,12 +57,17 @@ export function Sidebar() {
           <div className="flex flex-col gap-y-4">
             <div className="flex flex-col">
               <Label className="mb-2">Seed Artists</Label>
-              <ArtistCombobox selectedArtists={artists} updateArtists={setArtists} />
+              <ArtistCombobox selectedArtists={seedArtists} updateSelectedArtists={setSeedArtists} />
+            </div>
+
+            <div className="flex flex-col">
+              <Label className="mb-2">Seed Tracks</Label>
+              <TracksCombobox selectedTracks={seedTracks} updateSelectedTracks={setSeedTracks} />
             </div>
 
             <div className="flex flex-col">
               <Label className="mb-2">Seed Genres</Label>
-              <GenreCombobox selectedGenres={genres} updateGenres={setGenres} />
+              <GenreCombobox selectedGenres={seedGenres} updateGenres={setSeedGenres} />
             </div>
 
             <div className="flex flex-col">
