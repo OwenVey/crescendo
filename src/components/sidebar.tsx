@@ -4,7 +4,7 @@ import { ArtistCombobox } from '@/components/artist-combobox';
 import { GenreCombobox } from '@/components/genre-combobox';
 import { SignInButton } from '@/components/sign-in-button';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { Button, Checkbox, Label, Slider } from '@/components/ui';
+import { Button, Label, Slider } from '@/components/ui';
 import { objectToURLSearchParams } from '@/lib/utils';
 import type { Artist } from '@spotify/web-api-ts-sdk';
 import { useSession } from 'next-auth/react';
@@ -57,7 +57,7 @@ export function Sidebar() {
             <div className="flex flex-col">
               <div className="mb-2 flex items-center">
                 <Label htmlFor="acousticness">Acousticness</Label>
-                <Checkbox className="ml-2" />
+
                 <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
                   {acousticness[0]} &ndash; {acousticness[2]}
                 </span>
