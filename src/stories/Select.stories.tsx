@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { Select } from '@/components/ui/select';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta = {
   title: 'Select',

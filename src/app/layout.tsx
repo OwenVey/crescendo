@@ -1,9 +1,9 @@
-import './globals.css';
-import type { Metadata } from 'next';
 import { Providers } from '@/components/providers';
-import { inter } from './fonts/inter';
-import { cn } from '@/lib/utils';
 import { Sidebar } from '@/components/sidebar';
+import { cn } from '@/lib/utils';
+import type { Metadata } from 'next';
+import { inter } from './fonts/inter';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Crescendo',

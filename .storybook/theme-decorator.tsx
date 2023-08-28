@@ -1,8 +1,8 @@
 import type { Decorator } from '@storybook/react';
-import { inter } from '../src/app/fonts/inter';
-import { cn } from '../src/lib/utils';
 import type { ReactNode } from 'react';
+import { inter } from '../src/app/fonts/inter';
 import { TooltipProvider } from '../src/components/ui/tooltip';
+import { cn } from '../src/lib/utils';
 
 type Theme = 'light' | 'dark' | 'split' | 'stacked';
 

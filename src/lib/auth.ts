@@ -1,7 +1,7 @@
-import type { AuthOptions, DefaultSession } from 'next-auth';
-import SpotifyProvider from 'next-auth/providers/spotify';
 import { env } from '@/env.mjs';
+import type { AuthOptions, DefaultSession } from 'next-auth';
 import { type JWT } from 'next-auth/jwt';
+import SpotifyProvider from 'next-auth/providers/spotify';
 
 declare module 'next-auth' {
   interface Session extends DefaultSession {
