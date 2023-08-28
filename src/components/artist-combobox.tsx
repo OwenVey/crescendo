@@ -10,6 +10,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandLoading,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -17,7 +18,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { Artist } from '@spotify/web-api-ts-sdk';
-import { CommandLoading } from 'cmdk';
 import { useDebounce } from 'usehooks-ts';
 
 type ArtistComboboxProps = {
@@ -69,30 +69,31 @@ export function ArtistCombobox({ selectedArtists, updateArtists }: ArtistCombobo
       <PopoverContent className="p-0" align="start">
         <Command>
           <CommandInput value={searchText} onValueChange={setSearchText} placeholder="Search artists..." />
-          <CommandEmpty>No artist found.</CommandEmpty>
+          <CommandEmpty style={{ display: loading ? 'none' : '' }}>No artist found</CommandEmpty>
           <CommandList>
-            {loading && <CommandLoading>Loading...…</CommandLoading>}
-            {searchResults.map((artist) => (
-              <CommandItem
-                key={artist.id}
-                value={artist.name}
-                onSelect={() => {
-                  if (selectedArtists.some((a) => a.id === artist.id)) {
-                    updateArtists(selectedArtists.filter((a) => a.id !== artist.id));
-                  } else if (selectedArtists.length < 5) {
-                    updateArtists([...selectedArtists, artist]);
-                  }
-                }}
-              >
-                <Check
-                  className={cn(
-                    'mr-2 h-4 w-4',
-                    selectedArtists.some((a) => a.id === artist.id) ? 'opacity-100' : 'opacity-0',
-                  )}
-                />
-                {artist.name}
-              </CommandItem>
-            ))}
+            {loading && <CommandLoading />}
+            {!loading &&
+              searchResults.map((artist) => (
+                <CommandItem
+                  key={artist.id}
+                  value={artist.name}
+                  onSelect={() => {
+                    if (selectedArtists.some((a) => a.id === artist.id)) {
+                      updateArtists(selectedArtists.filter((a) => a.id !== artist.id));
+                    } else if (selectedArtists.length < 5) {
+                      updateArtists([...selectedArtists, artist]);
+                    }
+                  }}
+                >
+                  <Check
+                    className={cn(
+                      'mr-2 h-4 w-4',
+                      selectedArtists.some((a) => a.id === artist.id) ? 'opacity-100' : 'opacity-0',
+                    )}
+                  />
+                  {artist.name}
+                </CommandItem>
+              ))}
           </CommandList>
         </Command>
       </PopoverContent>

@@ -27,8 +27,8 @@ export function TrackCard({ track }: TrackCardProps) {
         <div className="h-52 w-52 rounded-2xl bg-red-200">no image</div>
       )}
       <div className="mt-1 w-52">
-        <div className="truncate text-sm font-medium">{track.name}</div>
-        <div className="truncate text-xs text-gray-500 dark:text-gray-400">
+        <div className="truncate text font-medium">{track.name}</div>
+        <div className="truncate text-sm text-gray-500 dark:text-gray-400">
           {track.artists.map((a) => a.name).join(', ')}
         </div>
       </div>

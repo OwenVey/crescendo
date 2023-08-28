@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <Sidebar />
           <main className="pl-72">
-            <div className="p-4">{children}</div>
+            <div className="p-8">{children}</div>
           </main>
         </Providers>
       </body>
