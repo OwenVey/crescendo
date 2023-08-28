@@ -1,19 +1,20 @@
 'use client';
+import logo from '@/app/logo.png';
+import { ArtistCombobox } from '@/components/artist-combobox';
+import { GenreCombobox } from '@/components/genre-combobox';
+import { SignInButton } from '@/components/sign-in-button';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { Button, Label, Slider } from '@/components/ui';
+import { objectToURLSearchParams } from '@/lib/utils';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import logo from '@/app/logo.png';
-import { Button, Label, Slider } from '@/components/ui';
-import { GenreCombobox } from '@/components/genre-combobox';
-import { useEffect, useState } from 'react';
-import { ThemeToggle } from '@/components/theme-toggle';
-
 import Link from 'next/link';
-import { SignInButton } from './sign-in-button';
-import { objectToURLSearchParams } from '@/lib/utils';
+import { useEffect, useState } from 'react';
 
 export function Sidebar() {
   const { data: session } = useSession();
   const [genres, setGenres] = useState<Array<string>>([]);
+  const [artists, setArtists] = useState<Array<string>>([]);
   const [acousticness, setAcousticness] = useState([0, 0.5, 1]);
   const [urlParams, setUrlParams] = useState('');
 
@@ -38,25 +39,36 @@ export function Sidebar() {
             <span className="ml-2 text-xl font-bold">Crescendo</span>
           </Link>
         </div>
+
         <div className="flex flex-1 flex-col">
-          <Label className="mb-2">Genres</Label>
-          <GenreCombobox selectedGenres={genres} updateGenres={setGenres} />
+          <div className="flex flex-col gap-y-4">
+            <div className="flex flex-col">
+              <Label className="mb-2">Seed Artists</Label>
+              <ArtistCombobox selectedArtists={artists} updateArtists={setArtists} />
+            </div>
 
-          <div className="mb-4 mt-8 flex items-center justify-between">
-            <Label htmlFor="acousticness">Acousticness</Label>
+            <div className="flex flex-col">
+              <Label className="mb-2">Seed Genres</Label>
+              <GenreCombobox selectedGenres={genres} updateGenres={setGenres} />
+            </div>
 
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              {acousticness[0]} &ndash; {acousticness[2]}
-            </span>
+            <div className="flex flex-col">
+              <div className="mb-2 flex items-center justify-between">
+                <Label htmlFor="acousticness">Acousticness</Label>
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  {acousticness[0]} &ndash; {acousticness[2]}
+                </span>
+              </div>
+              <Slider
+                id="acousticness"
+                defaultValue={[0, 0.5, 1]}
+                max={1}
+                step={0.01}
+                value={acousticness}
+                onValueChange={setAcousticness}
+              />
+            </div>
           </div>
-          <Slider
-            id="acousticness"
-            defaultValue={[0, 0.5, 1]}
-            max={1}
-            step={0.01}
-            value={acousticness}
-            onValueChange={setAcousticness}
-          />
 
           <Button asChild className="my-4">
             <Link href={`/reccomendations?${urlParams}`}>Get Reccomendations</Link>
