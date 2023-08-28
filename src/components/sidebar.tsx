@@ -1,7 +1,7 @@
 'use client';
 import logo from '@/app/logo.png';
-import { ArtistCombobox } from '@/components/artist-combobox';
-import { GenreCombobox } from '@/components/genre-combobox';
+import { ArtistsCombobox } from '@/components/artists-combobox';
+import { GenresCombobox } from '@/components/genres-combobox';
 import { SignInButton } from '@/components/sign-in-button';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { TracksCombobox } from '@/components/tracks-combobox';
@@ -57,7 +57,7 @@ export function Sidebar() {
           <div className="flex flex-col gap-y-4">
             <div className="flex flex-col">
               <Label className="mb-2">Seed Artists</Label>
-              <ArtistCombobox selectedArtists={seedArtists} updateSelectedArtists={setSeedArtists} />
+              <ArtistsCombobox selectedArtists={seedArtists} updateSelectedArtists={setSeedArtists} />
             </div>
 
             <div className="flex flex-col">
@@ -67,7 +67,7 @@ export function Sidebar() {
 
             <div className="flex flex-col">
               <Label className="mb-2">Seed Genres</Label>
-              <GenreCombobox selectedGenres={seedGenres} updateGenres={setSeedGenres} />
+              <GenresCombobox selectedGenres={seedGenres} updateSelectedGenres={setSeedGenres} />
             </div>
 
             <div className="flex flex-col">

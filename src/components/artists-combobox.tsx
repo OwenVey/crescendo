@@ -20,12 +20,12 @@ import { cn } from '@/lib/utils';
 import type { Artist } from '@spotify/web-api-ts-sdk';
 import { useDebounce } from 'usehooks-ts';
 
-type ArtistComboboxProps = {
+type ArtistsComboboxProps = {
   selectedArtists: Array<Artist>;
   updateSelectedArtists: (artists: Array<Artist>) => void;
 };
 
-export function ArtistCombobox({ selectedArtists, updateSelectedArtists }: ArtistComboboxProps) {
+export function ArtistsCombobox({ selectedArtists, updateSelectedArtists }: ArtistsComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [searchText, setSearchText] = React.useState('');
   const debouncedSearchText = useDebounce(searchText, 500);

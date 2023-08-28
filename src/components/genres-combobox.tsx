@@ -138,12 +138,12 @@ const GENRES = [
   { value: 'world-music', label: 'World Music' },
 ];
 
-type GenreComboboxProps = {
+type GenresComboboxProps = {
   selectedGenres: Array<string>;
-  updateGenres: (genres: Array<string>) => void;
+  updateSelectedGenres: (genres: Array<string>) => void;
 };
 
-export function GenreCombobox({ selectedGenres, updateGenres }: GenreComboboxProps) {
+export function GenresCombobox({ selectedGenres, updateSelectedGenres }: GenresComboboxProps) {
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -174,9 +174,9 @@ export function GenreCombobox({ selectedGenres, updateGenres }: GenreComboboxPro
                 key={genre.value}
                 onSelect={() => {
                   if (selectedGenres.some((g) => g === genre.value)) {
-                    updateGenres(selectedGenres.filter((g) => g !== genre.value));
+                    updateSelectedGenres(selectedGenres.filter((g) => g !== genre.value));
                   } else if (selectedGenres.length < 5) {
-                    updateGenres([...selectedGenres, genre.value]);
+                    updateSelectedGenres([...selectedGenres, genre.value]);
                   }
                 }}
               >

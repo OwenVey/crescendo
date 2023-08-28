@@ -20,12 +20,12 @@ import { cn } from '@/lib/utils';
 import type { Track } from '@spotify/web-api-ts-sdk';
 import { useDebounce } from 'usehooks-ts';
 
-type TrackComboboxProps = {
+type TracksComboboxProps = {
   selectedTracks: Array<Track>;
   updateSelectedTracks: (tracks: Array<Track>) => void;
 };
 
-export function TracksCombobox({ selectedTracks, updateSelectedTracks }: TrackComboboxProps) {
+export function TracksCombobox({ selectedTracks, updateSelectedTracks }: TracksComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [searchText, setSearchText] = React.useState('');
   const debouncedSearchText = useDebounce(searchText, 500);
