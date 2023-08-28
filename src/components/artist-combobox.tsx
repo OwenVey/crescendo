@@ -36,11 +36,13 @@ export function ArtistCombobox({ selectedArtists, updateArtists }: ArtistCombobo
     async function fetchData() {
       setLoading(true);
       const results: Array<Artist> = await (await fetch(`/api/artist?q=${debouncedSearchText}`)).json();
-      const mergedResults = searchResults.concat(results);
-      const uniqueResults = mergedResults.filter(
-        (value, index, self) => self.findIndex((m) => m.id === value.id) === index,
-      );
-      setSearchResults(uniqueResults);
+      setSearchResults((prevResults) => {
+        const mergedResults = prevResults.concat(results);
+        const uniqueResults = mergedResults.filter(
+          (value, index, self) => self.findIndex((m) => m.id === value.id) === index,
+        );
+        return uniqueResults;
+      });
       setLoading(false);
     }
     if (debouncedSearchText) fetchData();

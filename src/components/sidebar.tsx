@@ -4,10 +4,18 @@ import { ArtistCombobox } from '@/components/artist-combobox';
 import { GenreCombobox } from '@/components/genre-combobox';
 import { SignInButton } from '@/components/sign-in-button';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { Button, Label, Slider } from '@/components/ui';
+import {
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  Label,
+  Slider,
+} from '@/components/ui';
 import { objectToURLSearchParams } from '@/lib/utils';
 import type { Artist } from '@spotify/web-api-ts-sdk';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -80,19 +88,26 @@ export function Sidebar() {
           <div className="-mx-6 mt-auto border-t border-gray-200 dark:border-gray-800">
             <div className="flex justify-between px-6 py-3">
               {session ? (
-                <div className="flex items-center gap-x-2">
-                  <Image
-                    className="h-10 w-10 rounded-full bg-gray-50"
-                    height={40}
-                    width={40}
-                    src={session.user.image!}
-                    alt="User's profile picture on Spotify"
-                  />
-                  <div className="flex flex-col">
-                    <div className="text-sm font-medium">{session.user.name}</div>
-                    <div className="text-xs text-gray-500">{session.user.email}</div>
-                  </div>
-                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="text-left">
+                    <div className="flex items-center gap-x-2">
+                      <Image
+                        className="h-10 w-10 rounded-full bg-gray-50"
+                        height={40}
+                        width={40}
+                        src={session.user.image!}
+                        alt="User's profile picture on Spotify"
+                      />
+                      <div className="flex flex-col">
+                        <div className="text-sm font-medium">{session.user.name}</div>
+                        <div className="text-xs text-gray-500">{session.user.email}</div>
+                      </div>
+                    </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onClick={() => signOut()}>Log Out</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               ) : (
                 <SignInButton size="sm" />
               )}
