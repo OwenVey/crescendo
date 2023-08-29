@@ -69,8 +69,8 @@ export function ArtistsCombobox({ selectedArtists, updateSelectedArtists }: Arti
       <PopoverContent className="p-0" align="start">
         <Command>
           <CommandInput value={searchText} onValueChange={setSearchText} placeholder="Search artists..." />
-          <CommandEmpty style={{ display: loading ? 'none' : '' }}>No artists found</CommandEmpty>
           <CommandList>
+            <CommandEmpty style={{ display: loading ? 'none' : '' }}>No artists found</CommandEmpty>
             {loading && <CommandLoading />}
             {!loading &&
               searchResults.map((artist) => (

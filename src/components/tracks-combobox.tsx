@@ -69,8 +69,8 @@ export function TracksCombobox({ selectedTracks, updateSelectedTracks }: TracksC
       <PopoverContent className="p-0" align="start">
         <Command>
           <CommandInput value={searchText} onValueChange={setSearchText} placeholder="Search tracks..." />
-          <CommandEmpty style={{ display: loading ? 'none' : '' }}>No tracks found</CommandEmpty>
           <CommandList>
+            <CommandEmpty style={{ display: loading ? 'none' : '' }}>No tracks found</CommandEmpty>
             {loading && <CommandLoading />}
             {!loading &&
               searchResults.map((track) => (

@@ -167,8 +167,8 @@ export function GenresCombobox({ selectedGenres, updateSelectedGenres }: GenresC
       <PopoverContent className="p-0" align="start">
         <Command>
           <CommandInput placeholder="Search genre..." />
-          <CommandEmpty>No genre found.</CommandEmpty>
           <CommandList>
+            <CommandEmpty>No genre found.</CommandEmpty>
             {GENRES.map((genre) => (
               <CommandItem
                 key={genre.value}
