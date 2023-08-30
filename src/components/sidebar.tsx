@@ -14,15 +14,21 @@ import {
   Label,
   Slider,
 } from '@/components/ui';
-import { objectToURLSearchParams } from '@/lib/utils';
+import { arrayToURLSearchParams, objectToURLSearchParams } from '@/lib/utils';
 import type { Artist, Track } from '@spotify/web-api-ts-sdk';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export function Sidebar() {
   const { data: session } = useSession();
+  const searchParams = useSearchParams();
+
+  const [loadingArtists, setLoadingArtists] = useState(false);
+  const [loadingTracks, setLoadingTracks] = useState(false);
+
   const [seedArtists, setSeedArtists] = useState<Array<Artist>>([]);
   const [seedTracks, setSeedTracks] = useState<Array<Track>>([]);
   const [seedGenres, setSeedGenres] = useState<Array<string>>([]);
@@ -42,6 +48,62 @@ export function Sidebar() {
     setUrlParams(params.toString());
   }, [seedArtists, seedTracks, seedGenres, acousticness]);
 
+  useEffect(() => {
+    console.log('Syncing searchParams with state...');
+
+    const artistIds = searchParams.getAll('seed_artists');
+    getArtists(artistIds);
+
+    const trackIds = searchParams.getAll('seed_tracks');
+    getTracks(trackIds);
+
+    const genresParam = searchParams.getAll('seed_genres');
+    setSeedGenres(genresParam);
+  }, [searchParams]);
+
+  async function getArtists(ids: Array<string>) {
+    if (ids.length === 0) {
+      setSeedArtists([]);
+      return;
+    }
+    setLoadingArtists(true);
+    const idsParams = arrayToURLSearchParams('ids', ids).toString();
+    try {
+      const artists: Array<Artist> = await (await fetch(`/api/artists?${idsParams}`)).json();
+      setSeedArtists(artists);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingArtists(false);
+    }
+  }
+
+  async function getTracks(ids: Array<string>) {
+    if (ids.length === 0) {
+      setSeedTracks([]);
+      return;
+    }
+    setLoadingTracks(true);
+    const idsParams = arrayToURLSearchParams('ids', ids).toString();
+    try {
+      const tracks: Array<Track> = await (await fetch(`/api/tracks?${idsParams}`)).json();
+      setSeedTracks(tracks);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingTracks(false);
+    }
+  }
+
+  function validateParams(event: React.MouseEvent<HTMLAnchorElement>) {
+    return;
+    if (seedArtists.length + seedTracks.length + seedGenres.length < 1) {
+      event.preventDefault();
+      alert('Must have at least one seed value!');
+      return;
+    }
+  }
+
   return (
     <div className="fixed inset-y-0 z-50 flex w-72 flex-col">
       {/* Sidebar component, swap this element with another sidebar if you like */}
@@ -57,12 +119,20 @@ export function Sidebar() {
           <div className="flex flex-col gap-y-4">
             <div className="flex flex-col">
               <Label className="mb-2">Seed Artists</Label>
-              <ArtistsCombobox selectedArtists={seedArtists} updateSelectedArtists={setSeedArtists} />
+              <ArtistsCombobox
+                selectedArtists={seedArtists}
+                updateSelectedArtists={setSeedArtists}
+                loading={loadingArtists}
+              />
             </div>
 
             <div className="flex flex-col">
               <Label className="mb-2">Seed Tracks</Label>
-              <TracksCombobox selectedTracks={seedTracks} updateSelectedTracks={setSeedTracks} />
+              <TracksCombobox
+                selectedTracks={seedTracks}
+                updateSelectedTracks={setSeedTracks}
+                loading={loadingTracks}
+              />
             </div>
 
             <div className="flex flex-col">
@@ -90,7 +160,9 @@ export function Sidebar() {
           </div>
 
           <Button asChild className="my-4">
-            <Link href={`/reccomendations?${urlParams}`}>Get Reccomendations</Link>
+            <Link href={`/reccomendations?${urlParams}`} onClick={(event) => validateParams(event)}>
+              Get Reccomendations
+            </Link>
           </Button>
 
           <div className="-mx-6 mt-auto border-t border-gray-200 dark:border-gray-800">

@@ -1,0 +1,9 @@
+import type { NextRequest } from 'next/server';
+
+// This function can be marked `async` if using `await` inside
+export function middleware(request: NextRequest) {
+  const { url, method } = request;
+  if (url.includes('/api')) {
+    console.log(`[${method}] ${url}`);
+  }
+}

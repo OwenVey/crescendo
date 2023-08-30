@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, ChevronsUpDown } from 'lucide-react';
+import { Check, ChevronsUpDown, X } from 'lucide-react';
 import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -146,6 +146,10 @@ type GenresComboboxProps = {
 export function GenresCombobox({ selectedGenres, updateSelectedGenres }: GenresComboboxProps) {
   const [open, setOpen] = React.useState(false);
 
+  function removeSelectedGenre(genre: string) {
+    updateSelectedGenres(selectedGenres.filter((g) => g !== genre));
+  }
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -155,11 +159,21 @@ export function GenresCombobox({ selectedGenres, updateSelectedGenres }: GenresC
               {selectedGenres.map((genre) => (
                 <Badge key={genre} className="whitespace-nowrap">
                   {GENRES.find((g) => g.value === genre)?.label}
+                  <div
+                    className="-mr-1.5 ml-0.5 p-[2px] rounded-full hover:bg-gray-700 dark:hover:bg-gray-400"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      removeSelectedGenre(genre);
+                    }}
+                  >
+                    <X className="h-3 w-3" />
+                    <span className="sr-only">Remove</span>
+                  </div>
                 </Badge>
               ))}
             </div>
           ) : (
-            <span className="font-normal text-gray-500 dark:text-gray-400">Select genres...</span>
+            <span className="font-normal py-px text-gray-500 dark:text-gray-400">Select genres...</span>
           )}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -174,7 +188,7 @@ export function GenresCombobox({ selectedGenres, updateSelectedGenres }: GenresC
                 key={genre.value}
                 onSelect={() => {
                   if (selectedGenres.some((g) => g === genre.value)) {
-                    updateSelectedGenres(selectedGenres.filter((g) => g !== genre.value));
+                    removeSelectedGenre(genre.value);
                   } else if (selectedGenres.length < 5) {
                     updateSelectedGenres([...selectedGenres, genre.value]);
                   }

@@ -4,9 +4,10 @@ import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const query = searchParams.get('q') ?? '';
-  const sdk = SpotifyApi.withClientCredentials(env.SPOTIFY_CLIENT_ID, env.SPOTIFY_CLIENT_SECRET);
-  const searchResults = await sdk.search(`track:${query}`, ['track'], 'US', 50);
+  const ids = searchParams.getAll('ids') ?? [];
 
-  return NextResponse.json(searchResults.tracks.items);
+  const sdk = SpotifyApi.withClientCredentials(env.SPOTIFY_CLIENT_ID, env.SPOTIFY_CLIENT_SECRET);
+  const tracks = await sdk.tracks.get(ids);
+
+  return NextResponse.json(tracks);
 }

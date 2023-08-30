@@ -12,6 +12,10 @@ const SearchParamsSchema = z.object({
     .union([z.array(z.string()), z.string()])
     .optional()
     .transform((v) => (typeof v === 'string' ? [v] : v)),
+  seed_tracks: z
+    .union([z.array(z.string()), z.string()])
+    .optional()
+    .transform((v) => (typeof v === 'string' ? [v] : v)),
   seed_genres: z
     .union([z.array(z.string()), z.string()])
     .optional()
@@ -24,15 +28,28 @@ const SearchParamsSchema = z.object({
 export default async function ReccomendationsPage({ searchParams }: PageProps) {
   const sdk = SpotifyApi.withClientCredentials(env.SPOTIFY_CLIENT_ID, env.SPOTIFY_CLIENT_SECRET);
 
-  const { seed_artists, seed_genres, min_acousticness, target_acousticness, max_acousticness } =
+  const { seed_artists, seed_tracks, seed_genres, min_acousticness, target_acousticness, max_acousticness } =
     SearchParamsSchema.parse(searchParams);
+
+  const numArtists = seed_artists?.length ?? 0;
+  const numTracks = seed_tracks?.length ?? 0;
+  const numGenres = seed_genres?.length ?? 0;
+  const numSeeds = numArtists + numTracks + numGenres;
+
+  if (numSeeds < 1) {
+    throw Error('Must have at least 1 seed between Seed Artists, Seed Tracks, and Seed Genres');
+  }
+
+  if (numSeeds > 5) {
+    throw Error('Max of 5 seed may be provided in any combination of Seed Artists, Seed Tracks, and Seed Genres');
+  }
 
   // await new Promise((resolve) => setTimeout(resolve, 2000));
   const recommendations = await sdk.recommendations.get({
     limit: 50,
     market: 'US',
     seed_artists,
-    // seed_tracks: ['0c6xIDDpzE81m2q797ordA'],
+    seed_tracks,
     seed_genres,
     min_acousticness,
     target_acousticness,
@@ -41,7 +58,10 @@ export default async function ReccomendationsPage({ searchParams }: PageProps) {
 
   return (
     <div>
-      <pre className="text-xs">{JSON.stringify(searchParams, null, 2)}</pre>
+      <div className="absolute z-10 bg-white/75 backdrop-blur-lg border p-4 rounded-xl right-0 top-0 m-8">
+        <div className="font-bold underline">searchParams</div>
+        <pre className="text-xs">{JSON.stringify(searchParams, null, 2)}</pre>
+      </div>
 
       <div className="flex flex-wrap gap-8">
         {recommendations.tracks.map((track) => (

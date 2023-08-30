@@ -18,3 +18,13 @@ export function objectToURLSearchParams(obj: Record<string, string | string[] | 
 
   return params;
 }
+
+export function arrayToURLSearchParams(
+  paramName: string,
+  array: Array<string | number>,
+  params: URLSearchParams = new URLSearchParams(),
+): URLSearchParams {
+  // const params = new URLSearchParams();
+  array.forEach((item) => params.append(paramName, item.toString()));
+  return params;
+}
