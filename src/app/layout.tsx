@@ -1,5 +1,6 @@
 import { Providers } from '@/components/providers';
 import { Sidebar } from '@/components/sidebar';
+import { Toaster } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import type { Metadata } from 'next';
 import { inter } from './fonts/inter';
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="pl-72 h-full">
             <div className="p-8 h-full">{children}</div>
           </main>
+          <Toaster />
         </Providers>
       </body>
     </html>

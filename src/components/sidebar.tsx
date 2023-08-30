@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
   Label,
   Slider,
+  useToast,
 } from '@/components/ui';
 import { arrayToURLSearchParams, objectToURLSearchParams } from '@/lib/utils';
 import type { Artist, Track } from '@spotify/web-api-ts-sdk';
@@ -25,6 +26,7 @@ import { useEffect, useState } from 'react';
 export function Sidebar() {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
+  const { toast } = useToast();
 
   const [loadingArtists, setLoadingArtists] = useState(false);
   const [loadingTracks, setLoadingTracks] = useState(false);
@@ -96,10 +98,23 @@ export function Sidebar() {
   }
 
   function validateParams(event: React.MouseEvent<HTMLAnchorElement>) {
-    return;
-    if (seedArtists.length + seedTracks.length + seedGenres.length < 1) {
-      event.preventDefault();
-      alert('Must have at least one seed value!');
+    event.preventDefault();
+    const totalSeeds = seedArtists.length + seedTracks.length + seedGenres.length;
+    if (totalSeeds < 1) {
+      toast({
+        variant: 'destructive',
+        title: 'Error! Not enough seeds!',
+        description: 'Must have at least 1 seed between Seed Artists, Seed Tracks, and Seed Genres',
+      });
+      return;
+    }
+
+    if (totalSeeds > 5) {
+      toast({
+        variant: 'destructive',
+        title: 'Error! Too many seeds!',
+        description: 'Max of 5 seed may be provided in any combination of Seed Artists, Seed Tracks, and Seed Genres',
+      });
       return;
     }
   }
