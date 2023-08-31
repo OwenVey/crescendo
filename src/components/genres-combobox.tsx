@@ -160,7 +160,7 @@ export function GenresCombobox({ selectedGenres, updateSelectedGenres }: GenresC
                 <Badge key={genre} className="whitespace-nowrap">
                   {GENRES.find((g) => g.value === genre)?.label}
                   <div
-                    className="-mr-1.5 ml-0.5 p-[2px] rounded-full hover:bg-gray-700 dark:hover:bg-gray-400"
+                    className="-mr-1.5 ml-0.5 p-[2px] rounded-full hover:bg-gray-700 dark:hover:bg-gray-300"
                     onClick={(e) => {
                       e.preventDefault();
                       removeSelectedGenre(genre);

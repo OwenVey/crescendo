@@ -69,7 +69,7 @@ export function ArtistsCombobox({ selectedArtists, updateSelectedArtists, loadin
                 <Badge key={artist.id} className="whitespace-nowrap">
                   {artist.name}
                   <div
-                    className="-mr-1.5 ml-0.5 p-[2px] rounded-full hover:bg-gray-700 dark:hover:bg-gray-400"
+                    className="-mr-1.5 ml-0.5 p-[2px] rounded-full hover:bg-gray-700 dark:hover:bg-gray-300"
                     onClick={(e) => {
                       e.preventDefault();
                       removeSelectedArtist(artist);
