@@ -121,7 +121,7 @@ export function Sidebar() {
   }
 
   return (
-    <div className="fixed inset-y-0 z-50 flex w-72 flex-col">
+    <div className="fixed inset-y-0 z-50 flex w-80 flex-col">
       {/* Sidebar component, swap this element with another sidebar if you like */}
       <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 dark:border-gray-800 dark:bg-gray-950">
         <div className="flex h-16 shrink-0 items-center">

@@ -58,7 +58,7 @@ export default async function ReccomendationsPage({ searchParams }: PageProps) {
 
   return (
     <div>
-      <div className="absolute z-10 bg-white/75 backdrop-blur-lg border p-4 rounded-xl right-0 top-0 m-8">
+      <div className="absolute z-10 bg-white/75 text-black backdrop-blur-lg border p-4 rounded-xl right-0 top-0 m-8">
         <div className="font-bold underline">searchParams</div>
         <pre className="text-xs">{JSON.stringify(searchParams, null, 2)}</pre>
       </div>
