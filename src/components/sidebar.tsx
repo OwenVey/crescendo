@@ -160,7 +160,7 @@ export function Sidebar() {
               <div className="mb-2 flex items-center">
                 <Label htmlFor="acousticness">Acousticness</Label>
 
-                <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
+                <span className="ml-auto text-sm text-gray-500 dark:text-gray-400">
                   {acousticness[0]} &ndash; {acousticness[2]}
                 </span>
               </div>

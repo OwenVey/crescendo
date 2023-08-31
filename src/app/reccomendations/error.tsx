@@ -14,7 +14,7 @@ export default function Error({ error, reset }: ErrorProps) {
   }, [error]);
 
   return (
-    <div className="border-2 border-dashed border-red-400 bg-red-50 rounded-lg h-full grid place-items-center">
+    <div className="grid h-full place-items-center rounded-lg border-2 border-dashed border-red-400 bg-red-50">
       <div className="text-center">
         <div className="text-red-500">{error.name}</div>
         <div className="text-red-500">{error.message}</div>

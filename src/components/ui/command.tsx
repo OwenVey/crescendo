@@ -45,7 +45,7 @@ const CommandInput = React.forwardRef<React.ElementRef<typeof CommandPrimitive.I
   ({ className, loading = false, ...props }, ref) => (
     <div className="flex items-center border-b px-3 dark:border-gray-800" cmdk-input-wrapper="">
       {loading ? (
-        <LoaderIcon className="mr-2 h-4 w-4 shrink-0 opacity-50 animate-spin" />
+        <LoaderIcon className="mr-2 h-4 w-4 shrink-0 animate-spin opacity-50" />
       ) : (
         <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
       )}
@@ -105,7 +105,7 @@ const CommandLoading = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Loading>
 >((props, ref) => (
   <CommandPrimitive.Loading ref={ref} {...props}>
-    <div className="grid place-items-center h-16 text-sm">
+    <div className="grid h-16 place-items-center text-sm">
       <LoaderIcon className="h-4 w-4 animate-spin" />
     </div>
   </CommandPrimitive.Loading>

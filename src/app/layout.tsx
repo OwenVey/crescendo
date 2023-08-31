@@ -16,8 +16,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="h-full bg-gray-100 dark:bg-gray-900">
         <Providers>
           <Sidebar />
-          <main className="pl-80 h-full">
-            <div className="p-8 h-full">{children}</div>
+          <main className="h-full pl-80">
+            <div className="h-full p-8">{children}</div>
           </main>
           <Toaster />
         </Providers>

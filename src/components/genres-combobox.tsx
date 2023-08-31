@@ -160,7 +160,7 @@ export function GenresCombobox({ selectedGenres, updateSelectedGenres }: GenresC
                 <Badge key={genre} className="whitespace-nowrap">
                   {GENRES.find((g) => g.value === genre)?.label}
                   <div
-                    className="-mr-1.5 ml-0.5 p-[2px] rounded-full hover:bg-gray-700 dark:hover:bg-gray-300"
+                    className="-mr-1.5 ml-0.5 rounded-full p-[2px] hover:bg-gray-700 dark:hover:bg-gray-300"
                     onClick={(e) => {
                       e.preventDefault();
                       removeSelectedGenre(genre);
@@ -173,7 +173,7 @@ export function GenresCombobox({ selectedGenres, updateSelectedGenres }: GenresC
               ))}
             </div>
           ) : (
-            <span className="font-normal py-px text-gray-500 dark:text-gray-400">Select genres...</span>
+            <span className="py-px font-normal text-gray-500 dark:text-gray-400">Select genres...</span>
           )}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
