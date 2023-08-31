@@ -125,7 +125,8 @@ export function TracksCombobox({ selectedTracks, updateSelectedTracks, loading =
                   />
 
                   <div>
-                    {track.name} <span className="text-gray-500 dark:text-gray-400">by {track.artists[0].name}</span>
+                    <div className="truncate w-48">{track.name}</div>
+                    <div className="w-48 truncate text-gray-500 dark:text-gray-400">{track.artists[0].name}</div>
                   </div>
                 </div>
               </CommandItem>
