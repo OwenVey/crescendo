@@ -64,8 +64,8 @@ export default async function ReccomendationsPage({ searchParams }: PageProps) {
       </div>
 
       <div className="flex flex-wrap gap-8">
-        {recommendations.tracks.map((track) => (
-          <TrackCard key={track.id} track={track} />
+        {recommendations.tracks.map((track, index) => (
+          <TrackCard key={track.id} track={track} index={index} />
         ))}
       </div>
     </div>
