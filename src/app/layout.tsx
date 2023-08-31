@@ -17,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <Sidebar />
           <main className="h-full pl-80">
-            <div className="h-full p-8">{children}</div>
+            <div className="h-full overflow-auto p-8">{children}</div>
           </main>
           <Toaster />
         </Providers>
