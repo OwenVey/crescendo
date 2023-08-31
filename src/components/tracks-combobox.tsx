@@ -17,6 +17,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { Track } from '@spotify/web-api-ts-sdk';
+import Image from 'next/image';
 import { useDebounce } from 'usehooks-ts';
 
 type TracksComboboxProps = {
@@ -108,14 +109,24 @@ export function TracksCombobox({ selectedTracks, updateSelectedTracks, loading =
                   }
                 }}
               >
-                <Check
-                  className={cn(
-                    'mr-2 h-4 w-4 shrink-0',
-                    selectedTracks.some(({ id }) => id === track.id) ? 'opacity-100' : 'opacity-0',
-                  )}
-                />
-                <div>
-                  {track.name} <span className="text-gray-500 dark:text-gray-400">by {track.artists[0].name}</span>
+                <div className="flex items-center gap-x-2">
+                  <Check
+                    className={cn(
+                      'h-4 w-4 shrink-0',
+                      selectedTracks.some(({ id }) => id === track.id) ? 'opacity-100' : 'opacity-0',
+                    )}
+                  />
+                  <Image
+                    className="h-8 w-8 rounded"
+                    width={32}
+                    height={32}
+                    src={track.album.images[0].url}
+                    alt={`Picture of the album "${track.album.name}"`}
+                  />
+
+                  <div>
+                    {track.name} <span className="text-gray-500 dark:text-gray-400">by {track.artists[0].name}</span>
+                  </div>
                 </div>
               </CommandItem>
             ))}

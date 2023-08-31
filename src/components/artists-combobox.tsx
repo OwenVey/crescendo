@@ -17,6 +17,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { Artist } from '@spotify/web-api-ts-sdk';
+import Image from 'next/image';
 import { useDebounce } from 'usehooks-ts';
 
 type ArtistsComboboxProps = {
@@ -108,13 +109,36 @@ export function ArtistsCombobox({ selectedArtists, updateSelectedArtists, loadin
                   }
                 }}
               >
-                <Check
-                  className={cn(
-                    'mr-2 h-4 w-4',
-                    selectedArtists.some(({ id }) => id === artist.id) ? 'opacity-100' : 'opacity-0',
+                <div className="flex items-center gap-x-2">
+                  <Check
+                    className={cn(
+                      'h-4 w-4 shrink-0',
+                      selectedArtists.some(({ id }) => id === artist.id) ? 'opacity-100' : 'opacity-0',
+                    )}
+                  />
+
+                  {artist.images[0] ? (
+                    <Image
+                      className="h-8 w-8 rounded-full"
+                      width={32}
+                      height={32}
+                      src={artist.images[0].url}
+                      alt={`Picture of ${artist.name}`}
+                    />
+                  ) : (
+                    <span className="inline-block h-8 w-8 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-600">
+                      <svg
+                        className="h-full w-full text-gray-300 dark:text-gray-800"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                    </span>
                   )}
-                />
-                {artist.name}
+
+                  <span className="truncate w-48">{artist.name}</span>
+                </div>
               </CommandItem>
             ))}
           </CommandList>
