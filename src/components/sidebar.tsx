@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
   Label,
   Slider,
+  Toggle,
   useToast,
 } from '@/components/ui';
 import { arrayToURLSearchParams, objectToURLSearchParams } from '@/lib/utils';
@@ -36,6 +37,23 @@ export function Sidebar() {
   const [seedGenres, setSeedGenres] = useState<Array<string>>([]);
   const [acousticness, setAcousticness] = useState([0, 0.5, 1]);
   const [urlParams, setUrlParams] = useState('');
+
+  const TRACK_ATTRIBUTES = [
+    { value: 'acousticness', label: 'Acousticness' },
+    { value: 'danceability', label: 'Danceability' },
+    { value: 'duration_ms', label: 'Duration' },
+    { value: 'energy', label: 'Energy' },
+    { value: 'instrumentalness', label: 'Instrumentalness' },
+    { value: 'key', label: 'Key' },
+    { value: 'liveness', label: 'Liveness' },
+    { value: 'loudness', label: 'Loudness' },
+    { value: 'mode', label: 'Mode' },
+    { value: 'popularity', label: 'Popularity' },
+    { value: 'speechiness', label: 'Speechiness' },
+    { value: 'tempo', label: 'Tempo' },
+    { value: 'time_signature', label: 'Time Signature' },
+    { value: 'valence', label: 'Valence' },
+  ];
 
   useEffect(() => {
     const params = objectToURLSearchParams({
@@ -121,97 +139,106 @@ export function Sidebar() {
   }
 
   return (
-    <div className="fixed inset-y-0 z-50 flex w-80 flex-col">
-      {/* Sidebar component, swap this element with another sidebar if you like */}
-      <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 dark:border-gray-800 dark:bg-gray-950">
-        <div className="flex h-16 shrink-0 items-center">
-          <Link href="/" className="flex items-center">
-            <Image src={logo} alt="Logo" className="h-10 w-10" />
-            <span className="ml-2 text-xl font-bold">Crescendo</span>
-          </Link>
-        </div>
+    <aside className="fixed inset-y-0 z-50 flex w-80 flex-col border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
+      {/* Header */}
+      <header className="flex items-center px-6 py-3">
+        <Link href="/" className="flex items-center">
+          <Image src={logo} alt="Logo" className="h-10 w-10" />
+          <h1 className="ml-2 text-xl font-bold">Crescendo</h1>
+        </Link>
+      </header>
 
-        <div className="flex flex-1 flex-col">
-          <div className="flex flex-col gap-y-4">
-            <div className="flex flex-col">
-              <Label className="mb-2">Seed Artists</Label>
-              <ArtistsCombobox
-                selectedArtists={seedArtists}
-                updateSelectedArtists={setSeedArtists}
-                loading={loadingArtists}
-              />
-            </div>
+      {/* Scrollable Content */}
+      <div className="flex-grow overflow-auto px-6 py-3">
+        <div className="flex flex-col gap-y-6">
+          <div className="flex flex-col">
+            <Label className="mb-2">Seed Artists</Label>
+            <ArtistsCombobox
+              selectedArtists={seedArtists}
+              updateSelectedArtists={setSeedArtists}
+              loading={loadingArtists}
+            />
+          </div>
 
-            <div className="flex flex-col">
-              <Label className="mb-2">Seed Tracks</Label>
-              <TracksCombobox
-                selectedTracks={seedTracks}
-                updateSelectedTracks={setSeedTracks}
-                loading={loadingTracks}
-              />
-            </div>
+          <div className="flex flex-col">
+            <Label className="mb-2">Seed Tracks</Label>
+            <TracksCombobox selectedTracks={seedTracks} updateSelectedTracks={setSeedTracks} loading={loadingTracks} />
+          </div>
 
-            <div className="flex flex-col">
-              <Label className="mb-2">Seed Genres</Label>
-              <GenresCombobox selectedGenres={seedGenres} updateSelectedGenres={setSeedGenres} />
-            </div>
+          <div className="flex flex-col">
+            <Label className="mb-2">Seed Genres</Label>
+            <GenresCombobox selectedGenres={seedGenres} updateSelectedGenres={setSeedGenres} />
+          </div>
 
-            <div className="flex flex-col">
-              <div className="mb-2 flex items-center">
-                <Label htmlFor="acousticness">Acousticness</Label>
-
-                <span className="ml-auto text-sm text-gray-500 dark:text-gray-400">
-                  {acousticness[0]} &ndash; {acousticness[2]}
-                </span>
-              </div>
-              <Slider
-                id="acousticness"
-                defaultValue={[0, 0.5, 1]}
-                max={1}
-                step={0.01}
-                value={acousticness}
-                onValueChange={setAcousticness}
-              />
+          <div className="flex flex-col">
+            <Label className="mb-2">Track Attributes</Label>
+            <div className="grid grid-cols-2 gap-1.5">
+              {TRACK_ATTRIBUTES.map((attribute) => (
+                <Toggle key={attribute.value} variant="outline" size="sm">
+                  {attribute.label}
+                </Toggle>
+              ))}
             </div>
           </div>
 
-          <Button asChild className="my-4">
+          <div className="flex flex-col">
+            <div className="mb-2 flex items-center">
+              <Label htmlFor="acousticness">Acousticness</Label>
+
+              <span className="ml-auto text-sm text-gray-500 dark:text-gray-400">
+                {acousticness[0]} &ndash; {acousticness[2]}
+              </span>
+            </div>
+            <Slider
+              id="acousticness"
+              defaultValue={[0, 0.5, 1]}
+              max={1}
+              step={0.01}
+              value={acousticness}
+              onValueChange={setAcousticness}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* The Footer */}
+      <footer className="border-t border-gray-200 dark:border-gray-800">
+        <div className="px-6 py-3">
+          <Button asChild className="w-full">
             <Link href={`/reccomendations?${urlParams}`} onClick={(event) => validateParams(event)}>
               Get Reccomendations
             </Link>
           </Button>
-
-          <div className="-mx-6 mt-auto border-t border-gray-200 dark:border-gray-800">
-            <div className="flex justify-between px-6 py-3">
-              {session ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="text-left">
-                    <div className="flex items-center gap-x-2">
-                      <Image
-                        className="h-10 w-10 rounded-full bg-gray-50"
-                        height={40}
-                        width={40}
-                        src={session.user.image!}
-                        alt="User's profile picture on Spotify"
-                      />
-                      <div className="flex flex-col">
-                        <div className="text-sm font-medium">{session.user.name}</div>
-                        <div className="text-xs text-gray-500">{session.user.email}</div>
-                      </div>
-                    </div>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => signOut()}>Log Out</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : (
-                <SignInButton size="sm" />
-              )}
-              <ThemeToggle />
-            </div>
-          </div>
         </div>
-      </div>
-    </div>
+
+        <div className="flex justify-between border-t border-gray-200 px-6 py-3 dark:border-gray-800">
+          {session ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger className="text-left">
+                <div className="flex items-center gap-x-2">
+                  <Image
+                    className="h-10 w-10 rounded-full bg-gray-50"
+                    height={40}
+                    width={40}
+                    src={session.user.image!}
+                    alt="User's profile picture on Spotify"
+                  />
+                  <div className="flex flex-col">
+                    <div className="text-sm font-medium">{session.user.name}</div>
+                    <div className="text-xs text-gray-500">{session.user.email}</div>
+                  </div>
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => signOut()}>Log Out</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <SignInButton size="sm" variant="secondary" />
+          )}
+          <ThemeToggle />
+        </div>
+      </footer>
+    </aside>
   );
 }
