@@ -98,9 +98,9 @@ export function Sidebar() {
   }
 
   function validateParams(event: React.MouseEvent<HTMLAnchorElement>) {
-    event.preventDefault();
     const totalSeeds = seedArtists.length + seedTracks.length + seedGenres.length;
     if (totalSeeds < 1) {
+      event.preventDefault();
       toast({
         variant: 'destructive',
         title: 'Error! Not enough seeds!',
@@ -110,6 +110,7 @@ export function Sidebar() {
     }
 
     if (totalSeeds > 5) {
+      event.preventDefault();
       toast({
         variant: 'destructive',
         title: 'Error! Too many seeds!',
