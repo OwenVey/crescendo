@@ -64,12 +64,12 @@ export function ArtistsCombobox({ selectedArtists, updateSelectedArtists, loadin
           className={cn(loading ? '' : 'h-auto justify-between')}
         >
           {selectedArtists.length > 0 ? (
-            <div className="flex flex-wrap gap-1">
+            <div className="flex flex-wrap gap-1 overflow-hidden">
               {selectedArtists.map((artist) => (
-                <Badge key={artist.id} className="whitespace-nowrap">
-                  {artist.name}
+                <Badge key={artist.id} className="overflow-hidden">
+                  <span className="truncate">{artist.name}</span>
                   <div
-                    className="-mr-1.5 ml-0.5 p-[2px] rounded-full hover:bg-gray-700 dark:hover:bg-gray-300"
+                    className="-mr-1.5 ml-0.5 rounded-full p-[2px] hover:bg-gray-700 dark:hover:bg-gray-300"
                     onClick={(e) => {
                       e.preventDefault();
                       removeSelectedArtist(artist);
@@ -82,7 +82,7 @@ export function ArtistsCombobox({ selectedArtists, updateSelectedArtists, loadin
               ))}
             </div>
           ) : (
-            <span className="font-normal py-px text-gray-500 dark:text-gray-400">Search artists...</span>
+            <span className="py-px font-normal text-gray-500 dark:text-gray-400">Search artists...</span>
           )}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -137,7 +137,7 @@ export function ArtistsCombobox({ selectedArtists, updateSelectedArtists, loadin
                     </span>
                   )}
 
-                  <span className="truncate w-48">{artist.name}</span>
+                  <span className="w-48 truncate">{artist.name}</span>
                 </div>
               </CommandItem>
             ))}

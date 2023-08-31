@@ -64,12 +64,12 @@ export function TracksCombobox({ selectedTracks, updateSelectedTracks, loading =
           className={cn(loading ? '' : 'h-auto justify-between')}
         >
           {selectedTracks.length > 0 ? (
-            <div className="flex flex-wrap gap-1">
+            <div className="flex flex-wrap gap-1 overflow-hidden">
               {selectedTracks.map((track) => (
-                <Badge key={track.id} className="whitespace-nowrap">
-                  {track.name}
+                <Badge key={track.id} className="overflow-hidden">
+                  <span className="truncate">{track.name}</span>
                   <div
-                    className="-mr-1.5 ml-0.5 p-[2px] rounded-full hover:bg-gray-700 dark:hover:bg-gray-300"
+                    className="-mr-1.5 ml-0.5 rounded-full p-[2px] hover:bg-gray-700 dark:hover:bg-gray-300"
                     onClick={(e) => {
                       e.preventDefault();
                       removeSelectedTrack(track);
@@ -82,7 +82,7 @@ export function TracksCombobox({ selectedTracks, updateSelectedTracks, loading =
               ))}
             </div>
           ) : (
-            <span className="font-normal py-px text-gray-500 dark:text-gray-400">Search tracks...</span>
+            <span className="py-px font-normal text-gray-500 dark:text-gray-400">Search tracks...</span>
           )}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -125,7 +125,7 @@ export function TracksCombobox({ selectedTracks, updateSelectedTracks, loading =
                   />
 
                   <div>
-                    <div className="truncate w-48">{track.name}</div>
+                    <div className="w-48 truncate">{track.name}</div>
                     <div className="w-48 truncate text-gray-500 dark:text-gray-400">{track.artists[0].name}</div>
                   </div>
                 </div>
