@@ -8,6 +8,8 @@ export async function GET(request: Request) {
 
   const sdk = SpotifyApi.withClientCredentials(env.SPOTIFY_CLIENT_ID, env.SPOTIFY_CLIENT_SECRET);
   const searchResults = await sdk.search(`track:${query}`, ['track'], 'US', 50);
+  const tracks = searchResults.tracks.items;
+  tracks.sort((a, b) => b.popularity - a.popularity);
 
-  return NextResponse.json(searchResults.tracks.items);
+  return NextResponse.json(tracks);
 }
