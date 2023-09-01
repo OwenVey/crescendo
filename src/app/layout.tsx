@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html suppressHydrationWarning lang="en" className={cn(inter.variable, 'h-full')}>
+    <html suppressHydrationWarning lang="en" className={cn(inter.variable, 'h-full antialiased')}>
       <body className="h-full bg-gray-100 dark:bg-gray-900">
         <Providers>
           <Sidebar />
