@@ -302,10 +302,10 @@ export function Sidebar() {
           </div>
 
           <div className="flex flex-col">
-            <div className="mb-1 flex items-center justify-between">
-              <Label>Track Attributes</Label>
+            <div className="mb-1 flex h-7 items-end justify-between">
+              <Label className="mb-1">Track Attributes</Label>
               {enabledAttributes.length > 0 && (
-                <Button onClick={() => setEnabledAttributes([])} className="h-7" variant="outline" size="sm">
+                <Button onClick={() => setEnabledAttributes([])} className="h-full text-xs" variant="outline" size="sm">
                   Clear
                 </Button>
               )}
