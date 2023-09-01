@@ -168,6 +168,7 @@ const TRACK_ATTRIBUTES: Array<TrackAttribute> = [
     max: 7,
     step: 1,
     defaultValue: [3, 5, 7],
+    formatter: (value) => `${value[1]}\u2044${'7'}`,
   },
   {
     id: 'valence',
