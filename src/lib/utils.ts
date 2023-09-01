@@ -24,7 +24,6 @@ export function arrayToURLSearchParams(
   array: Array<string | number>,
   params: URLSearchParams = new URLSearchParams(),
 ): URLSearchParams {
-  // const params = new URLSearchParams();
   array.forEach((item) => params.append(paramName, item.toString()));
   return params;
 }
