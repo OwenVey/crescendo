@@ -26,7 +26,7 @@ import { InfoIcon, RotateCcw } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const formatMilliseconds = (milliseconds: number): string => {
@@ -176,6 +176,7 @@ interface TrackAttributeWithValue extends TrackAttribute {
 
 export function Sidebar() {
   const { data: session } = useSession();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
 
@@ -254,9 +255,14 @@ export function Sidebar() {
       setSeedArtists([]);
       return;
     }
-    setLoadingArtists(true);
-    const idsParams = arrayToURLSearchParams('ids', ids).toString();
+
+    const currentIds = seedArtists.map(({ id }) => id);
+    const missingIds = ids.filter((id) => !currentIds.includes(id));
+    if (missingIds.length === 0) return;
+
+    const idsParams = arrayToURLSearchParams('ids', missingIds).toString();
     try {
+      setLoadingArtists(true);
       const artists: Array<Artist> = await (await fetch(`/api/artists?${idsParams}`)).json();
       setSeedArtists(artists);
     } catch (error) {
@@ -271,9 +277,14 @@ export function Sidebar() {
       setSeedTracks([]);
       return;
     }
-    setLoadingTracks(true);
-    const idsParams = arrayToURLSearchParams('ids', ids).toString();
+
+    const currentIds = seedTracks.map(({ id }) => id);
+    const missingIds = ids.filter((id) => !currentIds.includes(id));
+    if (missingIds.length === 0) return;
+
+    const idsParams = arrayToURLSearchParams('ids', missingIds).toString();
     try {
+      setLoadingTracks(true);
       const tracks: Array<Track> = await (await fetch(`/api/tracks?${idsParams}`)).json();
       setSeedTracks(tracks);
     } catch (error) {
@@ -327,6 +338,7 @@ export function Sidebar() {
     setSeedGenres([]);
     setEnabledAttributes([]);
     setUrlParams('');
+    router.push('/');
   }
 
   return (
