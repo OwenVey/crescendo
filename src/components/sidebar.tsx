@@ -285,11 +285,14 @@ export function Sidebar() {
 
       setEnabledAttributes((previous) => {
         // check if attributew is in URL
-        if (min && target && max) {
+        if (min || target || max) {
           // if attribute is in URL and already in state, do nothing
           if (isAttributeEnabled(attribute)) return previous;
           // add attribute from URL to state
-          return [...previous, { ...attribute, value: [+min, +target, +max] }];
+          return [
+            ...previous,
+            { ...attribute, value: [min, target, max].filter((x) => !!x).map(Number) as SliderValue },
+          ];
         } else if (isAttributeEnabled(attribute)) {
           // attribute is no longer in URL but is in state, we must remove it
           return previous.filter(({ id }) => id !== attribute.id);
