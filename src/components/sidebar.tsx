@@ -450,7 +450,13 @@ export function Sidebar() {
           </div>
 
           <div className="flex flex-col">
-            <Label className="mb-2">Track Attributes</Label>
+            <div className="mb-1 flex items-center justify-between">
+              <Label>Track Attributes</Label>
+              <Button onClick={() => setEnabledAttributes([])} className="h-7" variant="outline" size="sm">
+                Clear
+              </Button>
+            </div>
+
             <div className="grid grid-cols-2 gap-1.5">
               {TRACK_ATTRIBUTES.map((attribute) => (
                 <Toggle
