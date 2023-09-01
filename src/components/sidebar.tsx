@@ -20,7 +20,7 @@ import {
   TooltipTrigger,
   useToast,
 } from '@/components/ui';
-import { arrayToURLSearchParams, objectToURLSearchParams } from '@/lib/utils';
+import { arrayToURLSearchParams, millisecondsToMmSs, objectToURLSearchParams } from '@/lib/utils';
 import type { Artist, Track } from '@spotify/web-api-ts-sdk';
 import { InfoIcon, RotateCcw } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
@@ -29,13 +29,13 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-const formatMilliseconds = (milliseconds: number): string => {
-  const totalSeconds = Math.floor(milliseconds / 1000);
-  const mins = Math.floor(totalSeconds / 60);
-  const secs = totalSeconds % 60;
-  const paddedSecs = (secs < 10 ? '0' : '') + secs;
-  return `${mins}:${paddedSecs}`;
+const formatDuration = (value: SliderValue): string => {
+  const min = millisecondsToMmSs(value[0]);
+  const max = millisecondsToMmSs(value[1]!);
+  return `${min}–${max}`;
 };
+
+type SliderValue = [number] | [number, number] | [number, number, number];
 
 const TRACK_ATTRIBUTES: Array<TrackAttribute> = [
   {
@@ -43,12 +43,20 @@ const TRACK_ATTRIBUTES: Array<TrackAttribute> = [
     label: 'Acousticness',
     description:
       'A confidence measure from 0.0 to 1.0 of whether the track is acoustic. 1.0 represents high confidence the track is acoustic.',
+    min: 0,
+    max: 1,
+    defaultValue: [0, 0.5, 1],
+    step: 0.01,
   },
   {
     id: 'danceability',
     label: 'Danceability',
     description:
       'Danceability describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity. A value of 0.0 is least danceable and 1.0 is most danceable.',
+    min: 0,
+    max: 1,
+    defaultValue: [0, 0.5, 1],
+    step: 0.01,
   },
   {
     id: 'duration_ms',
@@ -57,26 +65,35 @@ const TRACK_ATTRIBUTES: Array<TrackAttribute> = [
     min: 0,
     max: 600_000,
     step: 1000,
-    defaultValue: [0, 300_000, 600_000],
-    formatter: formatMilliseconds,
+    defaultValue: [0, 600_000],
+    formatter: formatDuration,
   },
   {
     id: 'energy',
     label: 'Energy',
     description:
       'Energy is a measure from 0.0 to 1.0 and represents a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy. For example, death metal has high energy, while a Bach prelude scores low on the scale. Perceptual features contributing to this attribute include dynamic range, perceived loudness, timbre, onset rate, and general entropy.',
+    min: 0,
+    max: 1,
+    defaultValue: [0, 0.5, 1],
+    step: 0.01,
   },
   {
     id: 'instrumentalness',
     label: 'Instrumentalness',
     description:
       'Predicts whether a track contains no vocals. "Ooh" and "aah" sounds are treated as instrumental in this context. Rap or spoken word tracks are clearly "vocal". The closer the instrumentalness value is to 1.0, the greater likelihood the track contains no vocal content. Values above 0.5 are intended to represent instrumental tracks, but confidence is higher as the value approaches 1.0.',
+    min: 0,
+    max: 1,
+    defaultValue: [0, 0.5, 1],
+    step: 0.01,
   },
   {
     id: 'key',
     label: 'Key',
     description:
       'The key the track is in. Integers map to pitches using standard Pitch Class notation. E.g. 0 = C, 1 = C♯/D♭, 2 = D, and so on. If no key was detected, the value is -1.',
+    min: 0,
     max: 11,
     step: 1,
     defaultValue: [0, 5, 11],
@@ -86,6 +103,10 @@ const TRACK_ATTRIBUTES: Array<TrackAttribute> = [
     label: 'Liveness',
     description:
       'Detects the presence of an audience in the recording. Higher liveness values represent an increased probability that the track was performed live. A value above 0.8 provides strong likelihood that the track is live.',
+    min: 0,
+    max: 1,
+    defaultValue: [0, 0.5, 1],
+    step: 0.01,
   },
   {
     id: 'loudness',
@@ -103,8 +124,10 @@ const TRACK_ATTRIBUTES: Array<TrackAttribute> = [
     label: 'Mode',
     description:
       'Mode indicates the modality (major or minor) of a track, the type of scale from which its melodic content is derived. Major is represented by 1 and minor is 0.',
+    min: 0,
+    max: 1,
+    defaultValue: [0],
     step: 1,
-    defaultValue: [0, 0, 1],
   },
   {
     id: 'popularity',
@@ -112,20 +135,28 @@ const TRACK_ATTRIBUTES: Array<TrackAttribute> = [
     description: `The popularity of the artist. The value will be between 0 and 100, with 100 being the most popular. The artist's popularity is calculated from the popularity of all the artist's tracks.`,
     min: 0,
     max: 100,
-    step: 1,
     defaultValue: [0, 50, 100],
+    step: 1,
   },
   {
     id: 'speechiness',
     label: 'Speechiness',
     description:
       'Speechiness detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value. Values above 0.66 describe tracks that are probably made entirely of spoken words. Values between 0.33 and 0.66 describe tracks that may contain both music and speech, either in sections or layered, including such cases as rap music. Values below 0.33 most likely represent music and other non-speech-like tracks.',
+    min: 0,
+    max: 1,
+    defaultValue: [0, 0.5, 1],
+    step: 0.01,
   },
   {
     id: 'tempo',
     label: 'Tempo',
     description:
       'The overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration.',
+    min: 0,
+    max: 1,
+    defaultValue: [0, 0.5, 1],
+    step: 0.01,
   },
   {
     id: 'time_signature',
@@ -142,6 +173,10 @@ const TRACK_ATTRIBUTES: Array<TrackAttribute> = [
     label: 'Valence',
     description:
       'A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry).',
+    min: 0,
+    max: 1,
+    defaultValue: [0, 0.5, 1],
+    step: 0.01,
   },
 ];
 type TrackAttribute = {
@@ -162,16 +197,16 @@ type TrackAttribute = {
     | 'valence';
   label: string;
   description: string;
-  min?: number;
-  max?: number;
-  defaultValue?: [number, number, number];
-  step?: number;
+  min: number;
+  max: number;
+  defaultValue: SliderValue;
+  step: number;
   unit?: string;
-  formatter?: (value: number) => string;
+  formatter?: (value: SliderValue) => string;
 };
 
 interface TrackAttributeWithValue extends TrackAttribute {
-  value: [number, number, number];
+  value: SliderValue;
 }
 
 export function Sidebar() {
@@ -189,15 +224,35 @@ export function Sidebar() {
   const [urlParams, setUrlParams] = useState('');
 
   useEffect(() => {
-    const trackAttributes = enabledAttributes.reduce(
-      (acc, current) => ({
-        ...acc,
-        [`min_${current.id}`]: current.value[0],
-        [`target_${current.id}`]: current.value[1],
-        [`max_${current.id}`]: current.value[2],
-      }),
-      {},
-    );
+    const trackAttributes = enabledAttributes.reduce((attributeParams, attribute) => {
+      let min: number | undefined = undefined;
+      let target: number | undefined = undefined;
+      let max: number | undefined = undefined;
+      switch (attribute.defaultValue.length) {
+        case 1: {
+          target = attribute.value[0];
+          break;
+        }
+        case 2: {
+          min = attribute.value[0];
+          max = attribute.value[1];
+          break;
+        }
+        case 3: {
+          min = attribute.value[0];
+          target = attribute.value[1];
+          max = attribute.value[2];
+          break;
+        }
+      }
+
+      return {
+        ...attributeParams,
+        ...(min !== undefined && { [`min_${attribute.id}`]: min }),
+        ...(target !== undefined && { [`target_${attribute.id}`]: target }),
+        ...(max !== undefined && { [`max_${attribute.id}`]: max }),
+      };
+    }, {});
 
     const params = objectToURLSearchParams({
       seed_artists: seedArtists.map(({ id }) => id),
@@ -319,17 +374,33 @@ export function Sidebar() {
 
   function toggleAttribute(trackAttribute: TrackAttribute, pressed: boolean) {
     if (pressed) {
-      setEnabledAttributes([
-        ...enabledAttributes,
-        { ...trackAttribute, value: trackAttribute.defaultValue ?? [0, 0.5, 1] },
-      ]);
+      setEnabledAttributes([...enabledAttributes, { ...trackAttribute, value: trackAttribute.defaultValue }]);
     } else {
       setEnabledAttributes(enabledAttributes.filter(({ id }) => id !== trackAttribute.id));
     }
   }
 
-  function setAttributeValue(id: string, value: [number, number, number]) {
+  function setAttributeValue(id: string, value: SliderValue) {
     setEnabledAttributes((prevState) => prevState.map((obj) => (obj.id === id ? { ...obj, value } : obj)));
+  }
+
+  function getAttributeValueLabel(attribute: TrackAttributeWithValue): string {
+    if (attribute.formatter) {
+      return attribute.formatter(attribute.value);
+    }
+
+    const unit = attribute.unit ? attribute.unit : '';
+
+    const [first, second] = attribute.value;
+
+    switch (attribute.value.length) {
+      case 1:
+        return `${first} ${unit}`;
+      case 2:
+        return `${first}–${second} ${unit}`;
+      case 3:
+        return `${second} ${unit}`;
+    }
   }
 
   function reset() {
@@ -405,18 +476,17 @@ export function Sidebar() {
                 </Tooltip>
 
                 <span className="ml-auto text-[13px] text-gray-500 dark:text-gray-400">
-                  {/* {attribute.value[0]} &ndash; {attribute.value[2]} */}
-                  {attribute.formatter ? attribute.formatter(attribute.value[1]) : attribute.value[1]} {attribute.unit}
+                  {getAttributeValueLabel(attribute)}
                 </span>
               </div>
               <Slider
                 id={attribute.id}
-                min={attribute.min ?? 0}
-                max={attribute.max ?? 1}
-                defaultValue={attribute.defaultValue ?? [0, 0.5, 1]}
-                step={attribute.step ?? 0.01}
+                min={attribute.min}
+                max={attribute.max}
+                defaultValue={attribute.defaultValue}
+                step={attribute.step}
                 value={attribute.value}
-                onValueChange={(value) => setAttributeValue(attribute.id, value as [number, number, number])}
+                onValueChange={(value) => setAttributeValue(attribute.id, value as SliderValue)}
               />
             </div>
           ))}

@@ -27,3 +27,11 @@ export function arrayToURLSearchParams(
   array.forEach((item) => params.append(paramName, item.toString()));
   return params;
 }
+
+export function millisecondsToMmSs(milliseconds: number) {
+  const totalSeconds = Math.floor(milliseconds / 1000);
+  const mins = Math.floor(totalSeconds / 60);
+  const secs = totalSeconds % 60;
+  const paddedSecs = (secs < 10 ? '0' : '') + secs;
+  return `${mins}:${paddedSecs}`;
+}
