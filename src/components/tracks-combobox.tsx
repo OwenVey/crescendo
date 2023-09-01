@@ -21,12 +21,13 @@ import Image from 'next/image';
 import { useDebounce } from 'usehooks-ts';
 
 type TracksComboboxProps = {
-  selectedTracks: Array<Track>;
-  updateSelectedTracks: (tracks: Array<Track>) => void;
+  tracks: Array<Track>;
+  add: (track: Track) => void;
+  remove: (track: Track) => void;
   loading?: boolean;
 };
 
-export function TracksCombobox({ selectedTracks, updateSelectedTracks, loading = false }: TracksComboboxProps) {
+export function TracksCombobox({ tracks, add, remove, loading = false }: TracksComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [searchText, setSearchText] = React.useState('');
   const debouncedSearchText = useDebounce(searchText, 500);
@@ -49,10 +50,6 @@ export function TracksCombobox({ selectedTracks, updateSelectedTracks, loading =
     if (debouncedSearchText) fetchData();
   }, [debouncedSearchText]);
 
-  function removeSelectedTrack(track: Track) {
-    updateSelectedTracks(selectedTracks.filter(({ id }) => id !== track.id));
-  }
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -63,16 +60,16 @@ export function TracksCombobox({ selectedTracks, updateSelectedTracks, loading =
           loading={loading}
           className={cn(loading ? '' : 'h-auto justify-between')}
         >
-          {selectedTracks.length > 0 ? (
+          {tracks.length > 0 ? (
             <div className="flex flex-wrap gap-1 overflow-hidden">
-              {selectedTracks.map((track) => (
+              {tracks.map((track) => (
                 <Badge key={track.id} className="overflow-hidden">
                   <span className="truncate">{track.name}</span>
                   <div
                     className="-mr-1.5 ml-0.5 rounded-full p-[2px] hover:bg-gray-700 dark:hover:bg-gray-300"
                     onClick={(e) => {
                       e.preventDefault();
-                      removeSelectedTrack(track);
+                      remove(track);
                     }}
                   >
                     <X className="h-3 w-3" />
@@ -102,10 +99,10 @@ export function TracksCombobox({ selectedTracks, updateSelectedTracks, loading =
                 key={track.id}
                 value={`${track.name}-${track.id}`}
                 onSelect={() => {
-                  if (selectedTracks.some(({ id }) => id === track.id)) {
-                    removeSelectedTrack(track);
-                  } else if (selectedTracks.length < 5) {
-                    updateSelectedTracks([...selectedTracks, track]);
+                  if (tracks.some(({ id }) => id === track.id)) {
+                    remove(track);
+                  } else if (tracks.length < 5) {
+                    add(track);
                   }
                 }}
               >
@@ -113,7 +110,7 @@ export function TracksCombobox({ selectedTracks, updateSelectedTracks, loading =
                   <Check
                     className={cn(
                       'h-4 w-4 shrink-0',
-                      selectedTracks.some(({ id }) => id === track.id) ? 'opacity-100' : 'opacity-0',
+                      tracks.some(({ id }) => id === track.id) ? 'opacity-100' : 'opacity-0',
                     )}
                   />
                   <Image

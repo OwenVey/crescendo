@@ -20,7 +20,9 @@ import {
   TooltipTrigger,
   useToast,
 } from '@/components/ui';
-import { arrayToURLSearchParams, millisecondsToMmSs, objectToURLSearchParams } from '@/lib/utils';
+import { TRACK_ATTRIBUTES } from '@/lib/constants';
+import { arrayToURLSearchParams, objectToURLSearchParams } from '@/lib/utils';
+import type { SliderValue, TrackAttribute, TrackAttributeWithValue } from '@/types';
 import type { Artist, Track } from '@spotify/web-api-ts-sdk';
 import { InfoIcon, RotateCcw } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
@@ -28,188 +30,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-
-const formatDuration = (value: SliderValue): string => {
-  const min = millisecondsToMmSs(value[0]);
-  const max = millisecondsToMmSs(value[1]!);
-  return `${min}–${max}`;
-};
-
-type SliderValue = [number] | [number, number] | [number, number, number];
-
-const TRACK_ATTRIBUTES: Array<TrackAttribute> = [
-  {
-    id: 'acousticness',
-    label: 'Acousticness',
-    description:
-      'A confidence measure from 0.0 to 1.0 of whether the track is acoustic. 1.0 represents high confidence the track is acoustic.',
-    min: 0,
-    max: 1,
-    defaultValue: [0, 0.5, 1],
-    step: 0.01,
-  },
-  {
-    id: 'danceability',
-    label: 'Danceability',
-    description:
-      'Danceability describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity. A value of 0.0 is least danceable and 1.0 is most danceable.',
-    min: 0,
-    max: 1,
-    defaultValue: [0, 0.5, 1],
-    step: 0.01,
-  },
-  {
-    id: 'duration_ms',
-    label: 'Duration',
-    description: 'The duration of the track in milliseconds.',
-    min: 0,
-    max: 600_000,
-    step: 1000,
-    defaultValue: [0, 600_000],
-    formatter: formatDuration,
-  },
-  {
-    id: 'energy',
-    label: 'Energy',
-    description:
-      'Energy is a measure from 0.0 to 1.0 and represents a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy. For example, death metal has high energy, while a Bach prelude scores low on the scale. Perceptual features contributing to this attribute include dynamic range, perceived loudness, timbre, onset rate, and general entropy.',
-    min: 0,
-    max: 1,
-    defaultValue: [0, 0.5, 1],
-    step: 0.01,
-  },
-  {
-    id: 'instrumentalness',
-    label: 'Instrumentalness',
-    description:
-      'Predicts whether a track contains no vocals. "Ooh" and "aah" sounds are treated as instrumental in this context. Rap or spoken word tracks are clearly "vocal". The closer the instrumentalness value is to 1.0, the greater likelihood the track contains no vocal content. Values above 0.5 are intended to represent instrumental tracks, but confidence is higher as the value approaches 1.0.',
-    min: 0,
-    max: 1,
-    defaultValue: [0, 0.5, 1],
-    step: 0.01,
-  },
-  {
-    id: 'key',
-    label: 'Key',
-    description:
-      'The key the track is in. Integers map to pitches using standard Pitch Class notation. E.g. 0 = C, 1 = C♯/D♭, 2 = D, and so on. If no key was detected, the value is -1.',
-    min: 0,
-    max: 11,
-    step: 1,
-    defaultValue: [0, 5, 11],
-  },
-  {
-    id: 'liveness',
-    label: 'Liveness',
-    description:
-      'Detects the presence of an audience in the recording. Higher liveness values represent an increased probability that the track was performed live. A value above 0.8 provides strong likelihood that the track is live.',
-    min: 0,
-    max: 1,
-    defaultValue: [0, 0.5, 1],
-    step: 0.01,
-  },
-  {
-    id: 'loudness',
-    label: 'Loudness',
-    description:
-      'The overall loudness of a track in decibels (dB). Loudness values are averaged across the entire track and are useful for comparing relative loudness of tracks. Loudness is the quality of a sound that is the primary psychological correlate of physical strength (amplitude). Values typically range between -60 and 0 db.',
-    min: -70,
-    max: 0,
-    step: 1,
-    defaultValue: [-70, -35, 0],
-    unit: 'db',
-  },
-  {
-    id: 'mode',
-    label: 'Mode',
-    description:
-      'Mode indicates the modality (major or minor) of a track, the type of scale from which its melodic content is derived. Major is represented by 1 and minor is 0.',
-    min: 0,
-    max: 1,
-    defaultValue: [0],
-    step: 1,
-    formatter: (value) => ['Minor', 'Major'][value[0]],
-  },
-  {
-    id: 'popularity',
-    label: 'Popularity',
-    description: `The popularity of the artist. The value will be between 0 and 100, with 100 being the most popular. The artist's popularity is calculated from the popularity of all the artist's tracks.`,
-    min: 0,
-    max: 100,
-    defaultValue: [0, 50, 100],
-    step: 1,
-  },
-  {
-    id: 'speechiness',
-    label: 'Speechiness',
-    description:
-      'Speechiness detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value. Values above 0.66 describe tracks that are probably made entirely of spoken words. Values between 0.33 and 0.66 describe tracks that may contain both music and speech, either in sections or layered, including such cases as rap music. Values below 0.33 most likely represent music and other non-speech-like tracks.',
-    min: 0,
-    max: 1,
-    defaultValue: [0, 0.5, 1],
-    step: 0.01,
-  },
-  {
-    id: 'tempo',
-    label: 'Tempo',
-    description:
-      'The overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration.',
-    min: 0,
-    max: 1,
-    defaultValue: [0, 0.5, 1],
-    step: 0.01,
-  },
-  {
-    id: 'time_signature',
-    label: 'Time Signature',
-    description:
-      'An estimated time signature. The time signature (meter) is a notational convention to specify how many beats are in each bar (or measure). The time signature ranges from 3 to 7 indicating time signatures of "3/4", to "7/4".',
-    min: 3,
-    max: 7,
-    step: 1,
-    defaultValue: [3, 5, 7],
-    formatter: (value) => `${value[1]}\u2044${'7'}`,
-  },
-  {
-    id: 'valence',
-    label: 'Valence',
-    description:
-      'A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry).',
-    min: 0,
-    max: 1,
-    defaultValue: [0, 0.5, 1],
-    step: 0.01,
-  },
-];
-type TrackAttribute = {
-  id:
-    | 'acousticness'
-    | 'danceability'
-    | 'duration_ms'
-    | 'energy'
-    | 'instrumentalness'
-    | 'key'
-    | 'liveness'
-    | 'loudness'
-    | 'mode'
-    | 'popularity'
-    | 'speechiness'
-    | 'tempo'
-    | 'time_signature'
-    | 'valence';
-  label: string;
-  description: string;
-  min: number;
-  max: number;
-  defaultValue: SliderValue;
-  step: number;
-  unit?: string;
-  formatter?: (value: SliderValue) => string;
-};
-
-interface TrackAttributeWithValue extends TrackAttribute {
-  value: SliderValue;
-}
+import { SelectedArtist } from './selected-artist';
+import { SelectedTrack } from './selected-track';
 
 export function Sidebar() {
   const { data: session } = useSession();
@@ -408,6 +230,30 @@ export function Sidebar() {
     }
   }
 
+  function addArtist(artist: Artist) {
+    setSeedArtists((prev) => [...prev, artist]);
+  }
+
+  function removeArtist(artist: Artist) {
+    setSeedArtists((prev) => prev.filter(({ id }) => id !== artist.id));
+  }
+
+  function addTrack(track: Track) {
+    setSeedTracks((prev) => [...prev, track]);
+  }
+
+  function removeTrack(track: Track) {
+    setSeedTracks((prev) => prev.filter(({ id }) => id !== track.id));
+  }
+
+  function addGenre(genre: string) {
+    setSeedGenres((prev) => [...prev, genre]);
+  }
+
+  function removeGenre(genre: string) {
+    setSeedGenres((prev) => prev.filter((g) => g !== genre));
+  }
+
   function reset() {
     setSeedArtists([]);
     setSeedTracks([]);
@@ -432,29 +278,37 @@ export function Sidebar() {
         <div className="flex flex-col gap-y-6">
           <div className="flex flex-col">
             <Label className="mb-2">Seed Artists</Label>
-            <ArtistsCombobox
-              selectedArtists={seedArtists}
-              updateSelectedArtists={setSeedArtists}
-              loading={loadingArtists}
-            />
+            <ArtistsCombobox artists={seedArtists} add={addArtist} remove={removeArtist} loading={loadingArtists} />
+            <div className="mt-2 flex flex-col gap-y-1">
+              {seedArtists.map((artist) => (
+                <SelectedArtist key={artist.id} artist={artist} remove={removeArtist} />
+              ))}
+            </div>
           </div>
 
           <div className="flex flex-col">
             <Label className="mb-2">Seed Tracks</Label>
-            <TracksCombobox selectedTracks={seedTracks} updateSelectedTracks={setSeedTracks} loading={loadingTracks} />
+            <TracksCombobox tracks={seedTracks} add={addTrack} remove={removeTrack} loading={loadingTracks} />
+            <div className="mt-2 flex flex-col gap-y-1">
+              {seedTracks.map((track) => (
+                <SelectedTrack key={track.id} track={track} remove={removeTrack} />
+              ))}
+            </div>
           </div>
 
           <div className="flex flex-col">
             <Label className="mb-2">Seed Genres</Label>
-            <GenresCombobox selectedGenres={seedGenres} updateSelectedGenres={setSeedGenres} />
+            <GenresCombobox genres={seedGenres} add={addGenre} remove={removeGenre} />
           </div>
 
           <div className="flex flex-col">
             <div className="mb-1 flex items-center justify-between">
               <Label>Track Attributes</Label>
-              <Button onClick={() => setEnabledAttributes([])} className="h-7" variant="outline" size="sm">
-                Clear
-              </Button>
+              {enabledAttributes.length > 0 && (
+                <Button onClick={() => setEnabledAttributes([])} className="h-7" variant="outline" size="sm">
+                  Clear
+                </Button>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-1.5">

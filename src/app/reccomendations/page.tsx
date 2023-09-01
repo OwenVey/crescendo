@@ -1,14 +1,11 @@
 import { TrackCard } from '@/components/track-card';
 import { Button } from '@/components/ui';
 import { env } from '@/env.mjs';
+import type { PageProps } from '@/types';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import { RotateCcwIcon } from 'lucide-react';
 import Link from 'next/link';
 import { z } from 'zod';
-
-type PageProps = {
-  searchParams: { [key: string]: string | string[] | undefined };
-};
 
 const SearchParamsSchema = z.object({
   seed_artists: z

@@ -1,11 +1,7 @@
 'use client'; // Error components must be Client Components
 
+import type { ErrorProps } from '@/types';
 import { useEffect } from 'react';
-
-type ErrorProps = {
-  error: Error & { digest?: string };
-  reset: () => void;
-};
 
 export default function Error({ error, reset }: ErrorProps) {
   useEffect(() => {

@@ -21,12 +21,13 @@ import Image from 'next/image';
 import { useDebounce } from 'usehooks-ts';
 
 type ArtistsComboboxProps = {
-  selectedArtists: Array<Artist>;
-  updateSelectedArtists: (artists: Array<Artist>) => void;
+  artists: Array<Artist>;
+  add: (artist: Artist) => void;
+  remove: (artist: Artist) => void;
   loading?: boolean;
 };
 
-export function ArtistsCombobox({ selectedArtists, updateSelectedArtists, loading = false }: ArtistsComboboxProps) {
+export function ArtistsCombobox({ artists, add, remove, loading = false }: ArtistsComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [searchText, setSearchText] = React.useState('');
   const debouncedSearchText = useDebounce(searchText, 500);
@@ -49,10 +50,6 @@ export function ArtistsCombobox({ selectedArtists, updateSelectedArtists, loadin
     if (debouncedSearchText) fetchData();
   }, [debouncedSearchText]);
 
-  function removeSelectedArtist(artist: Artist) {
-    updateSelectedArtists(selectedArtists.filter(({ id }) => id !== artist.id));
-  }
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -63,16 +60,16 @@ export function ArtistsCombobox({ selectedArtists, updateSelectedArtists, loadin
           loading={loading}
           className={cn(loading ? '' : 'h-auto justify-between')}
         >
-          {selectedArtists.length > 0 ? (
+          {artists.length > 0 ? (
             <div className="flex flex-wrap gap-1 overflow-hidden">
-              {selectedArtists.map((artist) => (
+              {artists.map((artist) => (
                 <Badge key={artist.id} className="overflow-hidden">
                   <span className="truncate">{artist.name}</span>
                   <div
                     className="-mr-1.5 ml-0.5 rounded-full p-[2px] hover:bg-gray-700 dark:hover:bg-gray-300"
                     onClick={(e) => {
                       e.preventDefault();
-                      removeSelectedArtist(artist);
+                      remove(artist);
                     }}
                   >
                     <X className="h-3 w-3" />
@@ -102,10 +99,10 @@ export function ArtistsCombobox({ selectedArtists, updateSelectedArtists, loadin
                 key={artist.id}
                 value={`${artist.name}-${artist.id}`}
                 onSelect={() => {
-                  if (selectedArtists.some(({ id }) => id === artist.id)) {
-                    removeSelectedArtist(artist);
-                  } else if (selectedArtists.length < 5) {
-                    updateSelectedArtists([...selectedArtists, artist]);
+                  if (artists.some(({ id }) => id === artist.id)) {
+                    remove(artist);
+                  } else if (artists.length < 5) {
+                    add(artist);
                   }
                 }}
               >
@@ -113,7 +110,7 @@ export function ArtistsCombobox({ selectedArtists, updateSelectedArtists, loadin
                   <Check
                     className={cn(
                       'h-4 w-4 shrink-0',
-                      selectedArtists.some(({ id }) => id === artist.id) ? 'opacity-100' : 'opacity-0',
+                      artists.some(({ id }) => id === artist.id) ? 'opacity-100' : 'opacity-0',
                     )}
                   />
 
