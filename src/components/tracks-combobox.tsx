@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, ChevronsUpDown, X } from 'lucide-react';
+import { Check, ChevronsUpDown, MusicIcon, X } from 'lucide-react';
 import * as React from 'react';
 
 import {
@@ -79,7 +79,10 @@ export function TracksCombobox({ tracks, add, remove, loading = false }: TracksC
               ))}
             </div>
           ) : (
-            <span className="py-px font-normal text-gray-500 dark:text-gray-400">Search tracks...</span>
+            <div className="flex items-center py-px font-normal text-gray-500 dark:text-gray-400">
+              <MusicIcon className="mr-2 h-4 w-4" />
+              Search tracks...
+            </div>
           )}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
