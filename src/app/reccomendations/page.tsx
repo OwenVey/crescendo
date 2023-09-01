@@ -87,7 +87,7 @@ export default async function ReccomendationsPage({ searchParams }: PageProps) {
 
   // await new Promise((resolve) => setTimeout(resolve, 2000));
   const recommendations = await sdk.recommendations.get({
-    limit: 50,
+    limit: 100,
     market: 'US',
     ...parsedParams,
   });
