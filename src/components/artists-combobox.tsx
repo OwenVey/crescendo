@@ -81,7 +81,7 @@ export function ArtistsCombobox({ artists, add, remove, loading = false }: Artis
           ) : (
             <div className="flex items-center py-px font-normal text-gray-500 dark:text-gray-400">
               <UserIcon className="mr-2 h-4 w-4" />
-              Search tracks...
+              Search artists...
             </div>
           )}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
