@@ -13,8 +13,8 @@ type TrackCardProps = {
 export function TrackCard({ track, index }: TrackCardProps) {
   const { playTrack, currentTrack } = useSpotifyPlayer();
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-      <button onClick={() => playTrack(track.uri)} className="group">
+    <motion.div className="group" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+      <button onClick={() => playTrack(track.uri)}>
         {track.album.images[0] ? (
           <div className="relative overflow-hidden rounded-2xl">
             <AnimatePresence>

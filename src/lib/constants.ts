@@ -125,9 +125,9 @@ export const TRACK_ATTRIBUTES: Array<TrackAttribute> = [
     description:
       'The overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration.',
     min: 0,
-    max: 1,
-    defaultValue: [0, 0.5, 1],
-    step: 0.01,
+    max: 200,
+    defaultValue: [0, 100, 200],
+    step: 1,
   },
   {
     id: 'time_signature',
