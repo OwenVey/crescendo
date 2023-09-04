@@ -276,6 +276,16 @@ export function Sidebar() {
       {/* Scrollable Content */}
       <ScrollArea type="auto" className="flex-grow px-6 py-3">
         <div className="flex flex-col gap-y-6">
+          {/* <div className="flex flex-col">
+            <Label className="mb-2">Seed Artists NEW 1</Label>
+            <ArtistsSearch artists={seedArtists} add={addArtist} remove={removeArtist} loading={loadingArtists} />
+            <div className="mt-2 flex flex-col gap-y-1">
+              {seedArtists.map((artist) => (
+                <SelectedArtist key={artist.id} artist={artist} remove={removeArtist} />
+              ))}
+            </div>
+          </div> */}
+
           <div className="flex flex-col">
             <Label className="mb-2">Seed Artists</Label>
             <ArtistsCombobox artists={seedArtists} add={addArtist} remove={removeArtist} loading={loadingArtists} />
