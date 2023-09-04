@@ -3,6 +3,7 @@ import { Sidebar } from '@/components/sidebar';
 import { Toaster } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import { inter } from './fonts/inter';
 import './globals.css';
 
@@ -19,9 +20,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="h-full pl-80">
             <div className="h-full overflow-auto p-8">{children}</div>
           </main>
+
           <Toaster />
         </Providers>
       </body>
+      <Script
+        id="spotify-player"
+        dangerouslySetInnerHTML={{
+          __html: `window.onSpotifyWebPlaybackSDKReady = () => {
+            console.log('onSpotifyWebPlaybackSDKReady()')
+          }`,
+        }}
+      />
+      <Script src="https://sdk.scdn.co/spotify-player.js" />
     </html>
   );
 }

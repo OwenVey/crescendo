@@ -1,3 +1,6 @@
+export const dynamic = 'force-dynamic';
+
+import SpotifyPlayer from '@/components/spotify-player';
 import { TrackCard } from '@/components/track-card';
 import { Button } from '@/components/ui';
 import { env } from '@/env.mjs';
@@ -116,6 +119,8 @@ export default async function ReccomendationsPage({ searchParams }: PageProps) {
         <div className="font-bold underline">searchParams</div>
         <pre className="text-xs">{JSON.stringify(searchParams, null, 2)}</pre>
       </div>
+
+      <SpotifyPlayer />
 
       <div className="flex flex-wrap gap-8">
         {recommendations.tracks.map((track, index) => (
