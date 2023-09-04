@@ -1,100 +1,138 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
-import { SignInButton } from './sign-in-button';
+import { Button, Slider } from '@/components/ui';
+import { useSpotifyPlayer } from '@/lib/hooks/useSpotifyPlayer';
+import { millisecondsToMmSs } from '@/lib/utils';
+import { AnimatePresence, motion } from 'framer-motion';
+import {
+  HeartIcon,
+  PauseIcon,
+  PlayIcon,
+  SkipBackIcon,
+  SkipForwardIcon,
+  Volume1Icon,
+  Volume2Icon,
+  VolumeIcon,
+  VolumeXIcon,
+} from 'lucide-react';
+import Image from 'next/image';
 
 export default function SpotifyPlayer() {
-  const { data: session, status } = useSession();
-  const [player, setPlayer] = useState<Spotify.Player | undefined>(undefined);
+  const {
+    player,
+    currentTrack,
+    playbackState,
+    togglePlay,
+    volume,
+    setVolume,
+    seek,
+    position,
+    setPosition,
+    likeCurrentTrack,
+  } = useSpotifyPlayer();
 
-  useEffect(() => {
-    // const script = document.createElement('script');
-    // script.src = 'https://sdk.scdn.co/spotify-player.js';
-    // script.async = true;
-
-    // document.body.appendChild(script);
-    console.log('useeffect');
-
-    if (status === 'authenticated') {
-      console.log('authenticated');
-
-      const newPlayer = new window.Spotify.Player({
-        name: 'Crescendo',
-        getOAuthToken: (cb) => {
-          console.log(session.user.access_token);
-
-          cb(session.user.access_token);
-        },
-        volume: 0.2,
-      });
-
-      // Ready
-      newPlayer.addListener('ready', async ({ device_id }) => {
-        console.log('Ready with Device ID', device_id);
-      });
-
-      // Not Ready
-      newPlayer.addListener('not_ready', ({ device_id }) => {
-        console.log('Device ID has gone offline', device_id);
-      });
-
-      newPlayer.addListener('player_state_changed', ({ position, duration, track_window: { current_track } }) => {
-        console.log('Currently Playing', current_track);
-        console.log('Position in Song', position);
-        console.log('Duration of Song', duration);
-      });
-
-      newPlayer.addListener('autoplay_failed', () => {
-        console.log('Autoplay is not allowed by the browser autoplay rules');
-      });
-
-      // Errors
-      newPlayer.on('initialization_error', ({ message }) => {
-        console.error('Failed to initialize', message);
-      });
-
-      newPlayer.on('authentication_error', ({ message }) => {
-        console.error('Failed to authenticate', message);
-      });
-
-      newPlayer.on('account_error', ({ message }) => {
-        console.error('Failed to validate Spotify account', message);
-      });
-
-      newPlayer.on('playback_error', ({ message }) => {
-        console.error('Failed to perform playback', message);
-      });
-
-      newPlayer.connect().then((success) => {
-        if (success) {
-          console.log('The Web Playback SDK successfully connected to Spotify!');
-        } else {
-          console.log('Failed to connect');
-        }
-      });
-
-      setPlayer(newPlayer);
-
-      return () => {
-        player?.disconnect();
-      };
+  function getVolumeIcon() {
+    if (volume === 0) {
+      return <VolumeXIcon className="h-5 w-5" />;
+    } else if (volume <= 0.33) {
+      return <VolumeIcon className="h-5 w-5" />;
+    } else if (volume <= 0.66) {
+      return <Volume1Icon className="h-5 w-5" />;
+    } else {
+      return <Volume2Icon className="h-5 w-5" />;
     }
-  }, [status]);
+  }
 
-  if (status === 'unauthenticated') return <SignInButton />;
+  function toggleMute() {
+    if (volume > 0) {
+      setVolume(0);
+    } else {
+      setVolume(0.5);
+    }
+  }
 
   return (
-    <div>
-      <div>{status}</div>
-      {/* <pre className="text-xs">{JSON.stringify(session, null, 2)}</pre> */}
-      <button
-        onClick={() => {
-          player?.togglePlay();
-        }}
-      >
-        Play
-      </button>
-    </div>
+    <AnimatePresence>
+      {player && currentTrack && (
+        <motion.div
+          initial={{ y: 64 }}
+          animate={{ y: 0 }}
+          exit={{ y: 64 }}
+          // transition={{ duration: 3 }}
+          className="z-50 flex h-16 flex-shrink-0 items-center justify-center border-t border-gray-200 bg-white px-2 dark:border-gray-800 dark:bg-gray-950"
+        >
+          <div className="grid w-full grid-cols-3 items-center">
+            <div className="flex items-center">
+              <Image
+                className="h-12 w-12 rounded"
+                width={48}
+                height={48}
+                src={currentTrack.album.images[0].url}
+                alt={`Picture of the album "${currentTrack.album.name}"`}
+              />
+              <div className="ml-2">
+                <div className="text-sm font-medium">{currentTrack.name}</div>
+                <div className="text-xs text-gray-600 dark:text-gray-400">
+                  {currentTrack.artists.map(({ name }) => name).join(', ')}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center gap-2">
+              <div className="flex items-center gap-1">
+                <Button variant="ghost" size="icon">
+                  <SkipBackIcon className="h-5 w-5" />
+                </Button>
+                <Button onClick={togglePlay} className="h-11 w-11 flex-shrink-0 rounded-full" size="icon">
+                  {playbackState?.paused ? (
+                    <PlayIcon className="h-5 w-5" fill="currentColor" strokeWidth={0} />
+                  ) : (
+                    <PauseIcon className="h-5 w-5" fill="currentColor" strokeWidth={0} />
+                  )}
+                </Button>
+                <Button variant="ghost" size="icon">
+                  <SkipForwardIcon className="h-5 w-5" />
+                </Button>
+              </div>
+
+              <Slider
+                className="w-96"
+                size="sm"
+                defaultValue={[0]}
+                min={0}
+                max={currentTrack.duration_ms}
+                step={1000}
+                value={[position]}
+                onValueChange={([position]) => setPosition(position)}
+                onValueCommit={(v) => seek(v[0])}
+              />
+              <div className="text-sm tabular-nums text-gray-600 dark:text-gray-400">
+                <span>{millisecondsToMmSs(position)}/</span>
+                <span>{millisecondsToMmSs(currentTrack.duration_ms)}</span>
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <Button onClick={likeCurrentTrack} variant="ghost" size="icon">
+                <HeartIcon className="h-5 w-5" fill={'currentColor'} />
+              </Button>
+              <Button className="ml-2" onClick={toggleMute} variant="ghost" size="icon">
+                {getVolumeIcon()}
+              </Button>
+              <Slider
+                className="w-28"
+                size="sm"
+                defaultValue={[0.5]}
+                min={0}
+                max={1}
+                step={0.01}
+                value={[volume]}
+                onValueChange={([volume]) => setVolume(volume)}
+              />
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

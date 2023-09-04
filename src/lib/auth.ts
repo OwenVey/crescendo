@@ -31,6 +31,7 @@ export const authOptions: AuthOptions = {
             'user-read-playback-state',
             'user-modify-playback-state',
             'user-read-currently-playing',
+            'user-library-modify',
           ].join(' '),
         },
       },

@@ -25,7 +25,7 @@ export function SelectedTrack({ track, remove }: SelectedTrackProps) {
 
         <div className="overflow-hidden pr-1">
           <div className="truncate text-xs">{track.name}</div>
-          <div className="truncate text-xs text-gray-500 dark:text-gray-400">{track.artists[0].name}</div>
+          <div className="truncate text-xs text-gray-600 dark:text-gray-400">{track.artists[0].name}</div>
         </div>
       </div>
 

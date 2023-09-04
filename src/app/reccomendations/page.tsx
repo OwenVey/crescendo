@@ -114,19 +114,19 @@ export default async function ReccomendationsPage({ searchParams }: PageProps) {
     );
 
   return (
-    <div>
+    <div className="flex flex-1 flex-col">
       <div className="absolute right-0 top-0 z-10 m-8 rounded-xl border bg-white/75 p-4 text-black backdrop-blur-lg">
         <div className="font-bold underline">searchParams</div>
         <pre className="text-xs">{JSON.stringify(searchParams, null, 2)}</pre>
       </div>
 
-      <SpotifyPlayer />
-
-      <div className="flex flex-wrap gap-8">
+      <div className="flex flex-wrap gap-8 overflow-y-auto p-8">
         {recommendations.tracks.map((track, index) => (
           <TrackCard key={track.id} track={track} index={index} />
         ))}
       </div>
+
+      <SpotifyPlayer />
     </div>
   );
 }

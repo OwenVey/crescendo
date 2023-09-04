@@ -264,7 +264,7 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="fixed inset-y-0 z-50 flex w-80 flex-col border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
+    <aside className="flex w-80 flex-col border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
       {/* Header */}
       <header className="flex items-center px-6 py-3">
         <Link href="/" className="flex items-center">
@@ -381,7 +381,7 @@ export function Sidebar() {
           </Button>
         </div>
 
-        <div className="flex justify-between border-t border-gray-200 px-6 py-3 dark:border-gray-800">
+        <div className="flex h-16 items-center justify-between border-t border-gray-200 px-6 dark:border-gray-800">
           {session ? (
             <DropdownMenu>
               <DropdownMenuTrigger className="text-left">
