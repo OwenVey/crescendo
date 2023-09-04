@@ -24,7 +24,14 @@ export const authOptions: AuthOptions = {
     SpotifyProvider({
       authorization: {
         params: {
-          scope: 'user-read-email user-library-read',
+          scope: [
+            'user-read-email',
+            'user-read-private',
+            'streaming',
+            'user-read-playback-state',
+            'user-modify-playback-state',
+            'user-read-currently-playing',
+          ].join(' '),
         },
       },
       clientId: env.SPOTIFY_CLIENT_ID,
