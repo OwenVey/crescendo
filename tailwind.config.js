@@ -30,10 +30,15 @@ module.exports = {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: 0 },
         },
+        wave: {
+          '0%, 100%': { transform: 'scaleY(0.7)', 'transform-origin': '50% 50%' },
+          '50%': { transform: 'scaleY(0.3)', 'transform-origin': '50% 50%' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        wave: 'wave 1s ease-in-out infinite',
       },
     },
   },
