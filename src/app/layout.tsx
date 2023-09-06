@@ -1,3 +1,4 @@
+import { MobileNav } from '@/components/mobile-nav';
 import { Providers } from '@/components/providers';
 import { Sidebar } from '@/components/sidebar';
 import { Toaster } from '@/components/ui';
@@ -14,10 +15,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html suppressHydrationWarning lang="en" className={cn(inter.variable, 'h-full antialiased')}>
-      <body className="flex h-screen overflow-hidden bg-gray-100 dark:bg-gray-900">
+      <body className="flex h-screen flex-col overflow-hidden bg-gray-100 dark:bg-gray-900 md:flex-row">
         <Providers>
-          <Sidebar />
-          <main className="flex flex-1">{children}</main>
+          <MobileNav />
+          <Sidebar className="hidden md:flex" />
+          <main className="flex flex-1 overflow-y-auto">{children}</main>
           <Toaster />
         </Providers>
       </body>
