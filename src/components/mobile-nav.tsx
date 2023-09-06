@@ -25,8 +25,6 @@ export function MobileNav() {
   const { data: session } = useSession();
   const pathname = usePathname();
 
-  console.log({ pathname });
-
   return (
     <div className="sticky top-0 z-40 flex items-center gap-x-2 bg-white px-6 py-4 shadow-sm dark:bg-gray-950 md:hidden">
       <Sheet>
