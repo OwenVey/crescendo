@@ -59,15 +59,15 @@ export default function SpotifyPlayer() {
           initial={{ y: 64 }}
           animate={{ y: 0 }}
           exit={{ y: 64 }}
-          // transition={{ duration: 3 }}
-          className="z-50 flex h-auto flex-shrink-0 items-center justify-center border-t border-gray-200 bg-white px-2 py-2 dark:border-gray-800 dark:bg-gray-950 md:h-16 md:py-0"
+          transition={{ type: 'spring', bounce: 0, duration: 0.25 }}
+          className="absolute bottom-0 left-0 right-0 z-50 flex h-auto flex-shrink-0 items-center justify-center border-t border-gray-200 bg-white px-2 py-2 dark:border-gray-800 dark:bg-gray-950 md:h-16 md:py-0"
         >
-          <div className="flex w-full items-center justify-between">
+          <div className="flex w-full items-center justify-between md:grid md:grid-cols-3">
             <div className="flex w-full items-center md:w-auto">
               <Image
-                className="h-16 w-auto rounded md:h-12"
-                width={48}
-                height={48}
+                className="h-14 w-auto rounded md:h-12"
+                width={56}
+                height={56}
                 src={currentTrack.album.images[0].url}
                 alt={`Picture of the album "${currentTrack.album.name}"`}
               />
@@ -97,7 +97,7 @@ export default function SpotifyPlayer() {
                   </div>
                 </div>
 
-                <div className="mt-1 flex md:hidden">
+                <div className="flex md:hidden">
                   <Slider
                     className="w-full"
                     size="sm"
@@ -117,7 +117,7 @@ export default function SpotifyPlayer() {
               </div>
             </div>
 
-            <div className="hidden max-w-md flex-grow items-center justify-center gap-2 md:flex">
+            <div className="hidden w-full max-w-lg flex-grow items-center justify-center gap-2 justify-self-center md:flex">
               <div className="flex items-center gap-1">
                 <Button variant="ghost" size="icon">
                   <SkipBackIcon className="h-5 w-5" />
@@ -135,7 +135,7 @@ export default function SpotifyPlayer() {
               </div>
 
               <Slider
-                className="w-full"
+                className="flex-1"
                 size="sm"
                 defaultValue={[0]}
                 min={0}
@@ -151,7 +151,7 @@ export default function SpotifyPlayer() {
               </div>
             </div>
 
-            <div className="hidden justify-center md:flex">
+            <div className="mr-24 hidden justify-end md:flex">
               <Button onClick={toggleSaveCurrentTrack} variant="ghost" size="icon">
                 <HeartIcon className="h-5 w-5" fill={isCurrentTrackSaved ? 'currentColor' : undefined} />
               </Button>
