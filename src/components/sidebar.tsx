@@ -1,5 +1,5 @@
 'use client';
-import logo from '@/app/logo.png';
+import logo from '@/app/images/logo.png';
 import { ArtistsCombobox } from '@/components/artists-combobox';
 import { GenresCombobox } from '@/components/genres-combobox';
 import { SignInButton } from '@/components/sign-in-button';

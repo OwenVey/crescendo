@@ -1,8 +1,14 @@
 'use client';
 
+import vinylRecordDarkImg from '@/app/images/vinyl-record-dark.webp';
+import vinylRecordImg from '@/app/images/vinyl-record.webp';
 import { useSpotifyPlayer } from '@/lib/hooks/useSpotifyPlayer';
+import { cn } from '@/lib/utils';
 import type { Track } from '@spotify/web-api-ts-sdk';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { PauseIcon, PlayIcon } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import Image from 'next/image';
 import { AudioWave } from './audio-wave';
 
 type TrackCardProps = {
@@ -11,43 +17,52 @@ type TrackCardProps = {
 };
 
 export function TrackCard({ track, index }: TrackCardProps) {
-  const { playTrack, currentTrack } = useSpotifyPlayer();
+  const { player, playTrack, currentTrack, playbackState } = useSpotifyPlayer();
+  const { resolvedTheme } = useTheme();
+  const isCurrentTrack = track.id === currentTrack?.id;
+
   return (
-    <motion.div className="group" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-      <button onClick={() => playTrack(track.uri)}>
-        {track.album.images[0] ? (
-          <div className="relative overflow-hidden rounded-2xl">
-            <AnimatePresence>
-              {track.id === currentTrack?.id && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="absolute inset-0 grid place-items-center bg-black/50 opacity-100 backdrop-blur-sm"
-                >
-                  <AudioWave className="h-12 w-12 text-white" />
-                </motion.div>
-              )}
-            </AnimatePresence>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              className="h-52 w-52"
-              src={track.album.images[1]?.url}
-              width={208}
-              height={208}
-              alt={`Album cover for ${track.name}`}
-            />
-          </div>
-        ) : (
-          <div className="h-52 w-52 rounded-2xl bg-red-200">no image</div>
-        )}
-        <div className="mt-1 w-52 text-left">
-          <div className="truncate font-medium">{track.name}</div>
-          <div className="truncate text-sm text-gray-600 dark:text-gray-400">
-            {track.artists.map((a) => a.name).join(', ')}
-          </div>
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+      <button
+        className="relative block overflow-hidden rounded-2xl"
+        onClick={() => (isCurrentTrack ? player?.togglePlay() : playTrack(track.uri))}
+      >
+        <div
+          className={cn(
+            'absolute inset-0 grid place-items-center bg-black/50 text-white backdrop-blur-sm transition-opacity hover:opacity-100',
+            isCurrentTrack ? 'opacity-100' : 'opacity-0',
+          )}
+        >
+          {playbackState?.paused || !isCurrentTrack ? (
+            <PlayIcon className="h-6 w-6" fill="white" strokeWidth={0} />
+          ) : (
+            <PauseIcon className="h-6 w-6" fill="white" strokeWidth={0} />
+          )}
+
+          {isCurrentTrack && !playbackState?.paused && <AudioWave className="absolute mt-24 h-12 w-12 text-white" />}
         </div>
+
+        <Image
+          className="h-52 w-52"
+          src={
+            track.album.images[0]
+              ? track.album.images[0].url
+              : resolvedTheme === 'dark'
+              ? vinylRecordDarkImg
+              : vinylRecordImg
+          }
+          width={208}
+          height={208}
+          alt={`Album cover for ${track.name}`}
+          unoptimized
+        />
       </button>
+      <div className="mt-1 w-52 text-left">
+        <div className="truncate font-medium">{track.name}</div>
+        <div className="truncate text-sm text-gray-600 dark:text-gray-400">
+          {track.artists.map((a) => a.name).join(', ')}
+        </div>
+      </div>
     </motion.div>
   );
 }

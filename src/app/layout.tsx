@@ -25,7 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         id="spotify-player"
         dangerouslySetInnerHTML={{
           __html: `window.onSpotifyWebPlaybackSDKReady = () => {
-            console.log('onSpotifyWebPlaybackSDKReady()')
+            console.log('Spotify Web Playback SDK Ready')
           }`,
         }}
       />
