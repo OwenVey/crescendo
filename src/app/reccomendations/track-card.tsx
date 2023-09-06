@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { PauseIcon, PlayIcon } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
+import { useState } from 'react';
 
 type TrackCardProps = {
   track: Track;
@@ -18,11 +19,12 @@ type TrackCardProps = {
 
 export function TrackCard({ track, index }: TrackCardProps) {
   const { player, playTrack, currentTrack, playbackState } = useSpotifyPlayer();
+  const [imageLoading, setImageLoading] = useState(true);
   const { resolvedTheme } = useTheme();
   const isCurrentTrack = track.id === currentTrack?.id;
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+    <div>
       <button
         className="relative block overflow-hidden rounded-2xl"
         onClick={() => (isCurrentTrack ? player?.togglePlay() : playTrack(track))}
@@ -43,20 +45,23 @@ export function TrackCard({ track, index }: TrackCardProps) {
           </AnimatePresence>
         </div>
 
-        <Image
-          className="h-52 w-52"
-          src={
-            track.album.images[0]
-              ? track.album.images[0].url
-              : resolvedTheme === 'dark'
-              ? vinylRecordDarkImg
-              : vinylRecordImg
-          }
-          width={208}
-          height={208}
-          alt={`Album cover for ${track.name}`}
-          unoptimized
-        />
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: imageLoading ? 0 : 1 }}>
+          <Image
+            className="h-52 w-52"
+            src={
+              track.album.images[0]
+                ? track.album.images[0].url
+                : resolvedTheme === 'dark'
+                ? vinylRecordDarkImg
+                : vinylRecordImg
+            }
+            width={208}
+            height={208}
+            alt={`Album cover for ${track.name}`}
+            onLoad={() => setImageLoading(false)}
+            // unoptimized
+          />
+        </motion.div>
       </button>
       <div className="mt-1 w-52 text-left">
         <div className="truncate font-medium">{track.name}</div>
@@ -72,6 +77,6 @@ export function TrackCard({ track, index }: TrackCardProps) {
           </span>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
