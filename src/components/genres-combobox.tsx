@@ -1,6 +1,6 @@
 'use client';
 
-import { ActivityIcon, Check, ChevronsUpDown, X } from 'lucide-react';
+import { ActivityIcon, CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react';
 import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -35,7 +35,7 @@ export function GenresCombobox({ genres, add, remove }: GenresComboboxProps) {
                       remove(genre);
                     }}
                   >
-                    <X className="h-3 w-3" />
+                    <XIcon className="h-3 w-3" />
                     <span className="sr-only">Remove</span>
                   </div>
                 </Badge>
@@ -47,7 +47,7 @@ export function GenresCombobox({ genres, add, remove }: GenresComboboxProps) {
               Search genres...
             </div>
           )}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="p-0" align="start">
@@ -66,7 +66,7 @@ export function GenresCombobox({ genres, add, remove }: GenresComboboxProps) {
                   }
                 }}
               >
-                <Check
+                <CheckIcon
                   className={cn('mr-2 h-4 w-4', genres.some((g) => g === genre.value) ? 'opacity-100' : 'opacity-0')}
                 />
                 {genre.label}

@@ -2,7 +2,7 @@
 
 import type { DialogProps } from '@radix-ui/react-dialog';
 import { Command as CommandPrimitive, useCommandState } from 'cmdk';
-import { LoaderIcon, Search } from 'lucide-react';
+import { LoaderIcon, SearchIcon } from 'lucide-react';
 import * as React from 'react';
 
 import { Dialog, DialogContent } from '@/components/ui/dialog';
@@ -47,7 +47,7 @@ const CommandInput = React.forwardRef<React.ElementRef<typeof CommandPrimitive.I
       {loading ? (
         <LoaderIcon className="mr-2 h-4 w-4 shrink-0 animate-spin opacity-50" />
       ) : (
-        <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+        <SearchIcon className="mr-2 h-4 w-4 shrink-0 opacity-50" />
       )}
       <CommandPrimitive.Input
         ref={ref}

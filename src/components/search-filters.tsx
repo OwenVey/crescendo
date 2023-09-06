@@ -17,7 +17,7 @@ import { TRACK_ATTRIBUTES } from '@/lib/constants';
 import { arrayToURLSearchParams, objectToURLSearchParams } from '@/lib/utils';
 import type { SliderValue, TrackAttribute, TrackAttributeWithValue } from '@/types';
 import type { Artist, Track } from '@spotify/web-api-ts-sdk';
-import { InfoIcon, RotateCcw } from 'lucide-react';
+import { InfoIcon, RotateCcwIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -351,7 +351,7 @@ export function SearchFilters() {
 
       <div className="flex gap-2 px-6 py-3">
         <Button variant="secondary" size="icon" onClick={reset}>
-          <RotateCcw className="h-4 w-4" />
+          <RotateCcwIcon className="h-4 w-4" />
         </Button>
         <Button asChild className="flex-1">
           <Link href={`/reccomendations?${urlParams}`} onClick={(event) => validateParams(event)}>

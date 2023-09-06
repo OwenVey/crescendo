@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, LoaderIcon, UserIcon } from 'lucide-react';
+import { CheckIcon, LoaderIcon, UserIcon } from 'lucide-react';
 import * as React from 'react';
 
 import {
@@ -99,7 +99,7 @@ export function ArtistsSearch({ artists, add, remove, loading = false }: Artists
                 }}
               >
                 <div className="flex items-center gap-x-2">
-                  <Check
+                  <CheckIcon
                     className={cn(
                       'h-4 w-4 shrink-0',
                       artists.some(({ id }) => id === artist.id) ? 'opacity-100' : 'opacity-0',

@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, ChevronsUpDown, MusicIcon, X } from 'lucide-react';
+import { CheckIcon, ChevronsUpDownIcon, MusicIcon, XIcon } from 'lucide-react';
 import * as React from 'react';
 
 import {
@@ -72,7 +72,7 @@ export function TracksCombobox({ tracks, add, remove, loading = false }: TracksC
                       remove(track);
                     }}
                   >
-                    <X className="h-3 w-3" />
+                    <XIcon className="h-3 w-3" />
                     <span className="sr-only">Remove</span>
                   </div>
                 </Badge>
@@ -84,7 +84,7 @@ export function TracksCombobox({ tracks, add, remove, loading = false }: TracksC
               Search tracks...
             </div>
           )}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="p-0" align="start">
@@ -110,7 +110,7 @@ export function TracksCombobox({ tracks, add, remove, loading = false }: TracksC
                 }}
               >
                 <div className="flex items-center gap-x-2">
-                  <Check
+                  <CheckIcon
                     className={cn(
                       'h-4 w-4 shrink-0',
                       tracks.some(({ id }) => id === track.id) ? 'opacity-100' : 'opacity-0',
