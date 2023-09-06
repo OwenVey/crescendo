@@ -3,7 +3,6 @@ import { Providers } from '@/components/providers';
 import { Sidebar } from '@/components/sidebar';
 import { Toaster } from '@/components/ui';
 import { cn } from '@/lib/utils';
-import { Analytics } from '@vercel/analytics/react';
 import type { Metadata } from 'next';
 import Script from 'next/script';
 import { inter } from './fonts/inter';
@@ -21,7 +20,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <MobileNav />
           <Sidebar className="hidden md:flex" />
           <main className="flex flex-1 overflow-y-auto">{children}</main>
-          <Analytics />
           <Toaster />
         </Providers>
       </body>
