@@ -10,10 +10,12 @@ export default function Error({ error, reset }: ErrorProps) {
   }, [error]);
 
   return (
-    <div className="grid h-full place-items-center rounded-lg border-2 border-dashed border-red-400 bg-red-50 dark:border-red-700 dark:bg-red-950">
-      <div className="text-center text-red-500 dark:text-red-300">
-        <div>{error.name}</div>
-        <div>{error.message}</div>
+    <div className="h-full w-full p-8">
+      <div className="grid h-full w-full place-items-center rounded-lg border-2 border-dashed border-red-400 bg-red-50 dark:border-red-900 dark:bg-red-950/30">
+        <div className="text-center text-red-600 dark:text-red-300">
+          <div>{error.name}</div>
+          <div>{error.message}</div>
+        </div>
       </div>
     </div>
   );

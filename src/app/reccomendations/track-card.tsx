@@ -2,6 +2,7 @@
 
 import vinylRecordDarkImg from '@/app/images/vinyl-record-dark.webp';
 import vinylRecordImg from '@/app/images/vinyl-record.webp';
+import { AudioWave } from '@/components/audio-wave';
 import { useSpotifyPlayer } from '@/lib/hooks/useSpotifyPlayer';
 import { cn } from '@/lib/utils';
 import type { Track } from '@spotify/web-api-ts-sdk';
@@ -9,7 +10,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { PauseIcon, PlayIcon } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
-import { AudioWave } from './audio-wave';
 
 type TrackCardProps = {
   track: Track;

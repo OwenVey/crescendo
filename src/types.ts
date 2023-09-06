@@ -30,8 +30,10 @@ export interface TrackAttributeWithValue extends TrackAttribute {
   value: SliderValue;
 }
 
+export type SearchParams = { [key: string]: string | string[] | undefined };
+
 export type PageProps = {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: SearchParams;
 };
 
 export type ErrorProps = {
