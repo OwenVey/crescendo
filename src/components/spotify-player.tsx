@@ -28,7 +28,8 @@ export default function SpotifyPlayer() {
     seek,
     position,
     setPosition,
-    likeCurrentTrack,
+    toggleSaveCurrentTrack,
+    isCurrentTrackSaved,
   } = useSpotifyPlayer();
 
   function getVolumeIcon() {
@@ -113,8 +114,8 @@ export default function SpotifyPlayer() {
             </div>
 
             <div className="flex justify-center">
-              <Button onClick={likeCurrentTrack} variant="ghost" size="icon">
-                <HeartIcon className="h-5 w-5" fill={'currentColor'} />
+              <Button onClick={toggleSaveCurrentTrack} variant="ghost" size="icon">
+                <HeartIcon className="h-5 w-5" fill={isCurrentTrackSaved ? 'currentColor' : undefined} />
               </Button>
               <Button className="ml-2" onClick={toggleMute} variant="ghost" size="icon">
                 {getVolumeIcon()}

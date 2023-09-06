@@ -25,7 +25,7 @@ export function TrackCard({ track, index }: TrackCardProps) {
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
       <button
         className="relative block overflow-hidden rounded-2xl"
-        onClick={() => (isCurrentTrack ? player?.togglePlay() : playTrack(track.uri))}
+        onClick={() => (isCurrentTrack ? player?.togglePlay() : playTrack(track))}
       >
         <div
           className={cn(

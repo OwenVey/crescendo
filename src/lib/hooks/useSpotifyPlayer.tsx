@@ -1,5 +1,5 @@
 import { env } from '@/env.mjs';
-import type { AccessToken } from '@spotify/web-api-ts-sdk';
+import type { AccessToken, Track } from '@spotify/web-api-ts-sdk';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import { useSession } from 'next-auth/react';
 import React, { useContext, useEffect, useState } from 'react';
@@ -8,14 +8,15 @@ type SpotifyPlayerContextType = {
   player: Spotify.Player | null;
   playbackState: Spotify.PlaybackState | null;
   togglePlay: () => void;
-  playTrack: (uri: string) => void;
+  playTrack: (track: Track) => void;
   volume: number;
   setVolume: (volume: number) => void;
   position: number;
   setPosition: (position: number) => void;
   seek: (position: number) => void;
   currentTrack?: Spotify.Track;
-  likeCurrentTrack: () => void;
+  toggleSaveCurrentTrack: () => void;
+  isCurrentTrackSaved: boolean;
 };
 
 const SpotifyPlayerContext = React.createContext<SpotifyPlayerContextType | null>(null);
@@ -27,6 +28,7 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
   const [playbackState, setPlaybackState] = useState<Spotify.PlaybackState | null>(null);
   const [volumeState, setVolumeState] = useState(0.5);
   const [position, setPosition] = useState(0);
+  const [isCurrentTrackSaved, setIsCurrentTrackSaved] = useState(false);
   const currentTrack = playbackState?.track_window.current_track;
 
   useEffect(() => {
@@ -73,8 +75,10 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
 
       newPlayer.addListener('player_state_changed', (playbackState) => {
         console.log('player_state_changed', playbackState);
-        setPlaybackState(playbackState);
-        setPosition(playbackState.position);
+        if (playbackState) {
+          setPlaybackState(playbackState);
+          setPosition(playbackState.position);
+        }
       });
 
       newPlayer.addListener('autoplay_failed', () => {
@@ -121,9 +125,11 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
     player?.togglePlay();
   }
 
-  async function playTrack(uri: string) {
+  async function playTrack(track: Track) {
     if (deviceId) {
-      sdk.player.startResumePlayback(deviceId, undefined, [uri]);
+      sdk.player.startResumePlayback(deviceId, undefined, [track.uri]);
+      const [isSaved] = await sdk.currentUser.tracks.hasSavedTracks([track.id]);
+      setIsCurrentTrackSaved(isSaved);
     }
   }
 
@@ -137,10 +143,14 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
     player?.seek(position);
   }
 
-  function likeCurrentTrack() {
-    if (currentTrack?.id) {
+  function toggleSaveCurrentTrack() {
+    if (!currentTrack?.id) return;
+    if (isCurrentTrackSaved) {
+      sdk.currentUser.tracks.removeSavedTracks([currentTrack.id]);
+    } else {
       sdk.currentUser.tracks.saveTracks([currentTrack.id]);
     }
+    setIsCurrentTrackSaved((prev) => !prev);
   }
 
   return (
@@ -156,7 +166,8 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
         setPosition,
         seek,
         currentTrack,
-        likeCurrentTrack,
+        toggleSaveCurrentTrack,
+        isCurrentTrackSaved,
       }}
     >
       {children}
