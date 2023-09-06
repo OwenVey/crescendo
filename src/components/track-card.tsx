@@ -5,7 +5,7 @@ import vinylRecordImg from '@/app/images/vinyl-record.webp';
 import { useSpotifyPlayer } from '@/lib/hooks/useSpotifyPlayer';
 import { cn } from '@/lib/utils';
 import type { Track } from '@spotify/web-api-ts-sdk';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { PauseIcon, PlayIcon } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
@@ -38,8 +38,9 @@ export function TrackCard({ track, index }: TrackCardProps) {
           ) : (
             <PauseIcon className="h-6 w-6" fill="white" strokeWidth={0} />
           )}
-
-          {isCurrentTrack && !playbackState?.paused && <AudioWave className="absolute mt-24 h-12 w-12 text-white" />}
+          <AnimatePresence>
+            {isCurrentTrack && !playbackState?.paused && <AudioWave className="absolute mt-24 h-12 w-12 text-white" />}
+          </AnimatePresence>
         </div>
 
         <Image
@@ -59,8 +60,16 @@ export function TrackCard({ track, index }: TrackCardProps) {
       </button>
       <div className="mt-1 w-52 text-left">
         <div className="truncate font-medium">{track.name}</div>
-        <div className="truncate text-sm text-gray-600 dark:text-gray-400">
-          {track.artists.map((a) => a.name).join(', ')}
+
+        <div className="flex items-center truncate">
+          {track.explicit && (
+            <span className="mr-1 grid h-4 w-4 place-items-center rounded bg-gray-300 text-[10px] dark:bg-gray-700">
+              E
+            </span>
+          )}
+          <span className="truncate text-sm text-gray-600 dark:text-gray-400">
+            {track.artists.map((a) => a.name).join(', ')}
+          </span>
         </div>
       </div>
     </motion.div>
