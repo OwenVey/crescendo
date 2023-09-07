@@ -24,7 +24,7 @@ export function TopToolbar() {
       <ToolbarSeparator />
 
       <div className="flex items-center gap-1">
-        <ZoomOutIcon className="h-4 w-4 text-gray-700 dark:text-gray-500" />
+        <ZoomOutIcon className="h-4 w-4 text-gray-500 dark:text-gray-500" />
         <Slider
           size="sm"
           className="w-24"
@@ -34,7 +34,7 @@ export function TopToolbar() {
           defaultValue={[200]}
           onValueChange={([value]) => updateTrackImageSize(value)}
         />
-        <ZoomInIcon className="h-4 w-4 text-gray-700 dark:text-gray-500" />
+        <ZoomInIcon className="h-4 w-4 text-gray-500 dark:text-gray-500" />
       </div>
     </Toolbar>
   );

@@ -109,6 +109,7 @@ export default function SpotifyPlayer() {
                     value={[position]}
                     onValueChange={([position]) => setPosition(position)}
                     onValueCommit={(v) => seek(v[0])}
+                    showThumbOnHover
                   />
                   <div className="ml-2 text-sm tabular-nums text-gray-600 dark:text-gray-400">
                     <span>{millisecondsToMmSs(position)}/</span>
@@ -145,6 +146,7 @@ export default function SpotifyPlayer() {
                 value={[position]}
                 onValueChange={([position]) => setPosition(position)}
                 onValueCommit={(v) => seek(v[0])}
+                showThumbOnHover
               />
               <div className="text-sm tabular-nums text-gray-600 dark:text-gray-400">
                 <span>{millisecondsToMmSs(position)}/</span>
@@ -168,6 +170,7 @@ export default function SpotifyPlayer() {
                 step={0.01}
                 value={[volume]}
                 onValueChange={([volume]) => setVolume(volume)}
+                showThumbOnHover
               />
             </div>
           </div>
