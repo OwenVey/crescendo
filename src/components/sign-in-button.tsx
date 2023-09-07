@@ -1,6 +1,5 @@
 'use client';
-import type { ButtonProps } from '@/components/ui';
-import { Button } from '@/components/ui';
+import { Button, type ButtonProps } from '@/components/ui/button';
 import { signIn } from 'next-auth/react';
 
 export function SignInButton(props: ButtonProps) {

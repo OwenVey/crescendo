@@ -3,16 +3,9 @@
 import { CheckIcon, LoaderIcon, UserIcon } from 'lucide-react';
 import * as React from 'react';
 
-import {
-  Command,
-  CommandEmpty,
-  CommandItem,
-  CommandList,
-  Input,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui';
+import { Command, CommandEmpty, CommandItem, CommandList } from '@/components/ui/command';
+import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import type { Artist } from '@spotify/web-api-ts-sdk';
 import Image from 'next/image';

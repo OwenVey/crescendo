@@ -1,7 +1,7 @@
 import { MobileNav } from '@/components/mobile-nav';
 import { Providers } from '@/components/providers';
 import { Sidebar } from '@/components/sidebar';
-import { Toaster } from '@/components/ui';
+import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import type { Metadata } from 'next';
 import Script from 'next/script';

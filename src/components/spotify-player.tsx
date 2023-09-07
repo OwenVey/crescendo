@@ -1,6 +1,7 @@
 'use client';
 
-import { Button, Slider } from '@/components/ui';
+import { Button } from '@/components/ui/button';
+import { Slider } from '@/components/ui/slider';
 import { useSpotifyPlayer } from '@/lib/hooks/useSpotifyPlayer';
 import { millisecondsToMmSs } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';

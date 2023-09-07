@@ -2,17 +2,16 @@
 import { ArtistsCombobox } from '@/components/artists-combobox';
 import { GenresCombobox } from '@/components/genres-combobox';
 import { TracksCombobox } from '@/components/tracks-combobox';
-import {
-  Button,
-  Label,
-  ScrollArea,
-  Slider,
-  Toggle,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-  useToast,
-} from '@/components/ui';
+
+import { SelectedArtist } from '@/components/selected-artist';
+import { SelectedTrack } from '@/components/selected-track';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Slider } from '@/components/ui/slider';
+import { Toggle } from '@/components/ui/toggle';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { useToast } from '@/components/ui/use-toast';
 import { TRACK_ATTRIBUTES } from '@/lib/constants';
 import { arrayToURLSearchParams, objectToURLSearchParams } from '@/lib/utils';
 import type { SliderValue, TrackAttribute, TrackAttributeWithValue } from '@/types';
@@ -21,8 +20,6 @@ import { InfoIcon, RotateCcwIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { SelectedArtist } from './selected-artist';
-import { SelectedTrack } from './selected-track';
 
 export function SearchFilters() {
   const router = useRouter();

@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui';
+import { Button } from '@/components/ui/button';
 import type { Artist } from '@spotify/web-api-ts-sdk';
 import { XIcon } from 'lucide-react';
 import Image from 'next/image';

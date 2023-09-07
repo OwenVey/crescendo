@@ -3,12 +3,12 @@
 import { ActivityIcon, CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react';
 import * as React from 'react';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { GENRES } from '@/lib/constants';
 import { cn } from '@/lib/utils';
-import { Badge } from './ui';
 
 type GenresComboboxProps = {
   genres: Array<string>;

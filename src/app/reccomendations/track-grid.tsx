@@ -1,5 +1,5 @@
 import { TrackCard } from '@/app/reccomendations/track-card';
-import { Button } from '@/components/ui';
+import { Button } from '@/components/ui/button';
 import { env } from '@/env.mjs';
 import type { SearchParams } from '@/types';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';

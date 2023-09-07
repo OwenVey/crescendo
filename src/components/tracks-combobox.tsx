@@ -3,18 +3,10 @@
 import { CheckIcon, ChevronsUpDownIcon, MusicIcon, XIcon } from 'lucide-react';
 import * as React from 'react';
 
-import {
-  Badge,
-  Command,
-  CommandEmpty,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import type { Track } from '@spotify/web-api-ts-sdk';
 import Image from 'next/image';

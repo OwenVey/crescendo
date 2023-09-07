@@ -1,25 +1,24 @@
 'use client';
 
 import logo from '@/app/images/logo.png';
+
+import { Sidebar } from '@/components/sidebar';
+import { SignInButton } from '@/components/sign-in-button';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { Button } from '@/components/ui/button';
 import {
-  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from '@/components/ui';
+} from '@/components/ui/dropdown-menu';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import { MenuIcon } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sidebar } from './sidebar';
-import { SignInButton } from './sign-in-button';
-import { ThemeToggle } from './theme-toggle';
 
 export function MobileNav() {
   const { data: session } = useSession();
