@@ -10,7 +10,7 @@ function updateTrackImageSize(size: number) {
 
 export function TopToolbar() {
   return (
-    <Toolbar className="flex items-center gap-4 border-b border-t border-gray-200 bg-white p-3 shadow-sm dark:border-gray-800 dark:bg-gray-950 md:border-t-0">
+    <Toolbar className="flex h-16 shrink-0 items-center gap-4 border-b border-t border-gray-200 bg-white px-3 py-2 shadow-sm dark:border-gray-800 dark:bg-gray-950 md:border-t-0">
       <ToolbarToggleGroup defaultValue="grid" type="single">
         <ToolbarToggleItem value="grid" aria-label="Grid view">
           <LayoutGridIcon className="h-4 w-4" />
