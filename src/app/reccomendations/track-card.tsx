@@ -30,7 +30,7 @@ export function TrackCard({ track, index }: TrackCardProps) {
   const isCurrentTrack = track.id === currentTrack?.id;
 
   return (
-    <div className="group">
+    <div className="group w-[--card-width]">
       <button
         className="relative block overflow-hidden rounded-2xl"
         onClick={() => (isCurrentTrack ? player?.togglePlay() : playTrack(track))}
@@ -51,26 +51,28 @@ export function TrackCard({ track, index }: TrackCardProps) {
           </AnimatePresence>
         </div>
 
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: imageLoading ? 0 : 1 }}>
-          <Image
-            className="h-52 w-52"
-            src={
-              track.album.images[0]
-                ? track.album.images[0].url
-                : resolvedTheme === 'dark'
-                ? vinylRecordDarkImg
-                : vinylRecordImg
-            }
-            width={208}
-            height={208}
-            alt={`Album cover for ${track.name}`}
-            onLoad={() => setImageLoading(false)}
-            // unoptimized
-          />
-        </motion.div>
+        <div className="bg-gray-300/50 dark:bg-gray-800/50">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: imageLoading ? 0 : 1 }}>
+            <Image
+              className="aspect-square bg-gray-300 dark:bg-gray-800"
+              src={
+                track.album.images[0]
+                  ? track.album.images[0].url
+                  : resolvedTheme === 'dark'
+                  ? vinylRecordDarkImg
+                  : vinylRecordImg
+              }
+              width={300}
+              height={300}
+              alt={`Album cover for ${track.name}`}
+              onLoad={() => setImageLoading(false)}
+              // unoptimized
+            />
+          </motion.div>
+        </div>
       </button>
 
-      <div className="mt-1 flex w-52 items-center justify-between">
+      <div className="mt-1 flex w-full items-center justify-between">
         <div className="overflow-hidden text-left">
           <div className="truncate font-medium">{track.name}</div>
 

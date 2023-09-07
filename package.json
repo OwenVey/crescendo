@@ -24,6 +24,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-toast": "^1.1.4",
     "@radix-ui/react-toggle": "^1.0.3",
+    "@radix-ui/react-toolbar": "^1.0.4",
     "@radix-ui/react-tooltip": "^1.0.6",
     "@spotify/web-api-ts-sdk": "^1.1.1",
     "@t3-oss/env-nextjs": "^0.6.1",
