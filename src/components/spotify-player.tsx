@@ -124,7 +124,7 @@ export default function SpotifyPlayer() {
                 <Button variant="ghost" size="icon">
                   <SkipBackIcon className="h-5 w-5" />
                 </Button>
-                <Button onClick={togglePlay} className="h-11 w-11 flex-shrink-0 rounded-full" size="icon">
+                <Button onClick={togglePlay} className="flex-shrink-0 rounded-full" size="icon">
                   {playbackState?.paused ? (
                     <PlayIcon className="h-5 w-5" fill="currentColor" strokeWidth={0} />
                   ) : (
@@ -137,7 +137,7 @@ export default function SpotifyPlayer() {
               </div>
 
               <Slider
-                className="flex-1"
+                className="min-w-[6rem] flex-1"
                 size="sm"
                 defaultValue={[0]}
                 min={0}
