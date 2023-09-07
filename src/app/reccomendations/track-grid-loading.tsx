@@ -2,7 +2,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function TrackGridLoading() {
   return (
-    <div className="grid grid-cols-[repeat(auto-fill,var(--card-width))] justify-between gap-8 overflow-y-auto overflow-x-hidden p-8">
+    <div className="grid grid-cols-[repeat(auto-fill,var(--card-width))] justify-between gap-8 overflow-y-auto p-8">
       {[...Array(50)].map((_, index) => (
         <TrackCardSkeleton key={index} />
       ))}

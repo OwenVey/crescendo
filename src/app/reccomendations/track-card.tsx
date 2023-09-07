@@ -32,7 +32,7 @@ export function TrackCard({ track, index }: TrackCardProps) {
   return (
     <div className="group w-[--card-width]">
       <button
-        className="relative block overflow-hidden rounded-2xl"
+        className="w-inherit relative block overflow-hidden rounded-2xl"
         onClick={() => (isCurrentTrack ? player?.togglePlay() : playTrack(track))}
       >
         <div
@@ -51,7 +51,7 @@ export function TrackCard({ track, index }: TrackCardProps) {
           </AnimatePresence>
         </div>
 
-        <div className="bg-gray-300/50 dark:bg-gray-800/50">
+        <div className="bg-gray-300/60 dark:bg-gray-800/60">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: imageLoading ? 0 : 1 }}>
             <Image
               className="aspect-square bg-gray-300 dark:bg-gray-800"
