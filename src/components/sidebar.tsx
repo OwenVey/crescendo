@@ -3,6 +3,7 @@ import logo from '@/app/images/logo.png';
 import { SearchFilters } from '@/components/search-filters';
 import { SignInButton } from '@/components/sign-in-button';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,20 +40,17 @@ export function Sidebar({ className }: { className?: string }) {
           <DropdownMenu>
             <DropdownMenuTrigger className="text-left">
               <div className="flex items-center gap-x-2">
-                <Image
-                  className="h-10 w-10 rounded-full bg-gray-50"
-                  height={40}
-                  width={40}
-                  src={session.user.image!}
-                  alt="User's profile picture on Spotify"
-                />
+                <Avatar>
+                  <AvatarImage src={session.user.image!} alt={`Profile picture for ${session.user.name}`} />
+                  <AvatarFallback className="uppercase">{session.user.name?.charAt(0)}</AvatarFallback>
+                </Avatar>
                 <div className="flex flex-col">
                   <div className="text-sm font-medium">{session.user.name}</div>
                   <div className="text-xs text-gray-500">{session.user.email}</div>
                 </div>
               </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent align="start">
               <DropdownMenuItem onClick={() => signOut()}>Log Out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

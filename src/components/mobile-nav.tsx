@@ -5,6 +5,7 @@ import logo from '@/app/images/logo.png';
 import { Sidebar } from '@/components/sidebar';
 import { SignInButton } from '@/components/sign-in-button';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -48,15 +49,12 @@ export function MobileNav() {
         {session ? (
           <DropdownMenu>
             <DropdownMenuTrigger className="text-left">
-              <Image
-                className="h-10 w-10 rounded-full bg-gray-50"
-                height={40}
-                width={40}
-                src={session.user.image!}
-                alt="User's profile picture on Spotify"
-              />
+              <Avatar>
+                <AvatarImage src={session.user.image!} alt={`Profile picture for ${session.user.name}`} />
+                <AvatarFallback className="uppercase">{session.user.name?.charAt(0)}</AvatarFallback>
+              </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => signOut()}>Log Out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
