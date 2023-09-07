@@ -75,7 +75,7 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
 
       newPlayer.addListener('player_state_changed', (playbackState) => {
         console.log('player_state_changed', playbackState);
-        if (playbackState) {
+        if (!!playbackState) {
           setPlaybackState(playbackState);
           setPosition(playbackState.position);
         }
