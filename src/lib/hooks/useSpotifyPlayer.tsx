@@ -5,8 +5,8 @@ import { useSession } from 'next-auth/react';
 import React, { useContext, useEffect, useState } from 'react';
 
 type SpotifyPlayerContextType = {
-  player: Spotify.Player | null;
-  playbackState: Spotify.PlaybackState | null;
+  player?: Spotify.Player;
+  playbackState?: Spotify.PlaybackState;
   togglePlay: () => void;
   playTrack: (track: Track) => void;
   volume: number;
@@ -19,13 +19,13 @@ type SpotifyPlayerContextType = {
   isCurrentTrackSaved: boolean;
 };
 
-const SpotifyPlayerContext = React.createContext<SpotifyPlayerContextType | null>(null);
+const SpotifyPlayerContext = React.createContext<SpotifyPlayerContextType | undefined>(undefined);
 
 export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: session, status } = useSession();
-  const [player, setPlayer] = useState<Spotify.Player | null>(null);
-  const [deviceId, setDeviceId] = useState<string | null>(null);
-  const [playbackState, setPlaybackState] = useState<Spotify.PlaybackState | null>(null);
+  const [player, setPlayer] = useState<Spotify.Player | undefined>(undefined);
+  const [deviceId, setDeviceId] = useState<string | undefined>(undefined);
+  const [playbackState, setPlaybackState] = useState<Spotify.PlaybackState | undefined>(undefined);
   const [volumeState, setVolumeState] = useState(0.5);
   const [position, setPosition] = useState(0);
   const [isCurrentTrackSaved, setIsCurrentTrackSaved] = useState(false);
