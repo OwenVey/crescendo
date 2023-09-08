@@ -44,78 +44,76 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
   }, [currentTrack, playbackState?.paused]);
 
   useEffect(() => {
-    // const script = document.createElement('script');
-    // script.src = 'https://sdk.scdn.co/spotify-player.js';
-    // script.async = true;
+    if (session?.user.access_token) {
+      const script = document.createElement('script');
+      script.src = 'https://sdk.scdn.co/spotify-player.js';
+      script.async = true;
 
-    // document.body.appendChild(script);
-    if (status === 'authenticated' && window.Spotify) {
-      console.log('authenticated');
+      document.body.appendChild(script);
+      console.log('useEffect');
 
-      const newPlayer = new window.Spotify.Player({
-        name: 'Crescendo',
-        getOAuthToken: (cb) => {
-          console.log(session.user.access_token);
+      window.onSpotifyWebPlaybackSDKReady = () => {
+        const newPlayer = new window.Spotify.Player({
+          name: 'Crescendo',
+          getOAuthToken: (cb) => cb(session.user.access_token),
+          volume: 0.5,
+        });
 
-          cb(session.user.access_token);
-        },
-        volume: volumeState,
-      });
+        // Ready
+        newPlayer.addListener('ready', async ({ device_id }) => {
+          console.log('Ready with Device ID', device_id);
+          setDeviceId(device_id);
+        });
 
-      // Ready
-      newPlayer.addListener('ready', async ({ device_id }) => {
-        console.log('Ready with Device ID', device_id);
-        setDeviceId(device_id);
-      });
+        // Not Ready
+        newPlayer.addListener('not_ready', ({ device_id }) => {
+          console.log('Device ID has gone offline', device_id);
+        });
 
-      // Not Ready
-      newPlayer.addListener('not_ready', ({ device_id }) => {
-        console.log('Device ID has gone offline', device_id);
-      });
+        newPlayer.addListener('player_state_changed', (playbackState) => {
+          console.log('player_state_changed', playbackState);
+          if (!!playbackState) {
+            setPlaybackState(playbackState);
+            setPosition(playbackState.position);
+          }
+        });
 
-      newPlayer.addListener('player_state_changed', (playbackState) => {
-        console.log('player_state_changed', playbackState);
-        if (!!playbackState) {
-          setPlaybackState(playbackState);
-          setPosition(playbackState.position);
-        }
-      });
+        newPlayer.addListener('autoplay_failed', () => {
+          console.log('Autoplay is not allowed by the browser autoplay rules');
+        });
 
-      newPlayer.addListener('autoplay_failed', () => {
-        console.log('Autoplay is not allowed by the browser autoplay rules');
-      });
+        // Errors
+        newPlayer.on('initialization_error', (message) => {
+          console.error('Failed to initialize', message);
+        });
 
-      // Errors
-      newPlayer.on('initialization_error', (message) => {
-        console.error('Failed to initialize', message);
-      });
+        newPlayer.on('authentication_error', (message) => {
+          console.error('Failed to authenticate', message);
+        });
 
-      newPlayer.on('authentication_error', (message) => {
-        console.error('Failed to authenticate', message);
-      });
+        newPlayer.on('account_error', (message) => {
+          console.error('Failed to validate Spotify account', message);
+        });
 
-      newPlayer.on('account_error', (message) => {
-        console.error('Failed to validate Spotify account', message);
-      });
+        newPlayer.on('playback_error', (message) => {
+          console.error('Failed to perform playback', message);
+        });
 
-      newPlayer.on('playback_error', (message) => {
-        console.error('Failed to perform playback', message);
-      });
+        newPlayer.connect().then((success) => {
+          if (success) {
+            console.log('The Web Playback SDK successfully connected to Spotify!');
+          } else {
+            console.log('Failed to connect');
+          }
+        });
 
-      newPlayer.connect().then((success) => {
-        if (success) {
-          console.log('The Web Playback SDK successfully connected to Spotify!');
-        } else {
-          console.log('Failed to connect');
-        }
-      });
-
-      setPlayer(newPlayer);
+        setPlayer(newPlayer);
+      };
     }
     return () => {
       player?.disconnect();
     };
-  }, [status]);
+  }, [session?.user.access_token]);
 
   const sdk = SpotifyApi.withAccessToken(env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID, {
     access_token: session?.user.access_token,

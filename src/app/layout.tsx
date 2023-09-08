@@ -4,7 +4,6 @@ import { Sidebar } from '@/components/sidebar';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import { inter } from './fonts/inter';
 import './globals.css';
 
@@ -23,15 +22,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Toaster />
         </Providers>
       </body>
-      <Script
-        id="spotify-player"
-        dangerouslySetInnerHTML={{
-          __html: `window.onSpotifyWebPlaybackSDKReady = () => {
-            console.log('Spotify Web Playback SDK Ready')
-          }`,
-        }}
-      />
-      <Script src="https://sdk.scdn.co/spotify-player.js" />
     </html>
   );
 }
