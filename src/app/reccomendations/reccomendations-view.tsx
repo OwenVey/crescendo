@@ -6,8 +6,9 @@ import { RotateCcwIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect } from 'react';
 import { useStore } from '../store';
-import { GridView } from './grid-view';
-import { ListView } from './list-view';
+import { GridView } from './grid/grid-view';
+import { columns } from './list/columns';
+import { ListView } from './list/list-view';
 
 type RecommendationsProps = {
   tracks: Array<Track>;
@@ -38,5 +39,5 @@ export function RecommendationsView({ tracks }: RecommendationsProps) {
     );
   }
 
-  return view === 'grid' ? <GridView /> : <ListView />;
+  return view === 'grid' ? <GridView /> : <ListView columns={columns} data={tracks} />;
 }

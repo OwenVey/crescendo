@@ -4,8 +4,8 @@ import SpotifyPlayer from '@/components/spotify-player';
 import type { PageProps } from '@/types';
 import { Suspense } from 'react';
 import { Recommendations } from './reccomendations';
+import { ReccomendationsLoading } from './reccomendations-loading';
 import { TopToolbar } from './top-toolbar';
-import TrackGridLoading from './track-grid-loading';
 
 export default function ReccomendationsPage({ searchParams }: PageProps) {
   return (
@@ -17,7 +17,7 @@ export default function ReccomendationsPage({ searchParams }: PageProps) {
 
       <TopToolbar />
 
-      <Suspense key={JSON.stringify(searchParams)} fallback={<TrackGridLoading />}>
+      <Suspense key={JSON.stringify(searchParams)} fallback={<ReccomendationsLoading />}>
         <Recommendations searchParams={searchParams} />
       </Suspense>
 

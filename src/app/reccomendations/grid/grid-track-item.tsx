@@ -18,12 +18,12 @@ import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import { useState } from 'react';
 
-type TrackCardProps = {
+type GridTrackItemProps = {
   track: Track;
   index: number;
 };
 
-export function TrackCard({ track, index }: TrackCardProps) {
+export function GridTrackItem({ track, index }: GridTrackItemProps) {
   const { player, playTrack, currentTrack, playbackState } = useSpotifyPlayer();
   const [imageLoading, setImageLoading] = useState(true);
   const { resolvedTheme } = useTheme();
