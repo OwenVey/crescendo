@@ -3,8 +3,8 @@ export const dynamic = 'force-dynamic';
 import SpotifyPlayer from '@/components/spotify-player';
 import type { PageProps } from '@/types';
 import { Suspense } from 'react';
+import { Recommendations } from './reccomendations';
 import { TopToolbar } from './top-toolbar';
-import { TrackGrid } from './track-grid';
 import TrackGridLoading from './track-grid-loading';
 
 export default function ReccomendationsPage({ searchParams }: PageProps) {
@@ -18,7 +18,7 @@ export default function ReccomendationsPage({ searchParams }: PageProps) {
       <TopToolbar />
 
       <Suspense key={JSON.stringify(searchParams)} fallback={<TrackGridLoading />}>
-        <TrackGrid searchParams={searchParams} />
+        <Recommendations searchParams={searchParams} />
       </Suspense>
 
       <SpotifyPlayer />

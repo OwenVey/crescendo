@@ -1,11 +1,8 @@
-import { TrackCard } from '@/app/reccomendations/track-card';
-import { Button } from '@/components/ui/button';
 import { env } from '@/env.mjs';
 import type { SearchParams } from '@/types';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
-import { RotateCcwIcon } from 'lucide-react';
-import Link from 'next/link';
 import { z } from 'zod';
+import { RecommendationsView } from './reccomendations-view';
 
 const SearchParamsSchema = z.object({
   seed_artists: z
@@ -64,11 +61,11 @@ const SearchParamsSchema = z.object({
   target_valence: z.coerce.number().optional(),
 });
 
-type TrackGridProps = {
+type RecommendationsProps = {
   searchParams: SearchParams;
 };
 
-export async function TrackGrid({ searchParams }: TrackGridProps) {
+export async function Recommendations({ searchParams }: RecommendationsProps) {
   const sdk = SpotifyApi.withClientCredentials(env.SPOTIFY_CLIENT_ID, env.SPOTIFY_CLIENT_SECRET);
 
   const parsedParams = SearchParamsSchema.parse(searchParams);
@@ -86,41 +83,12 @@ export async function TrackGrid({ searchParams }: TrackGridProps) {
     throw Error('Max of 5 seed may be provided in any combination of Seed Artists, Seed Tracks, and Seed Genres');
   }
 
-  // await new Promise((resolve) => setTimeout(resolve, 2000));
+  await new Promise((resolve) => setTimeout(resolve, 2000));
   const recommendations = await sdk.recommendations.get({
     limit: 100,
     market: 'US',
     ...parsedParams,
   });
 
-  if (recommendations.tracks.length === 0) {
-    return (
-      <div className="grid h-full place-items-center">
-        <div className="absolute right-0 top-0 z-10 m-8 rounded-xl border bg-white/75 p-4 text-black backdrop-blur-lg">
-          <div className="font-bold underline">searchParams</div>
-          <pre className="text-xs">{JSON.stringify(searchParams, null, 2)}</pre>
-        </div>
-        <div className="flex flex-col items-center">
-          <p className="text-gray-700 dark:text-gray-400">
-            Sorry, we could not find any reccomendations that fit the specified attributes.
-          </p>
-          <Button className="mt-4" asChild>
-            <Link href="/">
-              <RotateCcwIcon className="mr-2 h-4 w-4" />
-              Restart
-            </Link>
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    // <div className="grid grid-cols-[repeat(auto-fill,var(--card-width))] justify-between gap-8 overflow-y-auto p-8">
-    <div className="flex flex-wrap gap-8 overflow-y-auto p-8">
-      {recommendations.tracks.map((track, index) => (
-        <TrackCard key={track.id} track={track} index={index} />
-      ))}
-    </div>
-  );
+  return <RecommendationsView tracks={recommendations.tracks} />;
 }
