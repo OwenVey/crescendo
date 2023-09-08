@@ -3,12 +3,13 @@
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { useSpotifyPlayer } from '@/lib/hooks/useSpotifyPlayer';
-import { millisecondsToMmSs } from '@/lib/utils';
+import { cn, millisecondsToMmSs } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   HeartIcon,
   PauseIcon,
   PlayIcon,
+  RefreshCwIcon,
   SkipBackIcon,
   SkipForwardIcon,
   Volume1Icon,
@@ -17,6 +18,8 @@ import {
   VolumeXIcon,
 } from 'lucide-react';
 import Image from 'next/image';
+import { Toggle } from './ui/toggle';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 export default function SpotifyPlayer() {
   const {
@@ -33,6 +36,9 @@ export default function SpotifyPlayer() {
     isCurrentTrackSaved,
     playPreviousSong,
     playNextSong,
+    isAutoPlayEnabled,
+    setIsAutoPlayEnabled,
+    setIsScrubbing,
   } = useSpotifyPlayer();
 
   function getVolumeIcon() {
@@ -111,6 +117,8 @@ export default function SpotifyPlayer() {
                     value={[position]}
                     onValueChange={([position]) => setPosition(position)}
                     onValueCommit={(v) => seek(v[0])}
+                    onPointerDown={() => setIsScrubbing(true)}
+                    onPointerUp={() => setIsScrubbing(false)}
                     showThumbOnHover
                   />
                   <div className="ml-2 text-sm tabular-nums text-gray-600 dark:text-gray-400">
@@ -148,6 +156,8 @@ export default function SpotifyPlayer() {
                 value={[position]}
                 onValueChange={([position]) => setPosition(position)}
                 onValueCommit={(v) => seek(v[0])}
+                onPointerDown={() => setIsScrubbing(true)}
+                onPointerUp={() => setIsScrubbing(false)}
                 showThumbOnHover
               />
               <div className="text-sm tabular-nums text-gray-600 dark:text-gray-400">
@@ -156,13 +166,38 @@ export default function SpotifyPlayer() {
               </div>
             </div>
 
-            <div className="mr-24 hidden justify-end md:flex">
-              <Button onClick={toggleSaveCurrentTrack} variant="ghost" size="icon">
-                <HeartIcon className="h-5 w-5" fill={isCurrentTrackSaved ? 'currentColor' : 'none'} />
-              </Button>
-              <Button className="ml-2" onClick={toggleMute} variant="ghost" size="icon">
-                {getVolumeIcon()}
-              </Button>
+            <div className="mr-24 hidden items-center justify-end gap-1 md:flex">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Toggle pressed={isAutoPlayEnabled} onPressedChange={setIsAutoPlayEnabled} size="icon">
+                      <RefreshCwIcon
+                        className={cn('h-5 w-5', isAutoPlayEnabled && 'animate-spin [animation-duration:5s]')}
+                      />
+                    </Toggle>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>{isAutoPlayEnabled ? 'Disable' : 'Enable'} Autoplay</TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button onClick={toggleSaveCurrentTrack} variant="ghost" size="icon">
+                    <HeartIcon className="h-5 w-5" fill={isCurrentTrackSaved ? 'currentColor' : 'none'} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{isCurrentTrackSaved ? 'Unlike track' : 'Like track'}</TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button onClick={toggleMute} variant="ghost" size="icon">
+                    {getVolumeIcon()}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Toggle Mute</TooltipContent>
+              </Tooltip>
+
               <Slider
                 className="w-24"
                 size="sm"

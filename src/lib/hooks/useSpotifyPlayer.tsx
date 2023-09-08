@@ -4,7 +4,7 @@ import { env } from '@/env.mjs';
 import type { AccessToken, Track } from '@spotify/web-api-ts-sdk';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import { useSession } from 'next-auth/react';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 type SpotifyPlayerContextType = {
   player?: Spotify.Player;
@@ -21,6 +21,10 @@ type SpotifyPlayerContextType = {
   isCurrentTrackSaved: boolean;
   playPreviousSong: () => void;
   playNextSong: () => void;
+  isAutoPlayEnabled: boolean;
+  setIsAutoPlayEnabled: (enabled: boolean) => void;
+  isScrubbing: boolean;
+  setIsScrubbing: (scrubbing: boolean) => void;
 };
 
 const SpotifyPlayerContext = React.createContext<SpotifyPlayerContextType | undefined>(undefined);
@@ -36,28 +40,109 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
   const [volumeState, setVolumeState] = useState(0.5);
   const [position, setPosition] = useState(0);
   const [isCurrentTrackSaved, setIsCurrentTrackSaved] = useState(false);
+  const [isAutoPlayEnabled, setIsAutoPlayEnabled] = useState(false);
+  const [isScrubbing, setIsScrubbing] = useState(false);
   const currentTrack = playbackState?.track_window.current_track;
 
-  useEffect(() => {
-    const id = setInterval(() => {
-      if (currentTrack && !playbackState?.paused) {
-        setPosition((oldCount) => oldCount + 1000);
+  const sdk = SpotifyApi.withAccessToken(env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID, {
+    access_token: session?.user.access_token,
+  } as AccessToken);
+
+  async function togglePlay() {
+    player?.togglePlay();
+  }
+
+  const playTrack = useCallback(
+    async (track: Track) => {
+      if (deviceId) {
+        sdk.player.startResumePlayback(deviceId, undefined, [track.uri]);
+        const [isSaved] = await sdk.currentUser.tracks.hasSavedTracks([track.id]);
+        setIsCurrentTrackSaved(isSaved);
+      } else {
+        toast({
+          title: 'Unable to play track',
+          description: 'Ensure that you have authorized your Spotify account in order to listen to songs',
+        });
       }
-    }, 1000);
+    },
+    [deviceId, sdk.currentUser.tracks, sdk.player, toast],
+  );
+
+  async function setVolume(volume: number) {
+    player?.setVolume(volume);
+    setVolumeState(volume);
+  }
+
+  async function seek(position: number) {
+    await player?.seek(position);
+    setPosition(position);
+  }
+
+  async function toggleSaveCurrentTrack() {
+    if (!currentTrack?.id) return;
+    try {
+      if (isCurrentTrackSaved) {
+        await sdk.currentUser.tracks.removeSavedTracks([currentTrack.id]);
+        toast({ description: `Removed "${currentTrack.name}" from your Liked Songs` });
+      } else {
+        await sdk.currentUser.tracks.saveTracks([currentTrack.id]);
+        toast({ description: `Added "${currentTrack.name}" to your Liked Songs` });
+      }
+      setIsCurrentTrackSaved((prev) => !prev);
+    } catch (error) {
+      toast({ variant: 'destructive', title: 'Failed to add/remove like', description: error as string });
+    }
+  }
+
+  const playNextSong = useCallback(() => {
+    const currentIndex = reccomendations.findIndex((track) => track.id === currentTrack?.id);
+    const nextTrack = reccomendations.at(currentIndex + 1);
+    if (nextTrack) {
+      playTrack(nextTrack);
+    }
+  }, [currentTrack?.id, playTrack, reccomendations]);
+
+  function playPreviousSong() {
+    const currentIndex = reccomendations.findIndex((track) => track.id === currentTrack?.id);
+    const previousTrack = reccomendations.at(currentIndex - 1);
+    if (previousTrack) {
+      playTrack(previousTrack);
+    }
+  }
+
+  useEffect(() => {
+    const id = setInterval(async () => {
+      if (currentTrack && !playbackState?.paused) {
+        const newPosition = (await player?.getCurrentState())?.position ?? position;
+
+        if (isAutoPlayEnabled && newPosition + 200 >= currentTrack.duration_ms) {
+          playNextSong();
+        }
+        if (!isScrubbing) {
+          setPosition(newPosition);
+        }
+      }
+    }, 200);
 
     return () => {
       clearInterval(id);
     };
-  }, [currentTrack, playbackState?.paused]);
+  }, [currentTrack, isAutoPlayEnabled, isScrubbing, playNextSong, playbackState?.paused, player, position]);
 
   useEffect(() => {
-    if (session?.user.access_token) {
-      const script = document.createElement('script');
-      script.src = 'https://sdk.scdn.co/spotify-player.js';
-      script.async = true;
+    console.log('useEffect');
+    if (session?.user.access_token && !player) {
+      console.log('TOKEN and NO player exists');
 
-      document.body.appendChild(script);
-      console.log('useEffect');
+      if (!window.Spotify) {
+        console.log('adding spotify-player.js script');
+
+        const script = document.createElement('script');
+        script.src = 'https://sdk.scdn.co/spotify-player.js';
+        script.async = true;
+
+        document.body.appendChild(script);
+      }
 
       window.onSpotifyWebPlaybackSDKReady = () => {
         const newPlayer = new window.Spotify.Player({
@@ -118,66 +203,12 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
       };
     }
     return () => {
-      player?.disconnect();
+      if (player) {
+        console.log('disconnecting player');
+        player.disconnect();
+      }
     };
-  }, [session?.user.access_token]);
-
-  const sdk = SpotifyApi.withAccessToken(env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID, {
-    access_token: session?.user.access_token,
-  } as AccessToken);
-
-  async function togglePlay() {
-    player?.togglePlay();
-  }
-
-  async function playTrack(track: Track) {
-    if (deviceId) {
-      sdk.player.startResumePlayback(deviceId, undefined, [track.uri]);
-      const [isSaved] = await sdk.currentUser.tracks.hasSavedTracks([track.id]);
-      setIsCurrentTrackSaved(isSaved);
-    } else {
-      toast({
-        title: 'Unable to play track',
-        description: 'Ensure that you have authorized your Spotify account in order to listen to songs',
-      });
-    }
-  }
-
-  function setVolume(volume: number) {
-    setVolumeState(volume);
-    player?.setVolume(volume);
-  }
-
-  function seek(position: number) {
-    setPosition(position);
-    player?.seek(position);
-  }
-
-  function toggleSaveCurrentTrack() {
-    if (!currentTrack?.id) return;
-    if (isCurrentTrackSaved) {
-      sdk.currentUser.tracks.removeSavedTracks([currentTrack.id]);
-    } else {
-      sdk.currentUser.tracks.saveTracks([currentTrack.id]);
-    }
-    setIsCurrentTrackSaved((prev) => !prev);
-  }
-
-  function playNextSong() {
-    const currentIndex = reccomendations.findIndex((track) => track.id === currentTrack?.id);
-    const nextTrack = reccomendations.at(currentIndex + 1);
-    if (nextTrack) {
-      playTrack(nextTrack);
-    }
-  }
-
-  function playPreviousSong() {
-    const currentIndex = reccomendations.findIndex((track) => track.id === currentTrack?.id);
-    const previousTrack = reccomendations.at(currentIndex - 1);
-    if (previousTrack) {
-      playTrack(previousTrack);
-    }
-  }
+  }, [player, session?.user.access_token]);
 
   return (
     <SpotifyPlayerContext.Provider
@@ -196,6 +227,10 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
         isCurrentTrackSaved,
         playPreviousSong,
         playNextSong,
+        isAutoPlayEnabled,
+        setIsAutoPlayEnabled,
+        isScrubbing,
+        setIsScrubbing,
       }}
     >
       {children}
