@@ -1,3 +1,4 @@
+import { useStore } from '@/app/store';
 import { useToast } from '@/components/ui/use-toast';
 import { env } from '@/env.mjs';
 import type { AccessToken, Track } from '@spotify/web-api-ts-sdk';
@@ -18,6 +19,8 @@ type SpotifyPlayerContextType = {
   currentTrack?: Spotify.Track;
   toggleSaveCurrentTrack: () => void;
   isCurrentTrackSaved: boolean;
+  playPreviousSong: () => void;
+  playNextSong: () => void;
 };
 
 const SpotifyPlayerContext = React.createContext<SpotifyPlayerContextType | undefined>(undefined);
@@ -25,6 +28,7 @@ const SpotifyPlayerContext = React.createContext<SpotifyPlayerContextType | unde
 export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: session } = useSession();
   const { toast } = useToast();
+  const reccomendations = useStore((state) => state.reccomendations);
 
   const [player, setPlayer] = useState<Spotify.Player | undefined>(undefined);
   const [deviceId, setDeviceId] = useState<string | undefined>(undefined);
@@ -159,6 +163,22 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
     setIsCurrentTrackSaved((prev) => !prev);
   }
 
+  function playNextSong() {
+    const currentIndex = reccomendations.findIndex((track) => track.id === currentTrack?.id);
+    const nextTrack = reccomendations.at(currentIndex + 1);
+    if (nextTrack) {
+      playTrack(nextTrack);
+    }
+  }
+
+  function playPreviousSong() {
+    const currentIndex = reccomendations.findIndex((track) => track.id === currentTrack?.id);
+    const previousTrack = reccomendations.at(currentIndex - 1);
+    if (previousTrack) {
+      playTrack(previousTrack);
+    }
+  }
+
   return (
     <SpotifyPlayerContext.Provider
       value={{
@@ -174,6 +194,8 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
         currentTrack,
         toggleSaveCurrentTrack,
         isCurrentTrackSaved,
+        playPreviousSong,
+        playNextSong,
       }}
     >
       {children}

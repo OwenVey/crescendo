@@ -31,6 +31,8 @@ export default function SpotifyPlayer() {
     setPosition,
     toggleSaveCurrentTrack,
     isCurrentTrackSaved,
+    playPreviousSong,
+    playNextSong,
   } = useSpotifyPlayer();
 
   function getVolumeIcon() {
@@ -93,7 +95,7 @@ export default function SpotifyPlayer() {
                       )}
                     </Button>
                     <Button variant="ghost" size="icon">
-                      <SkipForwardIcon className="h-5 w-5" />
+                      <SkipForwardIcon onClick={playNextSong} className="h-5 w-5" />
                     </Button>
                   </div>
                 </div>
@@ -122,7 +124,7 @@ export default function SpotifyPlayer() {
             <div className="hidden w-full max-w-lg flex-grow items-center justify-center gap-2 justify-self-center md:flex">
               <div className="flex items-center gap-1">
                 <Button variant="ghost" size="icon">
-                  <SkipBackIcon className="h-5 w-5" />
+                  <SkipBackIcon onClick={playPreviousSong} className="h-5 w-5" />
                 </Button>
                 <Button onClick={togglePlay} className="flex-shrink-0 rounded-full" size="icon">
                   {playbackState?.paused ? (
@@ -132,7 +134,7 @@ export default function SpotifyPlayer() {
                   )}
                 </Button>
                 <Button variant="ghost" size="icon">
-                  <SkipForwardIcon className="h-5 w-5" />
+                  <SkipForwardIcon onClick={playNextSong} className="h-5 w-5" />
                 </Button>
               </div>
 
