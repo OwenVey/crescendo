@@ -96,7 +96,7 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
 
   const playNextSong = useCallback(() => {
     const currentIndex = reccomendations.findIndex((track) => track.id === currentTrack?.id);
-    const nextTrack = reccomendations.at(currentIndex + 1);
+    const nextTrack = reccomendations[currentIndex + 1];
     if (nextTrack) {
       playTrack(nextTrack);
     }
@@ -104,7 +104,7 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
 
   function playPreviousSong() {
     const currentIndex = reccomendations.findIndex((track) => track.id === currentTrack?.id);
-    const previousTrack = reccomendations.at(currentIndex - 1);
+    const previousTrack = reccomendations[currentIndex - 1];
     if (previousTrack) {
       playTrack(previousTrack);
     }
