@@ -1,3 +1,4 @@
+import { useToast } from '@/components/ui/use-toast';
 import { env } from '@/env.mjs';
 import type { AccessToken, Track } from '@spotify/web-api-ts-sdk';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
@@ -22,7 +23,9 @@ type SpotifyPlayerContextType = {
 const SpotifyPlayerContext = React.createContext<SpotifyPlayerContextType | undefined>(undefined);
 
 export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode }) => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
+  const { toast } = useToast();
+
   const [player, setPlayer] = useState<Spotify.Player | undefined>(undefined);
   const [deviceId, setDeviceId] = useState<string | undefined>(undefined);
   const [playbackState, setPlaybackState] = useState<Spotify.PlaybackState | undefined>(undefined);
@@ -128,6 +131,11 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
       sdk.player.startResumePlayback(deviceId, undefined, [track.uri]);
       const [isSaved] = await sdk.currentUser.tracks.hasSavedTracks([track.id]);
       setIsCurrentTrackSaved(isSaved);
+    } else {
+      toast({
+        title: 'Unable to play track',
+        description: 'Ensure that you have authorized your Spotify account in order to listen to songs',
+      });
     }
   }
 
