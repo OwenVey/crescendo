@@ -1,11 +1,12 @@
 'use client';
 
+import { useStore, viewAtom } from '@/app/store';
 import { Button } from '@/components/ui/button';
 import type { Track } from '@spotify/web-api-ts-sdk';
+import { useAtom } from 'jotai';
 import { RotateCcwIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect } from 'react';
-import { useStore } from '../store';
 import { GridView } from './grid/grid-view';
 import { columns } from './list/columns';
 import { ListView } from './list/list-view';
@@ -15,13 +16,12 @@ type RecommendationsProps = {
 };
 
 export function RecommendationsView({ tracks }: RecommendationsProps) {
-  const { reccomendations, updateReccomendations, view } = useStore(
-    ({ reccomendations, updateReccomendations, view }) => ({ reccomendations, updateReccomendations, view }),
-  );
+  const updateReccomendations = useStore((state) => state.updateReccomendations);
+  const [view] = useAtom(viewAtom);
 
   useEffect(() => updateReccomendations(tracks), [tracks, updateReccomendations]);
 
-  if (reccomendations.length === 0) {
+  if (tracks.length === 0) {
     return (
       <div className="grid h-full place-items-center">
         <div className="flex flex-col items-center">
@@ -39,5 +39,5 @@ export function RecommendationsView({ tracks }: RecommendationsProps) {
     );
   }
 
-  return view === 'grid' ? <GridView /> : <ListView columns={columns} data={tracks} />;
+  return view === 'list' ? <ListView columns={columns} data={tracks} /> : <GridView />;
 }

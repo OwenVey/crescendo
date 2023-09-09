@@ -14,6 +14,7 @@ const config = {
   },
   experimental: {
     serverActions: true,
+    swcPlugins: [['@swc-jotai/react-refresh', {}]],
   },
 };
 
