@@ -35,7 +35,7 @@ export function Sidebar({ className }: { className?: string }) {
       <SearchFilters />
 
       {/* Footer */}
-      <div className="flex h-16 items-center justify-between border-t border-gray-200 px-6 dark:border-gray-800">
+      <div className="flex h-16 shrink-0 items-center justify-between border-t border-gray-200 px-6 dark:border-gray-800">
         {session ? (
           <DropdownMenu>
             <DropdownMenuTrigger className="text-left">
