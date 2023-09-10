@@ -4,8 +4,9 @@ import SpotifyPlayer from '@/components/spotify-player';
 import type { PageProps } from '@/types';
 import { Suspense } from 'react';
 import { z } from 'zod';
+import { GridViewLoading } from './grid/grid-view-loading';
+import { ListViewLoading } from './list/list-view-loading';
 import { Recommendations } from './reccomendations';
-import { ReccomendationsLoading } from './reccomendations-loading';
 import { TopToolbar } from './top-toolbar';
 
 export type Attributes = z.infer<typeof AttributesSchema>;
@@ -83,7 +84,10 @@ export default function ReccomendationsPage({ searchParams }: PageProps) {
 
       <TopToolbar view={attributes.view} />
 
-      <Suspense key={JSON.stringify(searchParams)} fallback={<ReccomendationsLoading />}>
+      <Suspense
+        key={JSON.stringify(searchParams)}
+        fallback={attributes.view === 'grid' ? <GridViewLoading /> : <ListViewLoading />}
+      >
         <Recommendations attributes={attributes} />
       </Suspense>
 

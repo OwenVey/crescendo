@@ -1,17 +1,17 @@
 import { Skeleton } from '@/components/ui/skeleton';
 
-export function ReccomendationsLoading() {
+export function GridViewLoading() {
   return (
     // <div className="grid grid-cols-[repeat(auto-fill,var(--card-width))] justify-between gap-8 overflow-y-auto p-8">
     <div className="flex flex-wrap gap-8 overflow-y-auto p-8">
-      {[...Array(50)].map((_, index) => (
-        <TrackCardSkeleton key={index} />
+      {[...Array(100)].map((_, index) => (
+        <GridTrackItemSkeleton key={index} />
       ))}
     </div>
   );
 }
 
-function TrackCardSkeleton() {
+function GridTrackItemSkeleton() {
   return (
     <div className="w-[--card-width]">
       <Skeleton className="aspect-square w-full rounded-2xl" />

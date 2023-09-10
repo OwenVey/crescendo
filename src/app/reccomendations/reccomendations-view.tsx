@@ -1,14 +1,13 @@
 'use client';
 
-import { useStore, viewAtom } from '@/app/store';
+import { reccomendationsAtom, viewAtom } from '@/app/store';
 import { Button } from '@/components/ui/button';
 import type { Track } from '@spotify/web-api-ts-sdk';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { RotateCcwIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect } from 'react';
 import { GridView } from './grid/grid-view';
-import { columns } from './list/columns';
 import { ListView } from './list/list-view';
 
 type RecommendationsProps = {
@@ -16,10 +15,12 @@ type RecommendationsProps = {
 };
 
 export function RecommendationsView({ tracks }: RecommendationsProps) {
-  const updateReccomendations = useStore((state) => state.updateReccomendations);
+  // useHydrateAtoms([[reccomendationsAtom, tracks]]);
+  const setReccomendations = useSetAtom(reccomendationsAtom);
   const [view] = useAtom(viewAtom);
-
-  useEffect(() => updateReccomendations(tracks), [tracks, updateReccomendations]);
+  useEffect(() => {
+    setReccomendations(tracks);
+  }, [setReccomendations, tracks]);
 
   if (tracks.length === 0) {
     return (
@@ -39,5 +40,5 @@ export function RecommendationsView({ tracks }: RecommendationsProps) {
     );
   }
 
-  return view === 'list' ? <ListView columns={columns} data={tracks} /> : <GridView />;
+  return view === 'list' ? <ListView /> : <GridView />;
 }

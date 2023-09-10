@@ -1,8 +1,9 @@
-import { useStore } from '@/app/store';
+import { reccomendationsAtom } from '@/app/store';
 import { useToast } from '@/components/ui/use-toast';
 import { env } from '@/env.mjs';
 import type { AccessToken, Track } from '@spotify/web-api-ts-sdk';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
+import { useAtomValue } from 'jotai';
 import { useSession } from 'next-auth/react';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
@@ -32,7 +33,8 @@ const SpotifyPlayerContext = React.createContext<SpotifyPlayerContextType | unde
 export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: session } = useSession();
   const { toast } = useToast();
-  const reccomendations = useStore((state) => state.reccomendations);
+
+  const reccomendations = useAtomValue(reccomendationsAtom);
 
   const [player, setPlayer] = useState<Spotify.Player | undefined>(undefined);
   const [deviceId, setDeviceId] = useState<string | undefined>(undefined);

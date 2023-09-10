@@ -1,6 +1,6 @@
 'use client';
 
-import type { ColumnDef, ColumnFiltersState, SortingState } from '@tanstack/react-table';
+import type { ColumnFiltersState, SortingState } from '@tanstack/react-table';
 import {
   flexRender,
   getCoreRowModel,
@@ -10,20 +10,19 @@ import {
 } from '@tanstack/react-table';
 import * as React from 'react';
 
+import { reccomendationsAtom } from '@/app/store';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useAtomValue } from 'jotai';
+import { columns } from './columns';
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-}
-
-export function ListView<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export function ListView() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const reccomendations = useAtomValue(reccomendationsAtom);
 
   const table = useReactTable({
-    data,
+    data: reccomendations,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
