@@ -7,15 +7,16 @@ import { useAtom } from 'jotai';
 import { useHydrateAtoms } from 'jotai/utils';
 import { LayoutGridIcon, LayoutListIcon, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
 
-function updateTrackImageSize(size: number) {
-  document.documentElement.style.setProperty('--card-width', `${size}px`);
-}
 type TopToolbarProps = {
   view: 'grid' | 'list';
 };
 export function TopToolbar(props: TopToolbarProps) {
   useHydrateAtoms([[viewAtom, props.view]]);
   const [view, updateView] = useAtom(viewAtom);
+
+  function updateTrackImageSize(size: number) {
+    document.documentElement.style.setProperty('--card-width', `${size}px`);
+  }
 
   return (
     <Toolbar className="flex h-16 shrink-0 items-center gap-4 border-b border-t border-gray-200 bg-white px-3 py-2 shadow-sm dark:border-gray-800 dark:bg-gray-950 md:border-t-0">
