@@ -29,7 +29,7 @@ export function MobileNav() {
     <div className="sticky top-0 z-40 flex items-center gap-x-2 bg-white px-6 py-4 shadow-sm dark:bg-gray-950 md:hidden">
       <Sheet>
         <SheetTrigger asChild>
-          <Button variant="ghost" size="icon" className={cn(pathname === '/' && 'hidden')}>
+          <Button variant="ghost" size="icon" className={cn('-ml-3', pathname === '/' && 'hidden')}>
             <MenuIcon className="h-6 w-6" aria-hidden="true" />
           </Button>
         </SheetTrigger>
