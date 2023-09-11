@@ -76,7 +76,7 @@ export default function ReccomendationsPage({ searchParams }: PageProps) {
   const attributes = AttributesSchema.parse(searchParams);
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden">
+    <div className="flex flex-1 flex-col overflow-hidden bg-gray-100 dark:bg-gray-900">
       {/* <div className="absolute right-0 top-0 z-10 m-8 rounded-xl border bg-white/75 p-4 text-black backdrop-blur-lg">
         <div className="font-bold underline">searchParams</div>
         <pre className="text-xs">{JSON.stringify(searchParams, null, 2)}</pre>

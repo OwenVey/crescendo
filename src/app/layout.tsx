@@ -176,7 +176,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html suppressHydrationWarning lang="en" className={cn(inter.variable, 'h-full antialiased')}>
-      <body className="flex h-screen flex-col overflow-hidden bg-gray-100 [-webkit-tap-highlight-color:transparent] dark:bg-gray-900 md:flex-row">
+      <body className="flex h-screen flex-col overflow-hidden bg-white [-webkit-tap-highlight-color:transparent] dark:bg-gray-950 md:flex-row">
         <Providers>
           <MobileNav />
           <Sidebar className="hidden md:flex" />
