@@ -28,7 +28,7 @@ export function Sidebar({ className }: { className?: string }) {
       <header className="flex items-center px-6 py-3">
         <Link href="/" className="flex items-center">
           <Image src={logo} alt="Logo" className="h-10 w-10" />
-          <h1 className="ml-2 text-xl font-bold">Crescendo</h1>
+          <h1 className="ml-2 text-xl font-semibold">Crescendo</h1>
         </Link>
       </header>
 

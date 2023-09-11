@@ -40,7 +40,7 @@ export function MobileNav() {
 
       <Link href="/" className="flex flex-1 items-center">
         <Image src={logo} alt="Logo" className="h-8 w-8" />
-        <h1 className="ml-2 text-lg font-bold">Crescendo</h1>
+        <h1 className="ml-2 text-lg font-semibold">Crescendo</h1>
       </Link>
 
       <div className="flex items-center gap-2">
