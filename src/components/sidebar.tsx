@@ -1,5 +1,5 @@
 'use client';
-import logo from '@/app/images/logo.png';
+import logo from '@/app/icon.svg';
 import { SearchFilters } from '@/components/search-filters';
 import { SignInButton } from '@/components/sign-in-button';
 import { ThemeToggle } from '@/components/theme-toggle';
