@@ -33,6 +33,8 @@ export const authOptions: AuthOptions = {
             'user-read-currently-playing',
             'user-library-modify',
             'user-library-read',
+            'playlist-modify-public',
+            'playlist-modify-private',
           ].join(' '),
         },
       },

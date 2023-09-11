@@ -1,11 +1,43 @@
 'use client';
 
-import { viewAtom } from '@/app/store';
+import { reccomendationsAtom, viewAtom } from '@/app/store';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
-import { Toolbar, ToolbarSeparator, ToolbarToggleGroup, ToolbarToggleItem } from '@/components/ui/toolbar';
-import { useAtom } from 'jotai';
+import { Switch } from '@/components/ui/switch';
+import { TextArea } from '@/components/ui/textarea';
+import {
+  Toolbar,
+  ToolbarButton,
+  ToolbarSeparator,
+  ToolbarToggleGroup,
+  ToolbarToggleItem,
+} from '@/components/ui/toolbar';
+import { useToast } from '@/components/ui/use-toast';
+import { useSpotifySdk } from '@/lib/hooks/useSpotifySdk';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useAtom, useAtomValue } from 'jotai';
 import { useHydrateAtoms } from 'jotai/utils';
-import { LayoutGridIcon, LayoutListIcon, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
+import { LayoutGridIcon, LayoutListIcon, ListPlusIcon, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+const createPlaylistFormSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().optional(),
+  public: z.boolean().default(false),
+});
 
 type TopToolbarProps = {
   view: 'grid' | 'list';
@@ -13,9 +45,50 @@ type TopToolbarProps = {
 export function TopToolbar(props: TopToolbarProps) {
   useHydrateAtoms([[viewAtom, props.view]]);
   const [view, updateView] = useAtom(viewAtom);
+  const reccomendations = useAtomValue(reccomendationsAtom);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const sdk = useSpotifySdk();
+  const { data: session } = useSession();
+  const { toast } = useToast();
 
   function updateTrackImageSize(size: number) {
     document.documentElement.style.setProperty('--card-width', `${size}px`);
+  }
+
+  const form = useForm<z.infer<typeof createPlaylistFormSchema>>({
+    resolver: zodResolver(createPlaylistFormSchema),
+    defaultValues: {
+      name: '',
+      description: '',
+      public: false,
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof createPlaylistFormSchema>) {
+    console.log(values);
+    if (!session?.user.name) {
+      toast({
+        variant: 'destructive',
+        title: 'User not signed in',
+        description: 'You must authorize Spotify in order to create a playlist',
+      });
+      return;
+    }
+    try {
+      setLoading(true);
+      const playlist = await sdk.playlists.createPlaylist(session.user.name, values);
+      await sdk.playlists.addItemsToPlaylist(
+        playlist.id,
+        reccomendations.map(({ uri }) => uri),
+      );
+      setOpen(false);
+      form.reset();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -35,8 +108,6 @@ export function TopToolbar(props: TopToolbarProps) {
         </ToolbarToggleItem>
       </ToolbarToggleGroup>
 
-      <ToolbarSeparator />
-
       <div className="flex items-center gap-1">
         <ZoomOutIcon className="h-4 w-4 text-gray-500 dark:text-gray-500" />
         <Slider
@@ -50,6 +121,75 @@ export function TopToolbar(props: TopToolbarProps) {
         />
         <ZoomInIcon className="h-4 w-4 text-gray-500 dark:text-gray-500" />
       </div>
+
+      <ToolbarSeparator />
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <ToolbarButton variant="secondary" size="icon">
+            <ListPlusIcon className="h-4 w-4" />
+          </ToolbarButton>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create Playlist</DialogTitle>
+            <DialogDescription>
+              Create a new playlist on your Spotify account with the reccomendations generated.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input autoComplete="off" placeholder="Add a name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <TextArea placeholder="Add an optional description" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="public"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-2">
+                      <FormControl>
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                      <FormLabel>Public</FormLabel>
+                    </div>
+                    <FormDescription>Make playlist visible to others</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button type="submit" className="float-right" loading={loading}>
+                Create
+              </Button>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </Toolbar>
   );
 }

@@ -1,11 +1,10 @@
 import { reccomendationsAtom } from '@/app/store';
 import { useToast } from '@/components/ui/use-toast';
-import { env } from '@/env.mjs';
-import type { AccessToken, Track } from '@spotify/web-api-ts-sdk';
-import { SpotifyApi } from '@spotify/web-api-ts-sdk';
+import type { Track } from '@spotify/web-api-ts-sdk';
 import { useAtomValue } from 'jotai';
 import { useSession } from 'next-auth/react';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useSpotifySdk } from './useSpotifySdk';
 
 type SpotifyPlayerContextType = {
   player?: Spotify.Player;
@@ -46,9 +45,7 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
   const [isScrubbing, setIsScrubbing] = useState(false);
   const currentTrack = playbackState?.track_window.current_track;
 
-  const sdk = SpotifyApi.withAccessToken(env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID, {
-    access_token: session?.user.access_token,
-  } as AccessToken);
+  const sdk = useSpotifySdk();
 
   async function togglePlay() {
     player?.togglePlay();
