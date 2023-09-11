@@ -12,14 +12,15 @@ const buttonVariants = cva(
       variant: {
         default:
           // 'bg-primary-600 text-gray-50 hover:bg-primary-500 dark:bg-primary-500 dark:text-primary-50 dark:hover:bg-primary-400',
-          'bg-gray-900 text-gray-50 hover:bg-gray-700 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-300',
+          'bg-gray-900 text-gray-50 hover:bg-gray-700 active:bg-gray-600 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-300 dark:active:bg-gray-400',
         secondary:
-          'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-50 dark:hover:bg-gray-700',
-        destructive: 'bg-red-600 text-gray-50 hover:bg-red-500 dark:bg-red-500 dark:text-red-50 dark:hover:bg-red-400',
+          'bg-gray-100 text-gray-900 hover:bg-gray-200 active:bg-gray-300 dark:bg-gray-800 dark:text-gray-50 dark:hover:bg-gray-700 dark:active:bg-gray-600',
+        destructive:
+          'bg-red-600 text-gray-50 hover:bg-red-500 active:bg-red-400 dark:bg-red-500 dark:text-red-50 dark:hover:bg-red-400 dark:active:bg-red-300',
         outline:
-          'border border-gray-200  bg-white text-gray-900 hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-50',
+          'border border-gray-200  bg-white text-gray-900 hover:bg-gray-100 active:bg-gray-200 hover:text-gray-950 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-50 dark:hover:bg-gray-800 dark:active:bg-gray-700 dark:hover:text-white',
         ghost:
-          'text-gray-900 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-50',
+          'text-gray-900 hover:bg-gray-100 active:bg-gray-200 hover:text-gray-950 dark:text-gray-50 dark:hover:bg-gray-800 dark:active:bg-gray-700 dark:hover:text-white',
         link: 'text-gray-900 underline-offset-4 hover:underline dark:text-gray-50',
       },
       size: {
