@@ -2,12 +2,14 @@
 
 import { Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from '@/components/ui/toast';
 import { useToast } from '@/components/ui/use-toast';
+import { useMediaQuery } from 'usehooks-ts';
 
 export function Toaster() {
   const { toasts } = useToast();
+  const isDesktop = useMediaQuery('(min-width: 768px)');
 
   return (
-    <ToastProvider>
+    <ToastProvider swipeDirection={isDesktop ? 'right' : 'up'}>
       {toasts.map(function ({ id, title, description, action, ...props }) {
         return (
           <Toast key={id} {...props}>
