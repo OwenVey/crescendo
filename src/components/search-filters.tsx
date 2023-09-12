@@ -346,7 +346,7 @@ export function SearchFilters() {
         </div>
       </ScrollArea>
 
-      <div className="flex gap-2 px-6 py-6 md:py-3">
+      <div className="flex gap-2 px-6 py-3">
         <Button variant="secondary" size="icon" onClick={reset}>
           <RotateCcwIcon className="h-4 w-4" />
         </Button>
