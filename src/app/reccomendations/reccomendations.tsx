@@ -23,7 +23,7 @@ export async function Recommendations({ attributes }: RecommendationsProps) {
     throw Error('Max of 5 seed may be provided in any combination of Seed Artists, Seed Tracks, and Seed Genres');
   }
 
-  // await new Promise((resolve) => setTimeout(resolve, 2000));
+  await new Promise((resolve) => setTimeout(resolve, 10000));
   const recommendations = await sdk.recommendations.get({
     limit: 100,
     market: 'US',

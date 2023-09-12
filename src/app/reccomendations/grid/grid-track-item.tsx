@@ -30,9 +30,9 @@ export function GridTrackItem({ track, index }: GridTrackItemProps) {
   const isCurrentTrack = track.id === currentTrack?.id;
 
   return (
-    <div className="group w-[--card-width]">
+    <div className="group">
       <button
-        className="relative block w-inherit overflow-hidden rounded-2xl"
+        className="relative block w-full overflow-hidden rounded-2xl"
         onClick={() => (isCurrentTrack ? player?.togglePlay() : playTrack(track))}
       >
         <div
@@ -58,7 +58,7 @@ export function GridTrackItem({ track, index }: GridTrackItemProps) {
         <div className="bg-gray-300/60 dark:bg-gray-800/60">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: imageLoading ? 0 : 1 }}>
             <Image
-              className="aspect-square"
+              className="aspect-square h-auto w-full"
               src={
                 track.album.images[0]
                   ? track.album.images[0].url
@@ -82,7 +82,7 @@ export function GridTrackItem({ track, index }: GridTrackItemProps) {
 
           <div className="flex items-center truncate">
             {track.explicit && (
-              <span className="mr-1 grid h-4 w-4 place-items-center rounded bg-gray-300 text-[10px] dark:bg-gray-700">
+              <span className="mr-1 grid h-4 w-4 shrink-0 place-items-center rounded bg-gray-300 text-[10px] dark:bg-gray-700">
                 E
               </span>
             )}

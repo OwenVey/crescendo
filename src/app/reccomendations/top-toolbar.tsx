@@ -45,8 +45,8 @@ export function TopToolbar(props: TopToolbarProps) {
   const { data: session } = useSession();
   const { toast } = useToast();
 
-  function updateTrackImageSize(size: number) {
-    document.documentElement.style.setProperty('--card-width', `${size}px`);
+  function updateTrackImageSize(cards: number) {
+    document.documentElement.style.setProperty('--cards-global', `${10 - cards}`);
   }
 
   const form = useForm<z.infer<typeof createPlaylistFormSchema>>({
@@ -106,10 +106,10 @@ export function TopToolbar(props: TopToolbarProps) {
         <Slider
           size="sm"
           className="w-24"
-          min={100}
-          max={300}
+          min={1}
+          max={9}
           step={1}
-          defaultValue={[200]}
+          defaultValue={[5]}
           onValueChange={([value]) => updateTrackImageSize(value)}
         />
         <ZoomInIcon className="h-4 w-4 text-gray-500 dark:text-gray-500" />
