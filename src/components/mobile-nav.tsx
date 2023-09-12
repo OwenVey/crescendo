@@ -26,7 +26,7 @@ export function MobileNav() {
   const pathname = usePathname();
 
   return (
-    <div className="sticky top-0 z-40 flex items-center gap-x-2 bg-white px-6 py-4 pt-[max(env(safe-area-inset-top),1rem)] shadow-sm dark:bg-gray-950 md:hidden">
+    <div className="sticky top-0 z-40 flex items-center gap-x-2 bg-white px-6 py-4 shadow-sm dark:bg-gray-950 md:hidden">
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="ghost" size="icon" className={cn('-ml-3', pathname === '/' && 'hidden')}>
