@@ -16,7 +16,6 @@ export function Modal({ children, ...props }: ModalProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [open, setOpen] = useState(false);
 
-  if (!window) return;
   return isDesktop ? (
     <Dialog open={open} onOpenChange={setOpen} {...props}>
       {children}
@@ -30,19 +29,16 @@ export function Modal({ children, ...props }: ModalProps) {
 
 export function ModalTrigger(props: DialogTriggerProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)');
-  if (!window) return;
   return isDesktop ? <DialogTrigger {...props} /> : <DrawerTrigger {...props} />;
 }
 
 export function ModalContent(props: DrawerContentProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)');
-  if (!window) return;
   return isDesktop ? <DialogContent {...props} /> : <DrawerContent {...props} />;
 }
 
 export const ModalHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
   const isDesktop = useMediaQuery('(min-width: 768px)');
-  if (!window) return;
   return isDesktop ? <DialogHeader {...props} /> : <DrawerHeader {...props} />;
 };
 
@@ -52,12 +48,10 @@ export const ModalFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDi
 
 export function ModalTitle(props: DialogTitleProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)');
-  if (!window) return;
   return isDesktop ? <DialogTitle {...props} /> : <DrawerTitle {...props} />;
 }
 
 export function ModalDescription(props: DialogDescriptionProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)');
-  if (!window) return;
   return isDesktop ? <DialogDescription {...props} /> : <DrawerDescription {...props} />;
 }

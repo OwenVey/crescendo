@@ -35,3 +35,7 @@ export function millisecondsToMmSs(milliseconds: number) {
   const paddedSecs = (secs < 10 ? '0' : '') + secs;
   return `${mins}:${paddedSecs}`;
 }
+
+export function isClient() {
+  return typeof window !== 'undefined';
+}

@@ -1,4 +1,5 @@
 import { atomWithStorage } from 'jotai/utils';
+import { isClient } from './utils';
 
 const getUrlSearch = () => {
   return window.location.search.slice(1);
@@ -12,7 +13,7 @@ export function atomWithSearchParam<Value>(key: string, initialValue: Value) {
       return valueFromParams ? (valueFromParams as Value) : initialValue;
     },
     setItem(key, value) {
-      if (typeof window !== 'undefined' && getUrlSearch()) {
+      if (isClient() && getUrlSearch()) {
         const searchParams = new URLSearchParams(getUrlSearch());
         if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
           searchParams.set(key, value.toString());
