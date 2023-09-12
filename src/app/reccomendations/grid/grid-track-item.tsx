@@ -47,7 +47,11 @@ export function GridTrackItem({ track, index }: GridTrackItemProps) {
             <PauseIcon className="h-6 w-6" fill="white" strokeWidth={0} />
           )}
           <AnimatePresence>
-            {isCurrentTrack && !playbackState?.paused && <AudioWave className="absolute mt-24 h-12 w-12 text-white" />}
+            {isCurrentTrack && !playbackState?.paused && (
+              <div className="absolute mt-24">
+                <AudioWave className="h-12 w-12 text-white" />
+              </div>
+            )}
           </AnimatePresence>
         </div>
 
