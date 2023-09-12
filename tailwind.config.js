@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const defaultTheme = require('tailwindcss/defaultTheme');
 const colors = require('tailwindcss/colors');
 
@@ -29,6 +30,7 @@ module.exports = {
       },
       boxShadow: {
         'sm-up': '0 -1px 2px 0 rgb(0 0 0 / 0.05)',
+        'lg-up': '0 -10px 15px -3px rgb(0 0 0 / 0.1), 0 -4px 6px -4px rgb(0 0 0 / 0.1)',
       },
       keyframes: {
         'accordion-down': {

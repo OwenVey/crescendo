@@ -2,16 +2,9 @@
 
 import { reccomendationsAtom, viewAtom } from '@/app/store';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Modal, ModalContent, ModalDescription, ModalHeader, ModalTitle, ModalTrigger } from '@/components/ui/modal';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { TextArea } from '@/components/ui/textarea';
@@ -124,19 +117,20 @@ export function TopToolbar(props: TopToolbarProps) {
 
       <ToolbarSeparator />
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
+      <Modal open={open} onOpenChange={setOpen}>
+        <ModalTrigger asChild>
           <ToolbarButton variant="secondary" size="icon">
             <ListPlusIcon className="h-4 w-4" />
           </ToolbarButton>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Create Playlist</DialogTitle>
-            <DialogDescription>
+        </ModalTrigger>
+        <ModalContent>
+          <ModalHeader>
+            <ModalTitle className="">Create Playlist</ModalTitle>
+            <ModalDescription>
               Create a new playlist on your Spotify account with the reccomendations generated.
-            </DialogDescription>
-          </DialogHeader>
+            </ModalDescription>
+          </ModalHeader>
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField
@@ -183,13 +177,13 @@ export function TopToolbar(props: TopToolbarProps) {
                 )}
               />
 
-              <Button type="submit" className="float-right" loading={loading}>
+              <Button type="submit" className="w-full md:float-right md:w-auto" loading={loading}>
                 Create
               </Button>
             </form>
           </Form>
-        </DialogContent>
-      </Dialog>
+        </ModalContent>
+      </Modal>
     </Toolbar>
   );
 }
