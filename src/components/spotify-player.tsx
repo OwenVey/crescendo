@@ -119,7 +119,8 @@ export default function SpotifyPlayer() {
                     onValueCommit={(v) => seek(v[0])}
                     onPointerDown={() => setIsScrubbing(true)}
                     onPointerUp={() => setIsScrubbing(false)}
-                    showThumbOnHover
+                    thumbVisibility="never"
+                    grow
                   />
                   <div className="ml-2 text-sm tabular-nums text-gray-600 dark:text-gray-400">
                     <span>{millisecondsToMmSs(position)}/</span>
@@ -158,7 +159,8 @@ export default function SpotifyPlayer() {
                 onValueCommit={(v) => seek(v[0])}
                 onPointerDown={() => setIsScrubbing(true)}
                 onPointerUp={() => setIsScrubbing(false)}
-                showThumbOnHover
+                thumbVisibility="never"
+                grow
               />
               <div className="text-sm tabular-nums text-gray-600 dark:text-gray-400">
                 <span>{millisecondsToMmSs(position)}/</span>
@@ -207,7 +209,8 @@ export default function SpotifyPlayer() {
                 step={0.01}
                 value={[volume]}
                 onValueChange={([volume]) => setVolume(volume)}
-                showThumbOnHover
+                thumbVisibility="never"
+                grow
               />
             </div>
           </div>
