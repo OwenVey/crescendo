@@ -33,7 +33,7 @@ export function MobileNav() {
             <MenuIcon className="h-6 w-6" aria-hidden="true" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="border-gray-200 p-0 dark:border-gray-800">
+        <SheetContent side="left" className="border-gray-200 px-0 dark:border-gray-800">
           <Sidebar className="h-full w-full border-none" />
         </SheetContent>
       </Sheet>

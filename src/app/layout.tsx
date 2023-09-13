@@ -176,8 +176,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html suppressHydrationWarning lang="en" className={cn(inter.variable, 'h-full antialiased')}>
-      <body className="flex h-[100dvh] flex-col overflow-hidden bg-white pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] [-webkit-tap-highlight-color:transparent] dark:bg-gray-950 md:flex-row">
+    <html
+      suppressHydrationWarning
+      lang="en"
+      className={cn(
+        inter.variable,
+        'flex h-[100dvh] pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] antialiased [-webkit-tap-highlight-color:transparent]',
+      )}
+    >
+      <body className="flex flex-1 flex-col overflow-hidden bg-white dark:bg-gray-950 md:flex-row">
         <Providers>
           <MobileNav />
           <Sidebar className="hidden md:flex" />
