@@ -94,7 +94,7 @@ export function GridTrackItem({ track, index }: GridTrackItemProps) {
         </div>
 
         <DropdownMenu>
-          <DropdownMenuTrigger className="-mr-1 text-gray-500 opacity-0 transition-colors hover:text-gray-950 group-hover:opacity-100 data-[state=open]:opacity-100 dark:text-gray-500 dark:hover:text-gray-200">
+          <DropdownMenuTrigger className="-mr-1 text-gray-500 opacity-100 transition-colors hover:text-gray-950 group-hover:opacity-100 data-[state=open]:opacity-100 dark:text-gray-500 dark:hover:text-gray-200 md:opacity-0">
             <MoreVerticalIcon className="h-5 w-5" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
