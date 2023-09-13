@@ -13,9 +13,10 @@ import { useSpotifyPlayer } from '@/lib/hooks/useSpotifyPlayer';
 import { cn } from '@/lib/utils';
 import type { Track } from '@spotify/web-api-ts-sdk';
 import { AnimatePresence, motion } from 'framer-motion';
-import { HeartIcon, InfoIcon, ListEndIcon, MoreVerticalIcon, PauseIcon, PlayIcon } from 'lucide-react';
+import { HeartIcon, InfoIcon, ListEndIcon, MoreVerticalIcon, PauseIcon, PlayIcon, RadioIcon } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState } from 'react';
 
 type GridTrackItemProps = {
@@ -108,6 +109,12 @@ export function GridTrackItem({ track, index }: GridTrackItemProps) {
             <DropdownMenuItem onSelect={() => console.log('View audio features')}>
               <InfoIcon className="mr-2 h-4 w-4" />
               View audio features
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href={{ pathname: '/reccomendations', query: { seed_tracks: track.id } }}>
+                <RadioIcon className="mr-2 h-4 w-4" />
+                Similar reccomendations
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
