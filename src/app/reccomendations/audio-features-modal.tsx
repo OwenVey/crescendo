@@ -31,26 +31,26 @@ export function AudioFeaturesModal({ track, children }: AudioFeaturesModalProps)
         <ModalHeader>
           <ModalTitle>Audio Features</ModalTitle>
           <ModalDescription>Audio feature information for “{track.name}”</ModalDescription>
-
-          {audioFeatures && (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-32">Attribute</TableHead>
-                  <TableHead className="">Value</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {TRACK_ATTRIBUTES.map((attribute) => (
-                  <TableRow key={attribute.id}>
-                    <TableCell className="text-gray-500 dark:text-gray-400">{attribute.label}</TableCell>
-                    <TableCell className="font-medium">{audioFeatures[attribute.id]}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
         </ModalHeader>
+
+        {audioFeatures && (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-32">Attribute</TableHead>
+                <TableHead className="">Value</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {TRACK_ATTRIBUTES.map((attribute) => (
+                <TableRow key={attribute.id}>
+                  <TableCell className="text-gray-500 dark:text-gray-400">{attribute.label}</TableCell>
+                  <TableCell className="font-medium">{audioFeatures[attribute.id]}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
       </ModalContent>
     </Modal>
   );
