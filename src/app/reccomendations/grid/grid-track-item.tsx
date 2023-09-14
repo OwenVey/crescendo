@@ -13,11 +13,12 @@ import { useSpotifyPlayer } from '@/lib/hooks/useSpotifyPlayer';
 import { cn } from '@/lib/utils';
 import type { Track } from '@spotify/web-api-ts-sdk';
 import { AnimatePresence, motion } from 'framer-motion';
-import { HeartIcon, InfoIcon, ListEndIcon, MoreVerticalIcon, PauseIcon, PlayIcon, RadioIcon } from 'lucide-react';
+import { HeartIcon, InfoIcon, MoreVerticalIcon, PauseIcon, PlayIcon, RadioIcon } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { AudioFeaturesModal } from '../audio-features-modal';
 
 type GridTrackItemProps = {
   track: Track;
@@ -29,6 +30,7 @@ export function GridTrackItem({ track, index }: GridTrackItemProps) {
   const [imageLoading, setImageLoading] = useState(true);
   const { resolvedTheme } = useTheme();
   const isCurrentTrack = track.id === currentTrack?.id;
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
 
   return (
     <div className="group">
@@ -94,7 +96,10 @@ export function GridTrackItem({ track, index }: GridTrackItemProps) {
         </div>
 
         <DropdownMenu>
-          <DropdownMenuTrigger className="-mr-1 text-gray-500 opacity-100 transition-colors hover:text-gray-950 group-hover:opacity-100 data-[state=open]:opacity-100 dark:text-gray-500 dark:hover:text-gray-200 md:opacity-0">
+          <DropdownMenuTrigger
+            ref={triggerRef}
+            className="-mr-1 text-gray-500 opacity-100 transition-colors hover:text-gray-950 group-hover:opacity-100 data-[state=open]:opacity-100 dark:text-gray-500 dark:hover:text-gray-200 md:opacity-0"
+          >
             <MoreVerticalIcon className="h-5 w-5" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -102,14 +107,17 @@ export function GridTrackItem({ track, index }: GridTrackItemProps) {
               <HeartIcon className="mr-2 h-4 w-4" />
               Add to liked songs
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => console.log('Add to queue')}>
+            {/* <DropdownMenuItem onSelect={() => console.log('Add to queue')}>
               <ListEndIcon className="mr-2 h-4 w-4" />
               Add to queue
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => console.log('View audio features')}>
-              <InfoIcon className="mr-2 h-4 w-4" />
-              View audio features
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
+            <AudioFeaturesModal track={track}>
+              <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
+                <InfoIcon className="mr-2 h-4 w-4" />
+                View audio features
+              </DropdownMenuItem>
+            </AudioFeaturesModal>
+
             <DropdownMenuItem asChild>
               <Link href={{ pathname: '/reccomendations', query: { seed_tracks: track.id } }}>
                 <RadioIcon className="mr-2 h-4 w-4" />
