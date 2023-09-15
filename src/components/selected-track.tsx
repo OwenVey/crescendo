@@ -23,9 +23,9 @@ export function SelectedTrack({ track, remove }: SelectedTrackProps) {
           alt={`Picture of the album "${track.album.name}"`}
         />
 
-        <div className="overflow-hidden pr-1">
-          <div className="truncate text-xs">{track.name}</div>
-          <div className="truncate text-xs text-gray-600 dark:text-gray-400">{track.artists[0].name}</div>
+        <div className="pr-1">
+          <div className="line-clamp-1 text-xs">{track.name}</div>
+          <div className="line-clamp-1 text-xs text-gray-600 dark:text-gray-400">{track.artists[0].name}</div>
         </div>
       </div>
 

@@ -31,7 +31,7 @@ export function SelectedArtist({ artist, remove }: SelectedArtistProps) {
           </span>
         )}
 
-        <span className="text-xs">{artist.name}</span>
+        <span className="line-clamp-1 text-xs">{artist.name}</span>
       </div>
 
       <Button onClick={() => remove(artist)} variant="ghost" size="icon" className="h-5 w-5 rounded-full">

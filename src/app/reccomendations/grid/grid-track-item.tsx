@@ -80,16 +80,16 @@ export function GridTrackItem({ track, index }: GridTrackItemProps) {
       </button>
 
       <div className="mt-1 flex w-full items-center justify-between">
-        <div className="overflow-hidden text-left">
-          <div className="truncate font-medium">{track.name}</div>
+        <div className="text-left">
+          <div className="line-clamp-1 font-medium">{track.name}</div>
 
-          <div className="flex items-center truncate">
+          <div className="flex items-center">
             {track.explicit && (
               <span className="mr-1 grid h-4 w-4 shrink-0 place-items-center rounded bg-gray-300 text-[10px] dark:bg-gray-700">
                 E
               </span>
             )}
-            <span className="truncate text-sm text-gray-600 dark:text-gray-400">
+            <span className="line-clamp-1 text-sm text-gray-600 dark:text-gray-400">
               {track.artists.map((a) => a.name).join(', ')}
             </span>
           </div>

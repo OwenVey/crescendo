@@ -21,7 +21,7 @@ export const columns: ColumnDef<Track>[] = [
     id: 'image',
     cell: ({ row }) => (
       <Image
-        className="h-12 w-12 rounded-lg"
+        className="h-12 w-12 min-w-[48px] rounded-lg"
         src={row.original.album.images[0].url}
         width={48}
         height={48}

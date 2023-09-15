@@ -40,10 +40,10 @@ export function TracksCombobox({ tracks, add, remove, loading = false }: TracksC
           className={cn(loading ? '' : 'h-auto justify-between')}
         >
           {tracks.length > 0 ? (
-            <div className="flex flex-wrap gap-1 overflow-hidden">
+            <div className="flex flex-wrap gap-1">
               {tracks.map((track) => (
-                <Badge key={track.id} className="overflow-hidden">
-                  <span className="truncate">{track.name}</span>
+                <Badge key={track.id} className="text-left">
+                  <span className="line-clamp-1">{track.name}</span>
                   <div
                     className="-mr-1.5 ml-0.5 rounded-full p-[2px] hover:bg-gray-700 dark:hover:bg-gray-300"
                     onClick={(e) => {
@@ -104,8 +104,8 @@ export function TracksCombobox({ tracks, add, remove, loading = false }: TracksC
                   />
 
                   <div>
-                    <div className="w-48 truncate">{track.name}</div>
-                    <div className="w-48 truncate text-gray-500 dark:text-gray-400">{track.artists[0].name}</div>
+                    <div className="line-clamp-1">{track.name}</div>
+                    <div className="line-clamp-1 text-gray-500 dark:text-gray-400">{track.artists[0].name}</div>
                   </div>
                 </div>
               </CommandItem>

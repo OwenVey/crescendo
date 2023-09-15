@@ -83,8 +83,8 @@ export default function SpotifyPlayer() {
               <div className="ml-2 w-full">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-base font-medium md:text-sm">{currentTrack.name}</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400 md:text-xs">
+                    <div className="line-clamp-1 text-base font-medium md:text-sm">{currentTrack.name}</div>
+                    <div className="line-clamp-1 text-sm text-gray-600 dark:text-gray-400 md:text-xs">
                       {currentTrack.artists.map(({ name }) => name).join(', ')}
                     </div>
                   </div>

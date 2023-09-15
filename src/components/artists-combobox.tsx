@@ -40,10 +40,10 @@ export function ArtistsCombobox({ artists, add, remove, loading = false }: Artis
           className={cn(loading ? '' : 'h-auto justify-between')}
         >
           {artists.length > 0 ? (
-            <div className="flex flex-wrap gap-1 overflow-hidden">
+            <div className="flex flex-wrap gap-1">
               {artists.map((artist) => (
-                <Badge key={artist.id} className="overflow-hidden">
-                  <span className="truncate">{artist.name}</span>
+                <Badge key={artist.id} className="text-left">
+                  <span className="line-clamp-1">{artist.name}</span>
                   <div
                     className="-mr-1.5 ml-0.5 rounded-full p-[2px] hover:bg-gray-700 dark:hover:bg-gray-300"
                     onClick={(e) => {
@@ -116,7 +116,7 @@ export function ArtistsCombobox({ artists, add, remove, loading = false }: Artis
                     </span>
                   )}
 
-                  <span className="w-48 truncate">{artist.name}</span>
+                  <span className="line-clamp-1">{artist.name}</span>
                 </div>
               </CommandItem>
             ))}
