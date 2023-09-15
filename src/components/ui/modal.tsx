@@ -1,50 +1,20 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import type { DialogDescriptionProps, DialogProps, DialogTitleProps, DialogTriggerProps } from '@radix-ui/react-dialog';
-import dynamic from 'next/dynamic';
-import { useState } from 'react';
+
 import { useMediaQuery } from 'usehooks-ts';
 
-import type { DrawerContentProps } from './drawer';
-
-const Dialog = dynamic(() => import('@/components/ui/dialog').then((Dialog) => Dialog.Dialog), {
-  ssr: false,
-});
-const DialogTrigger = dynamic(() => import('@/components/ui/dialog').then((Dialog) => Dialog.DialogTrigger), {
-  ssr: false,
-});
-const DialogContent = dynamic(() => import('@/components/ui/dialog').then((Dialog) => Dialog.DialogContent), {
-  ssr: false,
-});
-const DialogDescription = dynamic(() => import('@/components/ui/dialog').then((Dialog) => Dialog.DialogDescription), {
-  ssr: false,
-});
-const DialogHeader = dynamic(() => import('@/components/ui/dialog').then((Dialog) => Dialog.DialogHeader), {
-  ssr: false,
-});
-const DialogTitle = dynamic(() => import('@/components/ui/dialog').then((Dialog) => Dialog.DialogTitle), {
-  ssr: false,
-});
-
-const Drawer = dynamic(() => import('@/components/ui/drawer').then((Drawer) => Drawer.Drawer), {
-  ssr: false,
-});
-const DrawerTrigger = dynamic(() => import('@/components/ui/drawer').then((Drawer) => Drawer.DrawerTrigger), {
-  ssr: false,
-});
-const DrawerContent = dynamic(() => import('@/components/ui/drawer').then((Drawer) => Drawer.DrawerContent), {
-  ssr: false,
-});
-const DrawerDescription = dynamic(() => import('@/components/ui/drawer').then((Drawer) => Drawer.DrawerDescription), {
-  ssr: false,
-});
-const DrawerHeader = dynamic(() => import('@/components/ui/drawer').then((Drawer) => Drawer.DrawerHeader), {
-  ssr: false,
-});
-const DrawerTitle = dynamic(() => import('@/components/ui/drawer').then((Drawer) => Drawer.DrawerTitle), {
-  ssr: false,
-});
+import type { DialogDescriptionProps, DialogProps, DialogTitleProps, DialogTriggerProps } from '@radix-ui/react-dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from './dialog';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+  type DrawerContentProps,
+} from './drawer';
 
 interface ModalProps extends DialogProps {
   children?: React.ReactNode;
@@ -52,17 +22,7 @@ interface ModalProps extends DialogProps {
 
 export function Modal({ children, ...props }: ModalProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)');
-  const [open, setOpen] = useState(false);
-
-  return isDesktop ? (
-    <Dialog open={open} onOpenChange={setOpen} {...props}>
-      {children}
-    </Dialog>
-  ) : (
-    <Drawer open={open} onOpenChange={setOpen} {...props}>
-      {children}
-    </Drawer>
-  );
+  return isDesktop ? <Dialog {...props}>{children}</Dialog> : <Drawer {...props}>{children}</Drawer>;
 }
 
 export function ModalTrigger(props: DialogTriggerProps) {
