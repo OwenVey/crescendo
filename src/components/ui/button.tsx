@@ -4,8 +4,9 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 import { LoaderIcon } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
 
-const buttonVariants = cva(
+export const buttonVariants = cva(
   'inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-gray-950 dark:focus-visible:ring-gray-800',
   {
     variants: {
@@ -42,13 +43,14 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   loading?: boolean;
   asChild?: boolean;
+  tooltip?: string;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, loading = false, asChild = false, children, ...props }, ref) => {
-    const Comp = asChild ? Slot : 'button';
-    return (
-      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} disabled={loading} {...props}>
+  ({ className, variant, size, loading = false, asChild = false, children, tooltip, ...props }, ref) => {
+    const Tag = asChild ? Slot : 'button';
+    const Comp = (
+      <Tag className={cn(buttonVariants({ variant, size, className }))} ref={ref} disabled={loading} {...props}>
         {loading ? (
           <>
             <LoaderIcon className="absolute h-4 w-4 animate-spin" />
@@ -57,10 +59,19 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ) : (
           children
         )}
-      </Comp>
+      </Tag>
+    );
+
+    return tooltip ? (
+      <Tooltip>
+        <TooltipTrigger asChild>{Comp}</TooltipTrigger>
+        <TooltipContent>{tooltip}</TooltipContent>
+      </Tooltip>
+    ) : (
+      Comp
     );
   },
 );
 Button.displayName = 'Button';
 
-export { Button, buttonVariants };
+export { Button };
