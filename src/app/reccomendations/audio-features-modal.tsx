@@ -6,6 +6,7 @@ import { TRACK_ATTRIBUTES } from '@/lib/constants';
 import type { AudioFeatures } from '@spotify/web-api-ts-sdk';
 import { type Track } from '@spotify/web-api-ts-sdk';
 import { useState } from 'react';
+import useSWR from 'swr';
 
 type AudioFeaturesModalProps = {
   track: Track;
@@ -14,18 +15,11 @@ type AudioFeaturesModalProps = {
 
 export function AudioFeaturesModal({ track, children }: AudioFeaturesModalProps) {
   const [open, setOpen] = useState(false);
-  const [audioFeatures, setAudioFeatures] = useState<(AudioFeatures & { popularity: number }) | null>(null);
 
-  async function onOpen(open: boolean) {
-    setOpen(open);
-    if (open) {
-      const af: AudioFeatures = await (await fetch(`/api/audio-features/${track.id}`)).json();
-      setAudioFeatures({ ...af, popularity: track.popularity });
-    }
-  }
+  const { data: audioFeatures } = useSWR<AudioFeatures>(`/api/audio-features/${track.id}`);
 
   return (
-    <Modal open={open} onOpenChange={onOpen}>
+    <Modal open={open} onOpenChange={setOpen}>
       <ModalTrigger asChild>{children}</ModalTrigger>
       <ModalContent>
         <ModalHeader>
@@ -42,12 +36,17 @@ export function AudioFeaturesModal({ track, children }: AudioFeaturesModalProps)
               </TableRow>
             </TableHeader>
             <TableBody>
-              {TRACK_ATTRIBUTES.map((attribute) => (
-                <TableRow key={attribute.id}>
-                  <TableCell className="text-gray-500 dark:text-gray-400">{attribute.label}</TableCell>
-                  <TableCell className="font-medium">{audioFeatures[attribute.id]}</TableCell>
-                </TableRow>
-              ))}
+              {Object.entries(audioFeatures).map(([key, value]) => {
+                const attribute = TRACK_ATTRIBUTES.find((a) => a.id === key);
+                return (
+                  attribute && (
+                    <TableRow key={key}>
+                      <TableCell className="text-gray-500 dark:text-gray-400">{attribute.label}</TableCell>
+                      <TableCell className="font-medium">{value}</TableCell>
+                    </TableRow>
+                  )
+                );
+              })}
             </TableBody>
           </Table>
         )}

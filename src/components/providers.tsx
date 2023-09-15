@@ -7,6 +7,12 @@ import { DevTools as JotaiDevTools } from 'jotai-devtools';
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider } from 'next-themes';
 import * as React from 'react';
+import { SWRConfig } from 'swr';
+
+async function fetcher<T>(...args: Parameters<typeof fetch>): Promise<T> {
+  const response = await fetch(...args);
+  return response.json();
+}
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const areJotaiDevToolsEnabled = false;
@@ -14,14 +20,16 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <TooltipProvider>
-        <SessionProvider>
-          <JotaiProvider>
-            <SpotifyPlayerProvider>
-              {areJotaiDevToolsEnabled && <JotaiDevTools />}
-              {children}
-            </SpotifyPlayerProvider>
-          </JotaiProvider>
-        </SessionProvider>
+        <SWRConfig value={{ fetcher }}>
+          <SessionProvider>
+            <JotaiProvider>
+              <SpotifyPlayerProvider>
+                {areJotaiDevToolsEnabled && <JotaiDevTools />}
+                {children}
+              </SpotifyPlayerProvider>
+            </JotaiProvider>
+          </SessionProvider>
+        </SWRConfig>
       </TooltipProvider>
     </ThemeProvider>
   );

@@ -10,6 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { cn } from '@/lib/utils';
 import type { Track } from '@spotify/web-api-ts-sdk';
 import Image from 'next/image';
+import useSWR from 'swr';
 import { useDebounce } from 'usehooks-ts';
 
 type TracksComboboxProps = {
@@ -23,24 +24,10 @@ export function TracksCombobox({ tracks, add, remove, loading = false }: TracksC
   const [open, setOpen] = React.useState(false);
   const [searchText, setSearchText] = React.useState('');
   const debouncedSearchText = useDebounce(searchText, 500);
-  const [searchResults, setSearchResults] = React.useState<Array<Track>>([]);
-  const [_loading, setLoading] = React.useState(false);
 
-  React.useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-      const results: Array<Track> = await (await fetch(`/api/search-track?q=${debouncedSearchText}`)).json();
-      setSearchResults((prevResults) => {
-        const mergedResults = prevResults.concat(results);
-        const uniqueResults = mergedResults.filter(
-          (value, index, self) => self.findIndex(({ id }) => id === value.id) === index,
-        );
-        return uniqueResults;
-      });
-      setLoading(false);
-    }
-    if (debouncedSearchText) fetchData();
-  }, [debouncedSearchText]);
+  const { data: searchResults = [], isLoading } = useSWR<Array<Track>>(
+    debouncedSearchText && `/api/search-track?q=${debouncedSearchText}`,
+  );
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -85,7 +72,7 @@ export function TracksCombobox({ tracks, add, remove, loading = false }: TracksC
             value={searchText}
             onValueChange={setSearchText}
             placeholder="Search tracks..."
-            loading={_loading}
+            loading={isLoading}
           />
           <CommandList>
             <CommandEmpty>No tracks found</CommandEmpty>
