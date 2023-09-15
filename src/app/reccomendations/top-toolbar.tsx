@@ -138,7 +138,7 @@ export function TopToolbar(props: TopToolbarProps) {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel required>Name</FormLabel>
                     <FormControl>
                       <Input autoComplete="off" placeholder="Add a name" {...field} />
                     </FormControl>
