@@ -6,7 +6,7 @@ import { TRACK_ATTRIBUTES } from '@/lib/constants';
 import type { AudioFeatures } from '@spotify/web-api-ts-sdk';
 import { type Track } from '@spotify/web-api-ts-sdk';
 import { useState } from 'react';
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 type AudioFeaturesModalProps = {
   track: Track;
@@ -16,7 +16,7 @@ type AudioFeaturesModalProps = {
 export function AudioFeaturesModal({ track, children }: AudioFeaturesModalProps) {
   const [open, setOpen] = useState(false);
 
-  const { data: audioFeatures } = useSWR<AudioFeatures>(`/api/audio-features/${track.id}`);
+  const { data: audioFeatures } = useSWRImmutable<AudioFeatures>(`/api/audio-features/${track.id}`);
 
   return (
     <Modal open={open} onOpenChange={setOpen}>
@@ -24,7 +24,7 @@ export function AudioFeaturesModal({ track, children }: AudioFeaturesModalProps)
       <ModalContent>
         <ModalHeader>
           <ModalTitle>Audio Features</ModalTitle>
-          <ModalDescription>Audio feature information for “{track.name}”</ModalDescription>
+          <ModalDescription>Audio feature information for &quot;{track.name}&quot;</ModalDescription>
         </ModalHeader>
 
         {audioFeatures && (

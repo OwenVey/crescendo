@@ -10,7 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { cn } from '@/lib/utils';
 import type { Artist } from '@spotify/web-api-ts-sdk';
 import Image from 'next/image';
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 import { useDebounce } from 'usehooks-ts';
 
 type ArtistsComboboxProps = {
@@ -25,7 +25,7 @@ export function ArtistsCombobox({ artists, add, remove, loading = false }: Artis
   const [searchText, setSearchText] = React.useState('');
   const debouncedSearchText = useDebounce(searchText, 500);
 
-  const { data: searchResults = [], isLoading } = useSWR<Array<Artist>>(
+  const { data: searchResults = [], isLoading } = useSWRImmutable<Array<Artist>>(
     debouncedSearchText && `/api/search-artist?q=${debouncedSearchText}`,
   );
 
