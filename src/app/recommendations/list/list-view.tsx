@@ -10,7 +10,7 @@ import {
 } from '@tanstack/react-table';
 import * as React from 'react';
 
-import { reccomendationsAtom } from '@/app/store';
+import { recommendationsAtom } from '@/app/store';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useAtomValue } from 'jotai';
@@ -19,10 +19,10 @@ import { columns } from './columns';
 export function ListView() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const reccomendations = useAtomValue(reccomendationsAtom);
+  const recommendations = useAtomValue(recommendationsAtom);
 
   const table = useReactTable({
-    data: reccomendations,
+    data: recommendations,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,

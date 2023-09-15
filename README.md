@@ -1,3 +1,3 @@
 ## Crescendo
 
-A Spotify song reccomendation web app built with Next.js
+A Spotify song recommendation web app built with Next.js

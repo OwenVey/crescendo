@@ -1,4 +1,4 @@
-import { reccomendationsAtom } from '@/app/store';
+import { recommendationsAtom } from '@/app/store';
 import { useToast } from '@/components/ui/use-toast';
 import type { Track } from '@spotify/web-api-ts-sdk';
 import { useAtomValue } from 'jotai';
@@ -33,7 +33,7 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
   const { data: session } = useSession();
   const { toast } = useToast();
 
-  const reccomendations = useAtomValue(reccomendationsAtom);
+  const recommendations = useAtomValue(recommendationsAtom);
 
   const [player, setPlayer] = useState<Spotify.Player | undefined>(undefined);
   const [deviceId, setDeviceId] = useState<string | undefined>(undefined);
@@ -94,16 +94,16 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
   }
 
   const playNextSong = useCallback(() => {
-    const currentIndex = reccomendations.findIndex((track) => track.id === currentTrack?.id);
-    const nextTrack = reccomendations[currentIndex + 1];
+    const currentIndex = recommendations.findIndex((track) => track.id === currentTrack?.id);
+    const nextTrack = recommendations[currentIndex + 1];
     if (nextTrack) {
       playTrack(nextTrack);
     }
-  }, [currentTrack?.id, playTrack, reccomendations]);
+  }, [currentTrack?.id, playTrack, recommendations]);
 
   function playPreviousSong() {
-    const currentIndex = reccomendations.findIndex((track) => track.id === currentTrack?.id);
-    const previousTrack = reccomendations[currentIndex - 1];
+    const currentIndex = recommendations.findIndex((track) => track.id === currentTrack?.id);
+    const previousTrack = recommendations[currentIndex - 1];
     if (previousTrack) {
       playTrack(previousTrack);
     }

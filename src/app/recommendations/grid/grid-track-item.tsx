@@ -119,9 +119,9 @@ export function GridTrackItem({ track, index }: GridTrackItemProps) {
             </AudioFeaturesModal>
 
             <DropdownMenuItem asChild>
-              <Link href={{ pathname: '/reccomendations', query: { seed_tracks: track.id } }}>
+              <Link href={{ pathname: '/recommendations', query: { seed_tracks: track.id } }}>
                 <RadioIcon className="mr-2 h-4 w-4" />
-                Similar reccomendations
+                Similar recommendations
               </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>

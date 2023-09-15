@@ -1,6 +1,6 @@
 'use client';
 
-import { reccomendationsAtom, viewAtom } from '@/app/store';
+import { recommendationsAtom, viewAtom } from '@/app/store';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -38,7 +38,7 @@ type TopToolbarProps = {
 export function TopToolbar(props: TopToolbarProps) {
   useHydrateAtoms([[viewAtom, props.view]]);
   const [view, updateView] = useAtom(viewAtom);
-  const reccomendations = useAtomValue(reccomendationsAtom);
+  const recommendations = useAtomValue(recommendationsAtom);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const sdk = useSpotifySdk();
@@ -73,7 +73,7 @@ export function TopToolbar(props: TopToolbarProps) {
       const playlist = await sdk.playlists.createPlaylist(session.user.name, values);
       await sdk.playlists.addItemsToPlaylist(
         playlist.id,
-        reccomendations.map(({ uri }) => uri),
+        recommendations.map(({ uri }) => uri),
       );
       setOpen(false);
       form.reset();
@@ -127,7 +127,7 @@ export function TopToolbar(props: TopToolbarProps) {
           <ModalHeader>
             <ModalTitle className="">Create Playlist</ModalTitle>
             <ModalDescription>
-              Create a new playlist on your Spotify account with the reccomendations generated.
+              Create a new playlist on your Spotify account with the recommendations generated.
             </ModalDescription>
           </ModalHeader>
 

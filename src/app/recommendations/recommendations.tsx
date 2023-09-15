@@ -1,6 +1,6 @@
 import { serverSdk } from '../api/api-utils';
 import type { Attributes } from './page';
-import { RecommendationsView } from './reccomendations-view';
+import { RecommendationsView } from './recommendations-view';
 
 type RecommendationsProps = {
   attributes: Attributes;

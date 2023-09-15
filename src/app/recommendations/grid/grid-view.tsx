@@ -1,12 +1,12 @@
 'use client';
 
-import { reccomendationsAtom } from '@/app/store';
+import { recommendationsAtom } from '@/app/store';
 import { cn } from '@/lib/utils';
 import { useAtomValue } from 'jotai';
 import { GridTrackItem } from './grid-track-item';
 
 export function GridView() {
-  const reccomendations = useAtomValue(reccomendationsAtom);
+  const recommendations = useAtomValue(recommendationsAtom);
 
   return (
     // <div className="flex flex-wrap gap-8 overflow-y-auto p-8">
@@ -34,7 +34,7 @@ export function GridView() {
           // '@12xl:bg-pink-300',
         ])}
       >
-        {reccomendations.map((track, index) => (
+        {recommendations.map((track, index) => (
           <GridTrackItem key={track.id} track={track} index={index} />
         ))}
       </div>

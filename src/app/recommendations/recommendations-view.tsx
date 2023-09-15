@@ -1,6 +1,6 @@
 'use client';
 
-import { reccomendationsAtom, viewAtom } from '@/app/store';
+import { recommendationsAtom, viewAtom } from '@/app/store';
 import { Button } from '@/components/ui/button';
 import type { Track } from '@spotify/web-api-ts-sdk';
 import { useAtom, useSetAtom } from 'jotai';
@@ -15,19 +15,19 @@ type RecommendationsProps = {
 };
 
 export function RecommendationsView({ tracks }: RecommendationsProps) {
-  // useHydrateAtoms([[reccomendationsAtom, tracks]]);
-  const setReccomendations = useSetAtom(reccomendationsAtom);
+  // useHydrateAtoms([[recommendationsAtom, tracks]]);
+  const setRecommendations = useSetAtom(recommendationsAtom);
   const [view] = useAtom(viewAtom);
   useEffect(() => {
-    setReccomendations(tracks);
-  }, [setReccomendations, tracks]);
+    setRecommendations(tracks);
+  }, [setRecommendations, tracks]);
 
   if (tracks.length === 0) {
     return (
       <div className="grid h-full place-items-center">
         <div className="flex flex-col items-center">
           <p className="text-gray-700 dark:text-gray-400">
-            Sorry, we could not find any reccomendations that fit the specified attributes.
+            Sorry, we could not find any recommendations that fit the specified attributes.
           </p>
           <Button className="mt-4" asChild>
             <Link href="/">

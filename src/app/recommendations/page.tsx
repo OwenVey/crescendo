@@ -6,7 +6,7 @@ import { Suspense } from 'react';
 import { z } from 'zod';
 import { GridViewLoading } from './grid/grid-view-loading';
 import { ListViewLoading } from './list/list-view-loading';
-import { Recommendations } from './reccomendations';
+import { Recommendations } from './recommendations';
 import { TopToolbar } from './top-toolbar';
 
 export type Attributes = z.infer<typeof AttributesSchema>;
@@ -72,7 +72,7 @@ const AttributesSchema = z.object({
   view: z.enum(['grid', 'list']).optional().default('grid'),
 });
 
-export default function ReccomendationsPage({ searchParams }: PageProps) {
+export default function RecommendationsPage({ searchParams }: PageProps) {
   const attributes = AttributesSchema.parse(searchParams);
 
   return (
