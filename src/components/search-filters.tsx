@@ -13,10 +13,12 @@ import { Toggle } from '@/components/ui/toggle';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/components/ui/use-toast';
 import { TRACK_ATTRIBUTES } from '@/lib/constants';
+import { useSpotifySdk } from '@/lib/hooks/useSpotifySdk';
 import { arrayToURLSearchParams, objectToURLSearchParams } from '@/lib/utils';
 import type { SliderValue, TrackAttribute, TrackAttributeWithValue } from '@/types';
 import type { Artist, Track } from '@spotify/web-api-ts-sdk';
 import { InfoIcon, RotateCcwIcon, Wand2Icon } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -31,10 +33,17 @@ export function SearchFilters() {
   const [seedArtists, setSeedArtists] = useState<Array<Artist>>([]);
   const [seedTracks, setSeedTracks] = useState<Array<Track>>([]);
   const [seedGenres, setSeedGenres] = useState<Array<string>>([]);
+  const [smartLoading, setSmartLoading] = useState(false);
   const [enabledAttributes, setEnabledAttributes] = useState<Array<TrackAttributeWithValue>>([]);
   const [urlParams, setUrlParams] = useState('');
+  const sdk = useSpotifySdk();
+  const { data: session } = useSession();
 
   useEffect(() => {
+    setUrlParams(buildUrlParams());
+  }, [seedArtists, seedTracks, seedGenres, enabledAttributes]);
+
+  function buildUrlParams() {
     const trackAttributes = enabledAttributes.reduce((attributeParams, attribute) => {
       let min: number | undefined = undefined;
       let target: number | undefined = undefined;
@@ -72,8 +81,8 @@ export function SearchFilters() {
       ...trackAttributes,
     });
 
-    setUrlParams(params.toString());
-  }, [seedArtists, seedTracks, seedGenres, enabledAttributes]);
+    return params.toString();
+  }
 
   useEffect(() => {
     console.log('Syncing searchParams with state...');
@@ -241,7 +250,69 @@ export function SearchFilters() {
     setSeedGenres((prev) => prev.filter((g) => g !== genre));
   }
 
-  function smartRecommend() {}
+  async function smartRecommend() {
+    setSmartLoading(true);
+    reset();
+
+    try {
+      const getSavedAudioFeatures = sdk.currentUser.tracks.savedTracks(50).then(({ items: savedTracks }) => {
+        const savedTrackIds = savedTracks.map((t) => t.track.id);
+        return sdk.tracks.audioFeatures(savedTrackIds);
+      });
+      const getTopTracks = sdk.currentUser.topItems('tracks', 'medium_term', 5);
+      const getTopArtists = sdk.currentUser.topItems('artists', 'medium_term', 5);
+      const [savedAudioFeatures, topTracks, topArtists] = await Promise.all([
+        getSavedAudioFeatures,
+        getTopTracks,
+        getTopArtists,
+      ]);
+
+      const numericAttributes = savedAudioFeatures.map(
+        ({
+          acousticness,
+          danceability,
+          energy,
+          instrumentalness,
+          liveness,
+          loudness,
+          speechiness,
+          tempo,
+          valence,
+        }) => ({
+          acousticness,
+          danceability,
+          energy,
+          instrumentalness,
+          liveness,
+          loudness,
+          speechiness,
+          tempo,
+          valence,
+        }),
+      );
+
+      const summedAttributes = numericAttributes.reduce((acc, obj) => {
+        Object.entries(obj).forEach(([key, value]) => (acc[key as keyof typeof obj] += value));
+        return acc;
+      });
+
+      const attributes = Object.entries(summedAttributes).map(([key, value]) => {
+        const attribute = TRACK_ATTRIBUTES.find((t) => t.id === key)!;
+        const average = +(value / savedAudioFeatures.length).toFixed(2);
+        return { ...attribute, value: [attribute.min, average, attribute.max] as SliderValue };
+      });
+
+      // setSeedArtists(topArtists.items);
+      setSeedTracks(topTracks.items);
+      setEnabledAttributes(attributes);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setSmartLoading(false);
+    }
+
+    // router.push(`/recommendations?${urlParams}`);
+  }
 
   function reset() {
     setSeedArtists([]);
@@ -357,7 +428,14 @@ export function SearchFilters() {
             Get Recommendations
           </Link>
         </Button>
-        <Button variant="secondary" size="icon" onClick={smartRecommend} tooltip="Smart Recommend">
+        <Button
+          variant="secondary"
+          size="icon"
+          onClick={smartRecommend}
+          tooltip={session ? 'Smart Recommend' : 'Authorize Spotify to use this feature'}
+          loading={smartLoading}
+          disabled={!session}
+        >
           <Wand2Icon className="h-4 w-4" />
         </Button>
       </div>

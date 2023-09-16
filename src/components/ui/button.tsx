@@ -64,7 +64,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return tooltip ? (
       <Tooltip>
-        <TooltipTrigger asChild>{Comp}</TooltipTrigger>
+        <TooltipTrigger asChild>{props.disabled ? <span tabIndex={0}>{Comp}</span> : Comp}</TooltipTrigger>
         <TooltipContent>{tooltip}</TooltipContent>
       </Tooltip>
     ) : (
