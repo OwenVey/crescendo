@@ -79,6 +79,7 @@ export default function SpotifyPlayer() {
                 height={56}
                 src={currentTrack.album.images[0].url}
                 alt={`Picture of the album "${currentTrack.album.name}"`}
+                unoptimized
               />
               <div className="ml-2 w-full">
                 <div className="flex items-center justify-between">

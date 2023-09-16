@@ -21,6 +21,7 @@ export function SelectedTrack({ track, remove }: SelectedTrackProps) {
           height={32}
           src={track.album.images[0].url}
           alt={`Picture of the album "${track.album.name}"`}
+          unoptimized
         />
 
         <div className="pr-1">

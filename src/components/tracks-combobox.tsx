@@ -101,6 +101,7 @@ export function TracksCombobox({ tracks, add, remove, loading = false }: TracksC
                     height={32}
                     src={track.album.images[0].url}
                     alt={`Picture of the album "${track.album.name}"`}
+                    unoptimized
                   />
 
                   <div>

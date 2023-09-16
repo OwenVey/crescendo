@@ -103,6 +103,7 @@ export function ArtistsCombobox({ artists, add, remove, loading = false }: Artis
                       height={32}
                       src={artist.images[0].url}
                       alt={`Picture of ${artist.name}`}
+                      unoptimized
                     />
                   ) : (
                     <span className="inline-block h-8 w-8 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-600">

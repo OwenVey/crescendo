@@ -73,7 +73,7 @@ export function GridTrackItem({ track, index }: GridTrackItemProps) {
               height={300}
               alt={`Album cover for ${track.name}`}
               onLoad={() => setImageLoading(false)}
-              // unoptimized
+              unoptimized
             />
           </motion.div>
         </div>
