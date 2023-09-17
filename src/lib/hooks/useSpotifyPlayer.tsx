@@ -129,13 +129,8 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
   }, [currentTrack, isAutoPlayEnabled, isScrubbing, playNextSong, playbackState?.paused, player, position]);
 
   useEffect(() => {
-    console.log('useEffect');
     if (session?.user.access_token && !player) {
-      console.log('TOKEN and NO player exists');
-
       if (!window.Spotify) {
-        console.log('adding spotify-player.js script');
-
         const script = document.createElement('script');
         script.src = 'https://sdk.scdn.co/spotify-player.js';
         script.async = true;
