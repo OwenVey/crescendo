@@ -27,5 +27,5 @@ export async function Recommendations({ trackAttributes }: RecommendationsProps)
     ...trackAttributes,
   });
 
-  return <RecommendationsView tracks={recommendations.tracks} />;
+  return <RecommendationsView tracks={recommendations.tracks} view={trackAttributes.view} />;
 }

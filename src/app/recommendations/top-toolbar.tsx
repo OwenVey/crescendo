@@ -1,6 +1,6 @@
 'use client';
 
-import { recommendationsAtom, viewAtom } from '@/app/store';
+import { recommendationsAtom } from '@/app/store';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -18,9 +18,9 @@ import {
 } from '@/components/ui/toolbar';
 import { useToast } from '@/components/ui/use-toast';
 import { useSpotifySdk } from '@/lib/hooks/useSpotifySdk';
+import { searchParamsToObject } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAtom, useAtomValue } from 'jotai';
-import { useHydrateAtoms } from 'jotai/utils';
+import { useAtomValue } from 'jotai';
 import {
   HeartIcon,
   HeartOffIcon,
@@ -31,6 +31,8 @@ import {
   ZoomOutIcon,
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -44,16 +46,15 @@ const createPlaylistFormSchema = z.object({
 type TopToolbarProps = {
   view: 'grid' | 'list';
 };
-export function TopToolbar(props: TopToolbarProps) {
-  useHydrateAtoms([[viewAtom, props.view]]);
-  const [view, updateView] = useAtom(viewAtom);
+export function TopToolbar({ view }: TopToolbarProps) {
   const recommendations = useAtomValue(recommendationsAtom);
-  const [open, setOpen] = useState(false);
+  const [isCreatePlaylistModalOpen, setIsCreatePlaylistModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const sdk = useSpotifySdk();
   const { data: session } = useSession();
   const { toast } = useToast();
   const [hideSavedTracks, setHideSavedTracks] = useState(false);
+  const searchParams = useSearchParams();
 
   function updateTrackImageSize(cards: number) {
     document.documentElement.style.setProperty('--cards-global', `${10 - cards}`);
@@ -84,7 +85,7 @@ export function TopToolbar(props: TopToolbarProps) {
         playlist.id,
         recommendations.map(({ uri }) => uri),
       );
-      setOpen(false);
+      setIsCreatePlaylistModalOpen(false);
       form.reset();
     } catch (error) {
       console.error(error);
@@ -95,18 +96,17 @@ export function TopToolbar(props: TopToolbarProps) {
 
   return (
     <Toolbar className="flex h-16 shrink-0 items-center gap-4 border-b border-t border-gray-200 bg-white px-3 py-2 shadow-sm dark:border-gray-800 dark:bg-gray-950 md:border-t-0">
-      <ToolbarToggleGroup
-        value={view}
-        onValueChange={(value: 'grid' | 'list' | '') => updateView(value ? value : view === 'grid' ? 'list' : 'grid')}
-        defaultValue="grid"
-        type="single"
-      >
-        <ToolbarToggleItem value="grid" aria-label="Grid view">
-          <LayoutGridIcon className="h-4 w-4" />
+      <ToolbarToggleGroup value={view} defaultValue="grid" type="single">
+        <ToolbarToggleItem value="grid" aria-label="Grid view" asChild>
+          <Link href={{ pathname: 'recommendations', query: { ...searchParamsToObject(searchParams), view: 'grid' } }}>
+            <LayoutGridIcon className="h-4 w-4" />
+          </Link>
         </ToolbarToggleItem>
 
-        <ToolbarToggleItem value="list" aria-label="List view">
-          <LayoutListIcon className="h-4 w-4" />
+        <ToolbarToggleItem value="list" aria-label="List view" asChild>
+          <Link href={{ pathname: 'recommendations', query: { ...searchParamsToObject(searchParams), view: 'list' } }}>
+            <LayoutListIcon className="h-4 w-4" />
+          </Link>
         </ToolbarToggleItem>
       </ToolbarToggleGroup>
 
@@ -126,7 +126,7 @@ export function TopToolbar(props: TopToolbarProps) {
 
       <ToolbarSeparator />
 
-      <Modal open={open} onOpenChange={setOpen}>
+      <Modal open={isCreatePlaylistModalOpen} onOpenChange={setIsCreatePlaylistModalOpen}>
         <ModalTrigger asChild>
           <ToolbarButton variant="secondary" size="icon">
             <ListPlusIcon className="h-4 w-4" />

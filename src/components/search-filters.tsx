@@ -37,13 +37,15 @@ export function SearchFilters() {
     [searchParams],
   );
 
-  const [loadingArtists, setLoadingArtists] = useState(!!paramAttributes.seed_artists.length);
-  const [loadingTracks, setLoadingTracks] = useState(!!paramAttributes.seed_tracks.length);
-  const [smartLoading, setSmartLoading] = useState(false);
-
   const [seedArtists, setSeedArtists] = useState<Array<Artist>>([]);
   const [seedTracks, setSeedTracks] = useState<Array<Track>>([]);
   const [seedGenres, setSeedGenres] = useState<Array<string>>(paramAttributes.seed_genres);
+
+  const [loadingArtists, setLoadingArtists] = useState(
+    !!paramAttributes.seed_artists.length && seedArtists.length === 0,
+  );
+  const [loadingTracks, setLoadingTracks] = useState(!!paramAttributes.seed_tracks.length && seedTracks.length === 0);
+  const [smartLoading, setSmartLoading] = useState(false);
 
   const [enabledAttributes, setEnabledAttributes] = useState<Array<TrackAttributeWithValue>>(() => {
     return TRACK_ATTRIBUTES.filter((attribute) => {
@@ -113,7 +115,7 @@ export function SearchFilters() {
       setSeedArtists([]);
       setLoadingArtists(false);
     } else {
-      getArtists();
+      seedArtists.length === 0 && getArtists();
     }
 
     async function getArtists() {
@@ -128,7 +130,7 @@ export function SearchFilters() {
         setLoadingArtists(false);
       }
     }
-  }, [paramAttributes.seed_artists]);
+  }, [paramAttributes.seed_artists, seedArtists.length]);
 
   useEffect(() => {
     console.log('Syncing tracks params with state...');
@@ -138,7 +140,7 @@ export function SearchFilters() {
       setSeedTracks([]);
       setLoadingTracks(false);
     } else {
-      getTracks();
+      seedTracks.length === 0 && getTracks();
     }
 
     async function getTracks() {
@@ -153,7 +155,7 @@ export function SearchFilters() {
         setLoadingTracks(false);
       }
     }
-  }, [paramAttributes.seed_tracks]);
+  }, [paramAttributes.seed_tracks, seedTracks.length]);
 
   function isAttributeEnabled(attribute: TrackAttribute) {
     return enabledAttributes.some(({ id }) => id === attribute.id);

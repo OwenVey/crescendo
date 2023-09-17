@@ -1,6 +1,6 @@
 'use client';
 
-import { recommendationsAtom, viewAtom } from '@/app/store';
+import { recommendationsAtom } from '@/app/store';
 import { Button } from '@/components/ui/button';
 import type { Track } from '@spotify/web-api-ts-sdk';
 import { useAtomValue } from 'jotai';
@@ -12,12 +12,12 @@ import { ListView } from './list/list-view';
 
 type RecommendationsProps = {
   tracks: Array<Track>;
+  view: 'grid' | 'list';
 };
 
-export function RecommendationsView(props: RecommendationsProps) {
-  useHydrateAtoms([[recommendationsAtom, props.tracks]]);
+export function RecommendationsView({ tracks, view }: RecommendationsProps) {
+  useHydrateAtoms([[recommendationsAtom, tracks]]);
   const recommendations = useAtomValue(recommendationsAtom);
-  const view = useAtomValue(viewAtom);
 
   if (recommendations.length === 0) {
     return (
