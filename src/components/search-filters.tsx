@@ -419,25 +419,30 @@ export function SearchFilters() {
         </div>
       </ScrollArea>
 
-      <div className="flex gap-2 px-4 py-3">
-        <Button variant="secondary" size="icon" onClick={reset} tooltip="Reset">
-          <RotateCcwIcon className="h-4 w-4" />
-        </Button>
-        <Button asChild className="flex-1">
-          <Link href={`/recommendations?${urlParams}`} onClick={(event) => validateParams(event)}>
-            Get Recommendations
-          </Link>
-        </Button>
-        <Button
-          variant="secondary"
-          size="icon"
-          onClick={smartRecommend}
-          tooltip={session ? 'Smart Recommend' : 'Authorize Spotify to use this feature'}
-          loading={smartLoading}
-          disabled={!session}
-        >
-          <Wand2Icon className="h-4 w-4" />
-        </Button>
+      <div className="flex flex-col gap-2 px-4 py-3">
+        {seedArtists.length || seedTracks.length || seedGenres.length || enabledAttributes.length ? (
+          <Button className="w-full" variant="secondary" onClick={reset} tooltip="Reset">
+            <RotateCcwIcon className="mr-2 h-4 w-4" />
+            Reset
+          </Button>
+        ) : null}
+        <div className="flex gap-2">
+          <Button variant="primary" asChild className="flex-1">
+            <Link href={`/recommendations?${urlParams}`} onClick={(event) => validateParams(event)}>
+              Get Recommendations
+            </Link>
+          </Button>
+          <Button
+            variant="secondary"
+            size="icon"
+            onClick={smartRecommend}
+            tooltip={session ? 'Smart Recommend' : 'Authorize Spotify to use this feature'}
+            loading={smartLoading}
+            disabled={!session}
+          >
+            <Wand2Icon className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </>
   );

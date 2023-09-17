@@ -29,7 +29,7 @@ module.exports = {
         sans: ['var(--font-inter)', ...defaultTheme.fontFamily.sans],
       },
       colors: {
-        primary: colors.blue,
+        primary: colors.sky,
         gray: colors.neutral,
       },
       width: {

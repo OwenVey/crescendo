@@ -11,8 +11,9 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
+        primary:
+          'bg-gradient-to-t from-blue-500 to-cyan-400 hover:to-blue-500 active:from-blue-600 active:to-blue-600 shadow-sm text-white',
         default:
-          // 'bg-primary-600 text-gray-50 hover:bg-primary-500 dark:bg-primary-500 dark:text-primary-50 dark:hover:bg-primary-400',
           'bg-gray-900 text-gray-50 hover:bg-gray-700 active:bg-gray-600 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-300 dark:active:bg-gray-400',
         secondary:
           'bg-gray-100 text-gray-900 hover:bg-gray-200 active:bg-gray-300 dark:bg-gray-800 dark:text-gray-50 dark:hover:bg-gray-700 dark:active:bg-gray-600',
@@ -64,7 +65,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return tooltip ? (
       <Tooltip>
-        <TooltipTrigger asChild>{props.disabled ? <span tabIndex={0}>{Comp}</span> : Comp}</TooltipTrigger>
+        <TooltipTrigger asChild>
+          {props.disabled ? <span tabIndex={0}>{Comp}</span> : <span>{Comp}</span>}
+        </TooltipTrigger>
         <TooltipContent>{tooltip}</TooltipContent>
       </Tooltip>
     ) : (
