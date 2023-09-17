@@ -8,6 +8,7 @@ import { Modal, ModalContent, ModalDescription, ModalHeader, ModalTitle, ModalTr
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { TextArea } from '@/components/ui/textarea';
+import { Toggle } from '@/components/ui/toggle';
 import {
   Toolbar,
   ToolbarButton,
@@ -20,7 +21,15 @@ import { useSpotifySdk } from '@/lib/hooks/useSpotifySdk';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAtom, useAtomValue } from 'jotai';
 import { useHydrateAtoms } from 'jotai/utils';
-import { LayoutGridIcon, LayoutListIcon, ListPlusIcon, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
+import {
+  HeartIcon,
+  HeartOffIcon,
+  LayoutGridIcon,
+  LayoutListIcon,
+  ListPlusIcon,
+  ZoomInIcon,
+  ZoomOutIcon,
+} from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -44,6 +53,7 @@ export function TopToolbar(props: TopToolbarProps) {
   const sdk = useSpotifySdk();
   const { data: session } = useSession();
   const { toast } = useToast();
+  const [hideSavedTracks, setHideSavedTracks] = useState(false);
 
   function updateTrackImageSize(cards: number) {
     document.documentElement.style.setProperty('--cards-global', `${10 - cards}`);
@@ -59,7 +69,6 @@ export function TopToolbar(props: TopToolbarProps) {
   });
 
   async function onSubmit(values: z.infer<typeof createPlaylistFormSchema>) {
-    console.log(values);
     if (!session?.user.name) {
       toast({
         variant: 'destructive',
@@ -184,6 +193,18 @@ export function TopToolbar(props: TopToolbarProps) {
           </Form>
         </ModalContent>
       </Modal>
+
+      <ToolbarButton
+        asChild
+        variant="ghost"
+        size="icon"
+        tooltip={hideSavedTracks ? 'Show saved tracks' : 'Hide saved tracks'}
+      >
+        <Toggle pressed={hideSavedTracks} variant="outline" onPressedChange={setHideSavedTracks} size="icon">
+          {!hideSavedTracks && <HeartOffIcon className="h-4 w-4" />}
+          {hideSavedTracks && <HeartIcon className="h-4 w-4" />}
+        </Toggle>
+      </ToolbarButton>
     </Toolbar>
   );
 }
