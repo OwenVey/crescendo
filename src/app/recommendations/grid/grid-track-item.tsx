@@ -63,8 +63,8 @@ export function GridTrackItem({ track, index }: GridTrackItemProps) {
             <Image
               className="aspect-square h-auto w-full"
               src={
-                track.album.images[0]
-                  ? track.album.images[0].url
+                track.album.images[1]
+                  ? track.album.images[1].url
                   : resolvedTheme === 'dark'
                   ? vinylRecordDarkImg
                   : vinylRecordImg

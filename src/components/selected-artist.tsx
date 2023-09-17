@@ -15,12 +15,12 @@ export function SelectedArtist({ artist, remove }: SelectedArtistProps) {
       className="flex items-center justify-between rounded-md border border-gray-200 p-1 dark:border-gray-800"
     >
       <div className="flex items-center gap-x-2">
-        {artist.images[0] ? (
+        {artist.images[2] ? (
           <Image
             className="h-6 w-6 rounded-full"
             width={32}
             height={32}
-            src={artist.images[0].url}
+            src={artist.images[2].url}
             alt={`Picture of ${artist.name}`}
             unoptimized
           />

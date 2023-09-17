@@ -99,12 +99,12 @@ export function ArtistsSearch({ artists, add, remove, loading = false }: Artists
                     )}
                   />
 
-                  {artist.images[0] ? (
+                  {artist.images[2] ? (
                     <Image
                       className="h-8 w-8 rounded-full"
                       width={32}
                       height={32}
-                      src={artist.images[0].url}
+                      src={artist.images[2].url}
                       alt={`Picture of ${artist.name}`}
                       unoptimized
                     />

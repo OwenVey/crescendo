@@ -19,7 +19,7 @@ export function SelectedTrack({ track, remove }: SelectedTrackProps) {
           className="h-8 w-8 rounded"
           width={32}
           height={32}
-          src={track.album.images[0].url}
+          src={track.album.images[2].url}
           alt={`Picture of the album "${track.album.name}"`}
           unoptimized
         />

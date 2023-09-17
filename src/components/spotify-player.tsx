@@ -77,7 +77,7 @@ export default function SpotifyPlayer() {
                 className="h-14 w-auto rounded md:h-12"
                 width={56}
                 height={56}
-                src={currentTrack.album.images[0].url}
+                src={currentTrack.album.images[2].url}
                 alt={`Picture of the album "${currentTrack.album.name}"`}
                 unoptimized
               />
