@@ -1,15 +1,15 @@
+import type { TrackAttributes } from '@/types';
 import { serverSdk } from '../api/api-utils';
-import type { Attributes } from './page';
 import { RecommendationsView } from './recommendations-view';
 
 type RecommendationsProps = {
-  attributes: Attributes;
+  trackAttributes: TrackAttributes;
 };
 
-export async function Recommendations({ attributes }: RecommendationsProps) {
-  const numArtists = attributes.seed_artists.length;
-  const numTracks = attributes.seed_tracks.length;
-  const numGenres = attributes.seed_genres.length;
+export async function Recommendations({ trackAttributes }: RecommendationsProps) {
+  const numArtists = trackAttributes.seed_artists.length;
+  const numTracks = trackAttributes.seed_tracks.length;
+  const numGenres = trackAttributes.seed_genres.length;
   const numSeeds = numArtists + numTracks + numGenres;
 
   if (numSeeds < 1) {
@@ -24,7 +24,7 @@ export async function Recommendations({ attributes }: RecommendationsProps) {
   const recommendations = await serverSdk.recommendations.get({
     limit: 100,
     market: 'US',
-    ...attributes,
+    ...trackAttributes,
   });
 
   return <RecommendationsView tracks={recommendations.tracks} />;

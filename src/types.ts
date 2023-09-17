@@ -1,3 +1,6 @@
+import type { TrackAttributesSchema } from '@/lib/constants';
+import type { z } from 'zod';
+
 export type SliderValue = [number] | [number, number] | [number, number, number];
 
 export type TrackAttribute = {
@@ -40,3 +43,5 @@ export type ErrorProps = {
   error: Error & { digest?: string };
   reset: () => void;
 };
+
+export type TrackAttributes = z.infer<typeof TrackAttributesSchema>;

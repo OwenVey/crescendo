@@ -26,7 +26,7 @@ const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, S
         <SliderPrimitive.Root asChild ref={ref} {...props}>
           <motion.div
             className={cn(
-              'group relative flex w-full touch-none select-none items-center justify-center overflow-hidden',
+              'group relative flex w-full touch-none select-none items-center justify-center rounded-full',
               className,
             )}
             style={{ height: height + buffer }}

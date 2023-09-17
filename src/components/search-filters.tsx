@@ -1,10 +1,9 @@
 'use client';
 import { ArtistsCombobox } from '@/components/artists-combobox';
 import { GenresCombobox } from '@/components/genres-combobox';
-import { TracksCombobox } from '@/components/tracks-combobox';
-
 import { SelectedArtist } from '@/components/selected-artist';
 import { SelectedTrack } from '@/components/selected-track';
+import { TracksCombobox } from '@/components/tracks-combobox';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -12,38 +11,57 @@ import { Slider } from '@/components/ui/slider';
 import { Toggle } from '@/components/ui/toggle';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/components/ui/use-toast';
-import { TRACK_ATTRIBUTES } from '@/lib/constants';
+import { TRACK_ATTRIBUTES, TrackAttributesSchema } from '@/lib/constants';
 import { useSpotifySdk } from '@/lib/hooks/useSpotifySdk';
-import { arrayToURLSearchParams, objectToURLSearchParams } from '@/lib/utils';
+import { arrayToURLSearchParams, objectToURLSearchParams, searchParamsToObject } from '@/lib/utils';
 import type { SliderValue, TrackAttribute, TrackAttributeWithValue } from '@/types';
 import type { Artist, Track } from '@spotify/web-api-ts-sdk';
 import { InfoIcon, RotateCcwIcon, Wand2Icon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export function SearchFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
-
-  const [loadingArtists, setLoadingArtists] = useState(false);
-  const [loadingTracks, setLoadingTracks] = useState(false);
-  const [seedArtists, setSeedArtists] = useState<Array<Artist>>([]);
-  const [seedTracks, setSeedTracks] = useState<Array<Track>>([]);
-  const [seedGenres, setSeedGenres] = useState<Array<string>>([]);
-  const [smartLoading, setSmartLoading] = useState(false);
-  const [enabledAttributes, setEnabledAttributes] = useState<Array<TrackAttributeWithValue>>([]);
-  const [urlParams, setUrlParams] = useState('');
   const sdk = useSpotifySdk();
   const { data: session } = useSession();
 
-  useEffect(() => {
-    setUrlParams(buildUrlParams());
-  }, [seedArtists, seedTracks, seedGenres, enabledAttributes]);
+  const paramAttributes = useMemo(
+    () => TrackAttributesSchema.parse(searchParamsToObject(searchParams)),
+    [searchParams],
+  );
 
-  function buildUrlParams() {
+  const [loadingArtists, setLoadingArtists] = useState(!!paramAttributes.seed_artists.length);
+  const [loadingTracks, setLoadingTracks] = useState(!!paramAttributes.seed_tracks.length);
+  const [smartLoading, setSmartLoading] = useState(false);
+
+  const [seedArtists, setSeedArtists] = useState<Array<Artist>>([]);
+  const [seedTracks, setSeedTracks] = useState<Array<Track>>([]);
+  const [seedGenres, setSeedGenres] = useState<Array<string>>(paramAttributes.seed_genres);
+
+  const [enabledAttributes, setEnabledAttributes] = useState<Array<TrackAttributeWithValue>>(() => {
+    return TRACK_ATTRIBUTES.filter((attribute) => {
+      const min = paramAttributes[`min_${attribute.id}`];
+      const target = paramAttributes[`target_${attribute.id}`];
+      const max = paramAttributes[`max_${attribute.id}`];
+
+      return !!min || !!target || !!max;
+    }).map((attribute) => {
+      const min = paramAttributes[`min_${attribute.id}`];
+      const target = paramAttributes[`target_${attribute.id}`];
+      const max = paramAttributes[`max_${attribute.id}`];
+      return { ...attribute, value: [min, target, max].filter((x) => x !== undefined) as SliderValue };
+    });
+  });
+
+  const [urlParams, setUrlParams] = useState('');
+
+  useEffect(() => {
+    console.log('Updating urlParams');
+
     const trackAttributes = enabledAttributes.reduce((attributeParams, attribute) => {
       let min: number | undefined = undefined;
       let target: number | undefined = undefined;
@@ -81,95 +99,61 @@ export function SearchFilters() {
       ...trackAttributes,
     });
 
-    return params.toString();
-  }
+    setUrlParams(params.toString());
+  }, [seedArtists, seedTracks, seedGenres, enabledAttributes]);
 
   useEffect(() => {
-    console.log('Syncing searchParams with state...');
+    console.log('Syncing artists params with state...');
 
-    const artistIds = searchParams.getAll('seed_artists');
-    getArtists(artistIds);
+    const ids = paramAttributes.seed_artists;
+    if (ids.length === 0) {
+      setSeedArtists([]);
+      setLoadingArtists(false);
+    } else {
+      getArtists();
+    }
 
-    const trackIds = searchParams.getAll('seed_tracks');
-    getTracks(trackIds);
+    async function getArtists() {
+      const idsParams = arrayToURLSearchParams('ids', ids).toString();
+      try {
+        setLoadingArtists(true);
+        const artists: Array<Artist> = await (await fetch(`/api/artists?${idsParams}`)).json();
+        setSeedArtists(artists);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoadingArtists(false);
+      }
+    }
+  }, [paramAttributes.seed_artists]);
 
-    const genresParam = searchParams.getAll('seed_genres');
-    setSeedGenres(genresParam);
+  useEffect(() => {
+    console.log('Syncing tracks params with state...');
 
-    TRACK_ATTRIBUTES.forEach((attribute) => {
-      const min = searchParams.get(`min_${attribute.id}`);
-      const target = searchParams.get(`target_${attribute.id}`);
-      const max = searchParams.get(`max_${attribute.id}`);
+    const ids = paramAttributes.seed_tracks;
+    if (ids.length === 0) {
+      setSeedTracks([]);
+      setLoadingTracks(false);
+    } else {
+      getTracks();
+    }
 
-      setEnabledAttributes((previous) => {
-        // check if attributew is in URL
-        if (min || target || max) {
-          // if attribute is in URL and already in state, do nothing
-          if (isAttributeEnabled(attribute)) return previous;
-          // add attribute from URL to state
-          return [
-            ...previous,
-            { ...attribute, value: [min, target, max].filter((x) => !!x).map(Number) as SliderValue },
-          ];
-        } else if (isAttributeEnabled(attribute)) {
-          // attribute is no longer in URL but is in state, we must remove it
-          return previous.filter(({ id }) => id !== attribute.id);
-        } else {
-          // attribute was not in URL and is not in state, do nothing
-          return previous;
-        }
-      });
-    });
-    // we only want to watch for searchParams and sync state if they change
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+    async function getTracks() {
+      const idsParams = arrayToURLSearchParams('ids', ids).toString();
+      try {
+        setLoadingTracks(true);
+        const tracks: Array<Track> = await (await fetch(`/api/tracks?${idsParams}`)).json();
+        setSeedTracks(tracks);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoadingTracks(false);
+      }
+    }
+  }, [paramAttributes.seed_tracks]);
 
   function isAttributeEnabled(attribute: TrackAttribute) {
     return enabledAttributes.some(({ id }) => id === attribute.id);
-  }
-
-  async function getArtists(ids: Array<string>) {
-    if (ids.length === 0) {
-      setSeedArtists([]);
-      return;
-    }
-
-    const currentIds = seedArtists.map(({ id }) => id);
-    const missingIds = ids.filter((id) => !currentIds.includes(id));
-    if (missingIds.length === 0) return;
-
-    const idsParams = arrayToURLSearchParams('ids', missingIds).toString();
-    try {
-      setLoadingArtists(true);
-      const artists: Array<Artist> = await (await fetch(`/api/artists?${idsParams}`)).json();
-      setSeedArtists(artists);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoadingArtists(false);
-    }
-  }
-
-  async function getTracks(ids: Array<string>) {
-    if (ids.length === 0) {
-      setSeedTracks([]);
-      return;
-    }
-
-    const currentIds = seedTracks.map(({ id }) => id);
-    const missingIds = ids.filter((id) => !currentIds.includes(id));
-    if (missingIds.length === 0) return;
-
-    const idsParams = arrayToURLSearchParams('ids', missingIds).toString();
-    try {
-      setLoadingTracks(true);
-      const tracks: Array<Track> = await (await fetch(`/api/tracks?${idsParams}`)).json();
-      setSeedTracks(tracks);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoadingTracks(false);
-    }
   }
 
   function validateParams(event: React.MouseEvent<HTMLAnchorElement>) {
