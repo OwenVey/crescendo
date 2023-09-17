@@ -11,16 +11,19 @@ import { Slider } from '@/components/ui/slider';
 import { Toggle } from '@/components/ui/toggle';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/components/ui/use-toast';
-import { TRACK_ATTRIBUTES, TrackAttributesSchema } from '@/lib/constants';
+import { GENRES, TRACK_ATTRIBUTES, TrackAttributesSchema } from '@/lib/constants';
 import { useSpotifySdk } from '@/lib/hooks/useSpotifySdk';
 import { arrayToURLSearchParams, objectToURLSearchParams, searchParamsToObject } from '@/lib/utils';
 import type { SliderValue, TrackAttribute, TrackAttributeWithValue } from '@/types';
 import type { Artist, Track } from '@spotify/web-api-ts-sdk';
-import { InfoIcon, RotateCcwIcon, Wand2Icon } from 'lucide-react';
+import { InfoIcon, RotateCcwIcon, Wand2Icon, XIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import { LoadingArtist } from './loading-artist';
+import { LoadingTrack } from './loading-track';
+import { Badge } from './ui/badge';
 
 export function SearchFilters() {
   const router = useRouter();
@@ -323,27 +326,41 @@ export function SearchFilters() {
 
           <div className="flex flex-col">
             <Label className="mb-2">Seed Artists</Label>
-            <ArtistsCombobox artists={seedArtists} add={addArtist} remove={removeArtist} loading={loadingArtists} />
+            <ArtistsCombobox artists={seedArtists} add={addArtist} remove={removeArtist} />
             <div className="mt-2 flex flex-col gap-y-1">
-              {seedArtists.map((artist) => (
-                <SelectedArtist key={artist.id} artist={artist} remove={removeArtist} />
-              ))}
+              {loadingArtists
+                ? paramAttributes.seed_artists.map((id) => <LoadingArtist key={id} />)
+                : seedArtists.map((artist) => <SelectedArtist key={artist.id} artist={artist} remove={removeArtist} />)}
             </div>
           </div>
 
           <div className="flex flex-col">
             <Label className="mb-2">Seed Tracks</Label>
-            <TracksCombobox tracks={seedTracks} add={addTrack} remove={removeTrack} loading={loadingTracks} />
+            <TracksCombobox tracks={seedTracks} add={addTrack} remove={removeTrack} />
             <div className="mt-2 flex flex-col gap-y-1">
-              {seedTracks.map((track) => (
-                <SelectedTrack key={track.id} track={track} remove={removeTrack} />
-              ))}
+              {loadingTracks
+                ? paramAttributes.seed_tracks.map((id) => <LoadingTrack key={id} />)
+                : seedTracks.map((track) => <SelectedTrack key={track.id} track={track} remove={removeTrack} />)}
             </div>
           </div>
 
           <div className="flex flex-col">
             <Label className="mb-2">Seed Genres</Label>
             <GenresCombobox genres={seedGenres} add={addGenre} remove={removeGenre} />
+            <div className="mt-2 flex flex-wrap gap-1">
+              {seedGenres.map((genre) => (
+                <Badge key={genre} className="whitespace-nowrap">
+                  {GENRES.find((g) => g.value === genre)?.label}
+                  <button
+                    className="-mr-1.5 ml-0.5 rounded-full p-[2px] hover:bg-gray-700 dark:hover:bg-gray-300"
+                    onClick={() => removeGenre(genre)}
+                  >
+                    <XIcon className="h-3 w-3" />
+                    <span className="sr-only">Remove</span>
+                  </button>
+                </Badge>
+              ))}
+            </div>
           </div>
 
           <div className="flex flex-col">

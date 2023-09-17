@@ -1,9 +1,8 @@
 'use client';
 
-import { ActivityIcon, CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react';
+import { ActivityIcon, CheckIcon, ChevronsUpDownIcon } from 'lucide-react';
 import * as React from 'react';
 
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -23,30 +22,10 @@ export function GenresCombobox({ genres, add, remove }: GenresComboboxProps) {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" role="combobox" aria-expanded={open} className="h-auto justify-between">
-          {genres.length > 0 ? (
-            <div className="flex flex-wrap gap-1">
-              {genres.map((genre) => (
-                <Badge key={genre} className="whitespace-nowrap">
-                  {GENRES.find((g) => g.value === genre)?.label}
-                  <div
-                    className="-mr-1.5 ml-0.5 rounded-full p-[2px] hover:bg-gray-700 dark:hover:bg-gray-300"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      remove(genre);
-                    }}
-                  >
-                    <XIcon className="h-3 w-3" />
-                    <span className="sr-only">Remove</span>
-                  </div>
-                </Badge>
-              ))}
-            </div>
-          ) : (
-            <div className="flex items-center py-px font-normal text-gray-500 dark:text-gray-400">
-              <ActivityIcon className="mr-2 h-4 w-4" />
-              Search genres...
-            </div>
-          )}
+          <div className="flex items-center py-px font-normal text-gray-500 dark:text-gray-400">
+            <ActivityIcon className="mr-2 h-4 w-4" />
+            Search genres...
+          </div>
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

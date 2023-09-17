@@ -1,9 +1,8 @@
 'use client';
 
-import { CheckIcon, ChevronsUpDownIcon, MusicIcon, XIcon } from 'lucide-react';
+import { CheckIcon, ChevronsUpDownIcon, MusicIcon } from 'lucide-react';
 import * as React from 'react';
 
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -17,10 +16,9 @@ type TracksComboboxProps = {
   tracks: Array<Track>;
   add: (track: Track) => void;
   remove: (track: Track) => void;
-  loading?: boolean;
 };
 
-export function TracksCombobox({ tracks, add, remove, loading = false }: TracksComboboxProps) {
+export function TracksCombobox({ tracks, add, remove }: TracksComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [searchText, setSearchText] = React.useState('');
   const debouncedSearchText = useDebounce(searchText, 500);
@@ -32,37 +30,11 @@ export function TracksCombobox({ tracks, add, remove, loading = false }: TracksC
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          loading={loading}
-          className={cn(loading ? '' : 'h-auto justify-between')}
-        >
-          {tracks.length > 0 ? (
-            <div className="flex flex-wrap gap-1">
-              {tracks.map((track) => (
-                <Badge key={track.id} className="text-left">
-                  <span className="line-clamp-1">{track.name}</span>
-                  <div
-                    className="-mr-1.5 ml-0.5 rounded-full p-[2px] hover:bg-gray-700 dark:hover:bg-gray-300"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      remove(track);
-                    }}
-                  >
-                    <XIcon className="h-3 w-3" />
-                    <span className="sr-only">Remove</span>
-                  </div>
-                </Badge>
-              ))}
-            </div>
-          ) : (
-            <div className="flex items-center py-px font-normal text-gray-500 dark:text-gray-400">
-              <MusicIcon className="mr-2 h-4 w-4" />
-              Search tracks...
-            </div>
-          )}
+        <Button variant="outline" role="combobox" aria-expanded={open} className="h-auto justify-between">
+          <div className="flex items-center py-px font-normal text-gray-500 dark:text-gray-400">
+            <MusicIcon className="mr-2 h-4 w-4" />
+            Search tracks...
+          </div>
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
