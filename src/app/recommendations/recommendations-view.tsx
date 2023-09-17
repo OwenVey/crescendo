@@ -3,10 +3,10 @@
 import { recommendationsAtom, viewAtom } from '@/app/store';
 import { Button } from '@/components/ui/button';
 import type { Track } from '@spotify/web-api-ts-sdk';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
+import { useHydrateAtoms } from 'jotai/utils';
 import { RotateCcwIcon } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect } from 'react';
 import { GridView } from './grid/grid-view';
 import { ListView } from './list/list-view';
 
@@ -14,15 +14,12 @@ type RecommendationsProps = {
   tracks: Array<Track>;
 };
 
-export function RecommendationsView({ tracks }: RecommendationsProps) {
-  // useHydrateAtoms([[recommendationsAtom, tracks]]);
-  const setRecommendations = useSetAtom(recommendationsAtom);
-  const [view] = useAtom(viewAtom);
-  useEffect(() => {
-    setRecommendations(tracks);
-  }, [setRecommendations, tracks]);
+export function RecommendationsView(props: RecommendationsProps) {
+  useHydrateAtoms([[recommendationsAtom, props.tracks]]);
+  const recommendations = useAtomValue(recommendationsAtom);
+  const view = useAtomValue(viewAtom);
 
-  if (tracks.length === 0) {
+  if (recommendations.length === 0) {
     return (
       <div className="grid h-full place-items-center">
         <div className="flex flex-col items-center">
