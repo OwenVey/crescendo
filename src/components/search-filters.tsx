@@ -419,9 +419,9 @@ export function SearchFilters() {
         </div>
       </ScrollArea>
 
-      <div className="flex flex-col gap-2 px-4 py-3">
+      <div className="flex flex-col gap-2 px-6 py-3">
         {seedArtists.length || seedTracks.length || seedGenres.length || enabledAttributes.length ? (
-          <Button className="w-full" variant="secondary" onClick={reset} tooltip="Reset">
+          <Button className="w-full" variant="secondary" onClick={reset}>
             <RotateCcwIcon className="mr-2 h-4 w-4" />
             Reset
           </Button>
