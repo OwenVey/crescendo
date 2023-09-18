@@ -20,7 +20,7 @@ import { InfoIcon, RotateCcwIcon, Wand2Icon, XIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { LoadingArtist } from './loading-artist';
 import { LoadingTrack } from './loading-track';
 import { Badge } from './ui/badge';
@@ -37,17 +37,7 @@ export function SearchFilters() {
     [searchParams],
   );
 
-  const [seedArtists, setSeedArtists] = useState<Array<Artist>>([]);
-  const [seedTracks, setSeedTracks] = useState<Array<Track>>([]);
-  const [seedGenres, setSeedGenres] = useState<Array<string>>(paramAttributes.seed_genres);
-
-  const [loadingArtists, setLoadingArtists] = useState(
-    !!paramAttributes.seed_artists.length && seedArtists.length === 0,
-  );
-  const [loadingTracks, setLoadingTracks] = useState(!!paramAttributes.seed_tracks.length && seedTracks.length === 0);
-  const [smartLoading, setSmartLoading] = useState(false);
-
-  const [enabledAttributes, setEnabledAttributes] = useState<Array<TrackAttributeWithValue>>(() => {
+  const getEnabledAttributesFromParams = useCallback(() => {
     return TRACK_ATTRIBUTES.filter((attribute) => {
       const min = paramAttributes[`min_${attribute.id}`];
       const target = paramAttributes[`target_${attribute.id}`];
@@ -60,7 +50,21 @@ export function SearchFilters() {
       const max = paramAttributes[`max_${attribute.id}`];
       return { ...attribute, value: [min, target, max].filter((x) => x !== undefined) as SliderValue };
     });
-  });
+  }, [paramAttributes]);
+
+  const [seedArtists, setSeedArtists] = useState<Array<Artist>>([]);
+  const [seedTracks, setSeedTracks] = useState<Array<Track>>([]);
+  const [seedGenres, setSeedGenres] = useState<Array<string>>(paramAttributes.seed_genres);
+
+  const [loadingArtists, setLoadingArtists] = useState(
+    !!paramAttributes.seed_artists.length && seedArtists.length === 0,
+  );
+  const [loadingTracks, setLoadingTracks] = useState(!!paramAttributes.seed_tracks.length && seedTracks.length === 0);
+  const [smartLoading, setSmartLoading] = useState(false);
+
+  const [enabledAttributes, setEnabledAttributes] = useState<Array<TrackAttributeWithValue>>(
+    getEnabledAttributesFromParams(),
+  );
 
   const [urlParams, setUrlParams] = useState('');
 
@@ -110,15 +114,18 @@ export function SearchFilters() {
   useEffect(() => {
     console.log('Syncing artists params with state...');
 
-    const ids = paramAttributes.seed_artists;
-    if (ids.length === 0) {
+    const paramIds = paramAttributes.seed_artists;
+    if (paramIds.length === 0) {
       setSeedArtists([]);
       setLoadingArtists(false);
     } else {
-      seedArtists.length === 0 && getArtists();
+      const currentIds = seedArtists.map(({ id }) => id);
+      const missingIds = paramIds.filter((id) => !currentIds.includes(id));
+      if (missingIds.length === 0) return;
+      getArtists(missingIds);
     }
 
-    async function getArtists() {
+    async function getArtists(ids: Array<string>) {
       const idsParams = arrayToURLSearchParams('ids', ids).toString();
       try {
         setLoadingArtists(true);
@@ -135,15 +142,18 @@ export function SearchFilters() {
   useEffect(() => {
     console.log('Syncing tracks params with state...');
 
-    const ids = paramAttributes.seed_tracks;
-    if (ids.length === 0) {
+    const paramIds = paramAttributes.seed_tracks;
+    if (paramIds.length === 0) {
       setSeedTracks([]);
       setLoadingTracks(false);
     } else {
-      seedTracks.length === 0 && getTracks();
+      const currentIds = seedTracks.map(({ id }) => id);
+      const missingIds = paramIds.filter((id) => !currentIds.includes(id));
+      if (missingIds.length === 0) return;
+      getTracks(missingIds);
     }
 
-    async function getTracks() {
+    async function getTracks(ids: Array<string>) {
       const idsParams = arrayToURLSearchParams('ids', ids).toString();
       try {
         setLoadingTracks(true);
@@ -156,6 +166,18 @@ export function SearchFilters() {
       }
     }
   }, [paramAttributes.seed_tracks]);
+
+  useEffect(() => {
+    console.log('Syncing genre params with state...');
+
+    setSeedGenres(paramAttributes.seed_genres);
+  }, [paramAttributes.seed_genres]);
+
+  useEffect(() => {
+    console.log('Syncing track attribute params with state...');
+
+    setEnabledAttributes(getEnabledAttributesFromParams());
+  }, [getEnabledAttributesFromParams, paramAttributes]);
 
   function isAttributeEnabled(attribute: TrackAttribute) {
     return enabledAttributes.some(({ id }) => id === attribute.id);
