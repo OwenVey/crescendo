@@ -10,19 +10,21 @@ import {
 } from '@tanstack/react-table';
 import * as React from 'react';
 
-import { recommendationsAtom } from '@/app/store';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useAtomValue } from 'jotai';
+import type { Track } from '@spotify/web-api-ts-sdk';
 import { columns } from './columns';
 
-export function ListView() {
+type ListViewProps = {
+  tracks: Array<Track>;
+};
+
+export function ListView({ tracks }: ListViewProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const recommendations = useAtomValue(recommendationsAtom);
 
   const table = useReactTable({
-    data: recommendations,
+    data: tracks,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,

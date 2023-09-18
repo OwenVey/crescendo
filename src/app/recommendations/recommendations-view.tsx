@@ -3,10 +3,10 @@
 import { recommendationsAtom } from '@/app/store';
 import { Button } from '@/components/ui/button';
 import type { Track } from '@spotify/web-api-ts-sdk';
-import { useAtomValue } from 'jotai';
-import { useHydrateAtoms } from 'jotai/utils';
+import { useSetAtom } from 'jotai';
 import { RotateCcwIcon } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect } from 'react';
 import { GridView } from './grid/grid-view';
 import { ListView } from './list/list-view';
 
@@ -16,10 +16,10 @@ type RecommendationsProps = {
 };
 
 export function RecommendationsView({ tracks, view }: RecommendationsProps) {
-  useHydrateAtoms([[recommendationsAtom, tracks]]);
-  const recommendations = useAtomValue(recommendationsAtom);
+  const setRecommendations = useSetAtom(recommendationsAtom);
+  useEffect(() => setRecommendations(tracks), [setRecommendations, tracks]);
 
-  if (recommendations.length === 0) {
+  if (tracks.length === 0) {
     return (
       <div className="grid h-full place-items-center">
         <div className="flex flex-col items-center">
@@ -37,5 +37,5 @@ export function RecommendationsView({ tracks, view }: RecommendationsProps) {
     );
   }
 
-  return view === 'list' ? <ListView /> : <GridView />;
+  return view === 'list' ? <ListView tracks={tracks} /> : <GridView tracks={tracks} />;
 }

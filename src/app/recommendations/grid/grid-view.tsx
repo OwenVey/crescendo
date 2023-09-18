@@ -1,13 +1,14 @@
 'use client';
 
-import { recommendationsAtom } from '@/app/store';
 import { cn } from '@/lib/utils';
-import { useAtomValue } from 'jotai';
+import type { Track } from '@spotify/web-api-ts-sdk';
 import { GridTrackItem } from './grid-track-item';
 
-export function GridView() {
-  const recommendations = useAtomValue(recommendationsAtom);
+type GridViewProps = {
+  tracks: Array<Track>;
+};
 
+export function GridView({ tracks }: GridViewProps) {
   return (
     // <div className="flex flex-wrap gap-8 overflow-y-auto p-8">
     <div className="overflow-y-auto p-8 @container">
@@ -34,7 +35,7 @@ export function GridView() {
           // '@12xl:bg-pink-300',
         ])}
       >
-        {recommendations.map((track, index) => (
+        {tracks.map((track, index) => (
           <GridTrackItem key={track.id} track={track} index={index} />
         ))}
       </div>
