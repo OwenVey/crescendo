@@ -130,7 +130,7 @@ export function SearchFilters() {
         setLoadingArtists(false);
       }
     }
-  }, [paramAttributes.seed_artists, seedArtists.length]);
+  }, [paramAttributes.seed_artists]);
 
   useEffect(() => {
     console.log('Syncing tracks params with state...');
@@ -155,7 +155,7 @@ export function SearchFilters() {
         setLoadingTracks(false);
       }
     }
-  }, [paramAttributes.seed_tracks, seedTracks.length]);
+  }, [paramAttributes.seed_tracks]);
 
   function isAttributeEnabled(attribute: TrackAttribute) {
     return enabledAttributes.some(({ id }) => id === attribute.id);
