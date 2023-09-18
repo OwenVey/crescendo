@@ -11,7 +11,7 @@ type GridViewProps = {
 export function GridView({ tracks }: GridViewProps) {
   return (
     // <div className="flex flex-wrap gap-8 overflow-y-auto p-8">
-    <div className="overflow-y-auto p-8 pb-28 @container md:pb-24">
+    <div className="overflow-y-auto p-8 @container">
       <div
         className={cn('grid gap-8', [
           'grid-cols-[repeat(clamp(var(--min-cards,1),var(--cards-global,var(--cards,1)),var(--max-cards,1)),minmax(0,1fr))]',

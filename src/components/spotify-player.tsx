@@ -69,7 +69,7 @@ export default function SpotifyPlayer() {
           animate={{ y: 0 }}
           exit={{ y: 64 }}
           transition={{ type: 'spring', bounce: 0, duration: 0.25 }}
-          className="absolute bottom-0 z-50 flex h-auto w-full flex-shrink-0 items-center justify-center border-t border-gray-200 bg-white px-2 py-2 shadow-sm-up dark:border-gray-800 dark:bg-gray-950 md:h-16 md:py-0"
+          className="z-50 flex h-auto flex-shrink-0 items-center justify-center border-t border-gray-200 bg-white px-2 py-2 shadow-sm-up dark:border-gray-800 dark:bg-gray-950 md:h-16 md:py-0"
         >
           <div className="flex w-full items-center justify-between md:grid md:grid-cols-3">
             <div className="flex w-full items-center md:w-auto">
