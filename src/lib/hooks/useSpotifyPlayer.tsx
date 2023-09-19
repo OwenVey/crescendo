@@ -1,7 +1,7 @@
 import { recommendationsAtom } from '@/app/store';
 import { useToast } from '@/components/ui/use-toast';
-import type { Track } from '@spotify/web-api-ts-sdk';
-import { useAtomValue } from 'jotai';
+import type { TrackWithSaved } from '@/types';
+import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useSpotifySdk } from './useSpotifySdk';
@@ -10,15 +10,14 @@ type SpotifyPlayerContextType = {
   player?: Spotify.Player;
   playbackState?: Spotify.PlaybackState;
   togglePlay: () => void;
-  playTrack: (track: Track) => void;
+  playTrack: (track: TrackWithSaved) => void;
   volume: number;
   setVolume: (volume: number) => void;
   position: number;
   setPosition: (position: number) => void;
   seek: (position: number) => void;
-  currentTrack?: Spotify.Track;
+  currentTrack?: TrackWithSaved;
   toggleSaveCurrentTrack: () => void;
-  isCurrentTrackSaved: boolean;
   playPreviousSong: () => void;
   playNextSong: () => void;
   isAutoPlayEnabled: boolean;
@@ -33,17 +32,18 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
   const { data: session } = useSession();
   const { toast } = useToast();
 
-  const recommendations = useAtomValue(recommendationsAtom);
+  const [recommendations, setRecommendations] = useAtom(recommendationsAtom);
 
   const [player, setPlayer] = useState<Spotify.Player | undefined>(undefined);
   const [deviceId, setDeviceId] = useState<string | undefined>(undefined);
   const [playbackState, setPlaybackState] = useState<Spotify.PlaybackState | undefined>(undefined);
   const [volumeState, setVolumeState] = useState(0.5);
   const [position, setPosition] = useState(0);
-  const [isCurrentTrackSaved, setIsCurrentTrackSaved] = useState(false);
   const [isAutoPlayEnabled, setIsAutoPlayEnabled] = useState(false);
   const [isScrubbing, setIsScrubbing] = useState(false);
-  const currentTrack = playbackState?.track_window.current_track;
+  // const [currentTrack, setCurrentTrack] = useState<TrackWithSaved | undefined>(undefined);
+  const currentWindowTrack = playbackState?.track_window.current_track;
+  const currentTrack = recommendations.find((r) => r.id === currentWindowTrack?.id);
 
   const sdk = useSpotifySdk();
 
@@ -52,11 +52,11 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
   }
 
   const playTrack = useCallback(
-    async (track: Track) => {
+    async (track: TrackWithSaved) => {
+      console.log({ deviceId });
+
       if (deviceId) {
         sdk.player.startResumePlayback(deviceId, undefined, [track.uri]);
-        const [isSaved] = await sdk.currentUser.tracks.hasSavedTracks([track.id]);
-        setIsCurrentTrackSaved(isSaved);
       } else {
         toast({
           title: 'Unable to play track',
@@ -64,7 +64,7 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
         });
       }
     },
-    [deviceId, sdk.currentUser.tracks, sdk.player, toast],
+    [deviceId, sdk.player, toast],
   );
 
   async function setVolume(volume: number) {
@@ -80,14 +80,15 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
   async function toggleSaveCurrentTrack() {
     if (!currentTrack?.id) return;
     try {
-      if (isCurrentTrackSaved) {
+      if (currentTrack.isSaved) {
         await sdk.currentUser.tracks.removeSavedTracks([currentTrack.id]);
         toast({ description: `Removed "${currentTrack.name}" from your Liked Songs` });
       } else {
         await sdk.currentUser.tracks.saveTracks([currentTrack.id]);
         toast({ description: `Added "${currentTrack.name}" to your Liked Songs` });
       }
-      setIsCurrentTrackSaved((prev) => !prev);
+      // (track) => (track ? { ...track, isSaved: !track.isSaved } : undefined)
+      setRecommendations((prev) => prev.map((r) => (r.id === currentTrack.id ? { ...r, isSaved: !r.isSaved } : r)));
     } catch (error) {
       toast({ variant: 'destructive', title: 'Failed to add/remove like', description: error as string });
     }
@@ -218,7 +219,6 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
         seek,
         currentTrack,
         toggleSaveCurrentTrack,
-        isCurrentTrackSaved,
         playPreviousSong,
         playNextSong,
         isAutoPlayEnabled,

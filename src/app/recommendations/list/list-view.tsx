@@ -12,11 +12,11 @@ import * as React from 'react';
 
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import type { Track } from '@spotify/web-api-ts-sdk';
+import type { TrackWithSaved } from '@/types';
 import { columns } from './columns';
 
 type ListViewProps = {
-  tracks: Array<Track>;
+  tracks: Array<TrackWithSaved>;
 };
 
 export function ListView({ tracks }: ListViewProps) {

@@ -1,4 +1,10 @@
-import type { TrackAttributes } from '@/types';
+import { env } from '@/env.mjs';
+import { authOptions } from '@/lib/auth';
+import { chunkArray } from '@/lib/utils';
+import type { TrackAttributes, TrackWithSaved } from '@/types';
+import type { AccessToken } from '@spotify/web-api-ts-sdk';
+import { SpotifyApi } from '@spotify/web-api-ts-sdk';
+import { getServerSession } from 'next-auth/next';
 import { serverSdk } from '../api/api-utils';
 import { RecommendationsView } from './recommendations-view';
 
@@ -26,6 +32,21 @@ export async function Recommendations({ trackAttributes }: RecommendationsProps)
     market: 'US',
     ...trackAttributes,
   });
+  let tracks: Array<TrackWithSaved> = recommendations.tracks;
 
-  return <RecommendationsView tracks={recommendations.tracks} view={trackAttributes.view} />;
+  if (tracks.length > 0) {
+    const session = await getServerSession(authOptions);
+    if (session?.user.access_token) {
+      const sdk = SpotifyApi.withAccessToken(env.SPOTIFY_CLIENT_ID, {
+        access_token: session.user.access_token,
+      } as AccessToken);
+      const trackIds = tracks.map((t) => t.id);
+      const chunkedIds = chunkArray(trackIds, 50);
+      const isSavedPromises = chunkedIds.map((idChunk) => sdk.currentUser.tracks.hasSavedTracks(idChunk));
+      const isSaved = (await Promise.all(isSavedPromises)).flat();
+      tracks = tracks.map((t, i) => ({ ...t, isSaved: isSaved[i] }));
+    }
+  }
+
+  return <RecommendationsView tracks={tracks} view={trackAttributes.view} />;
 }

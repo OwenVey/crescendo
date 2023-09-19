@@ -58,3 +58,14 @@ export const searchParamsToObject = (params: URLSearchParams) =>
 
     return acc;
   }, {});
+
+export function chunkArray<T>(array: T[], chunkSize: number): T[][] {
+  const results = [];
+  const copiedArray = [...array];
+
+  while (copiedArray.length) {
+    results.push(copiedArray.splice(0, chunkSize));
+  }
+
+  return results;
+}

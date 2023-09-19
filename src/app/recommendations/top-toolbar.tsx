@@ -1,6 +1,6 @@
 'use client';
 
-import { recommendationsAtom } from '@/app/store';
+import { hideSavedAtom, recommendationsAtom } from '@/app/store';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -20,16 +20,8 @@ import { useToast } from '@/components/ui/use-toast';
 import { useSpotifySdk } from '@/lib/hooks/useSpotifySdk';
 import { searchParamsToObject } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAtomValue } from 'jotai';
-import {
-  HeartIcon,
-  HeartOffIcon,
-  LayoutGridIcon,
-  LayoutListIcon,
-  ListPlusIcon,
-  ZoomInIcon,
-  ZoomOutIcon,
-} from 'lucide-react';
+import { useAtom, useAtomValue } from 'jotai';
+import { HeartOffIcon, LayoutGridIcon, LayoutListIcon, ListPlusIcon, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -53,7 +45,8 @@ export function TopToolbar({ view }: TopToolbarProps) {
   const sdk = useSpotifySdk();
   const { data: session } = useSession();
   const { toast } = useToast();
-  const [hideSavedTracks, setHideSavedTracks] = useState(false);
+
+  const [hideSaved, setHideSaved] = useAtom(hideSavedAtom);
   const searchParams = useSearchParams();
 
   function updateTrackImageSize(cards: number) {
@@ -198,11 +191,10 @@ export function TopToolbar({ view }: TopToolbarProps) {
         asChild
         variant="ghost"
         size="icon"
-        tooltip={hideSavedTracks ? 'Show saved tracks' : 'Hide saved tracks'}
+        tooltip={hideSaved ? 'Show saved tracks' : 'Hide saved tracks'}
       >
-        <Toggle pressed={hideSavedTracks} variant="outline" onPressedChange={setHideSavedTracks} size="icon">
-          {!hideSavedTracks && <HeartOffIcon className="h-4 w-4" />}
-          {hideSavedTracks && <HeartIcon className="h-4 w-4" />}
+        <Toggle pressed={hideSaved} variant="outline" onPressedChange={setHideSaved} size="icon">
+          <HeartOffIcon className="h-4 w-4" />
         </Toggle>
       </ToolbarButton>
     </Toolbar>

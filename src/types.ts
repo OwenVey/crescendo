@@ -1,4 +1,5 @@
 import type { TrackAttributesSchema } from '@/lib/constants';
+import type { Track } from '@spotify/web-api-ts-sdk';
 import type { z } from 'zod';
 
 export type SliderValue = [number] | [number, number] | [number, number, number];
@@ -45,3 +46,7 @@ export type ErrorProps = {
 };
 
 export type TrackAttributes = z.infer<typeof TrackAttributesSchema>;
+
+export interface TrackWithSaved extends Track {
+  isSaved?: boolean;
+}

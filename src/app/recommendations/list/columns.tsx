@@ -11,12 +11,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { DataTableColumnHeader } from '@/components/ui/table-header';
 import { millisecondsToMmSs } from '@/lib/utils';
-import type { Artist, Track } from '@spotify/web-api-ts-sdk';
+import type { TrackWithSaved } from '@/types';
+import type { Artist } from '@spotify/web-api-ts-sdk';
 import type { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
 import Image from 'next/image';
 
-export const columns: ColumnDef<Track>[] = [
+export const columns: ColumnDef<TrackWithSaved>[] = [
   {
     id: 'image',
     cell: ({ row }) => (

@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useSpotifyPlayer } from '@/lib/hooks/useSpotifyPlayer';
 import { cn } from '@/lib/utils';
-import type { Track } from '@spotify/web-api-ts-sdk';
+import type { TrackWithSaved } from '@/types';
 import { AnimatePresence, motion } from 'framer-motion';
 import { HeartIcon, InfoIcon, MoreVerticalIcon, PauseIcon, PlayIcon, RadioIcon } from 'lucide-react';
 import { useTheme } from 'next-themes';
@@ -21,19 +21,20 @@ import { useRef, useState } from 'react';
 import { AudioFeaturesModal } from '../audio-features-modal';
 
 type GridTrackItemProps = {
-  track: Track;
+  track: TrackWithSaved;
   index: number;
 };
 
 export function GridTrackItem({ track, index }: GridTrackItemProps) {
   const { player, playTrack, currentTrack, playbackState } = useSpotifyPlayer();
+
   const [imageLoading, setImageLoading] = useState(true);
   const { resolvedTheme } = useTheme();
   const isCurrentTrack = track.id === currentTrack?.id;
   const triggerRef = useRef<HTMLButtonElement | null>(null);
 
   return (
-    <div className="group">
+    <motion.div className="group" layoutId={`grid-track-item-${track.id}`}>
       <button
         className="relative block w-full overflow-hidden rounded-2xl"
         onClick={() => (isCurrentTrack ? player?.togglePlay() : playTrack(track))}
@@ -51,15 +52,32 @@ export function GridTrackItem({ track, index }: GridTrackItemProps) {
           )}
           <AnimatePresence>
             {isCurrentTrack && !playbackState?.paused && (
-              <div className="absolute mt-24">
+              <motion.div
+                className="absolute mt-24"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
                 <AudioWave className="h-12 w-12 text-white" />
-              </div>
+              </motion.div>
             )}
           </AnimatePresence>
         </div>
 
         <div className="bg-gray-300/60 dark:bg-gray-800/60">
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: imageLoading ? 0 : 1 }}>
+          <AnimatePresence>
+            {track.isSaved && (
+              <motion.div
+                className="absolute right-0 m-2 shrink-0 rounded-xl bg-gray-500/20 p-2 backdrop-blur-sm"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <HeartIcon className="h-5 w-5 text-white" fill="currentColor" />
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <motion.div layout="position" initial={{ opacity: 0 }} animate={{ opacity: imageLoading ? 0 : 1 }}>
             <Image
               className="aspect-square h-auto w-full"
               src={
@@ -127,6 +145,6 @@ export function GridTrackItem({ track, index }: GridTrackItemProps) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-    </div>
+    </motion.div>
   );
 }

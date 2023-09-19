@@ -33,7 +33,6 @@ export default function SpotifyPlayer() {
     position,
     setPosition,
     toggleSaveCurrentTrack,
-    isCurrentTrackSaved,
     playPreviousSong,
     playNextSong,
     isAutoPlayEnabled,
@@ -92,7 +91,7 @@ export default function SpotifyPlayer() {
 
                   <div className="flex items-center gap-1 md:hidden">
                     <Button onClick={toggleSaveCurrentTrack} variant="ghost" size="icon">
-                      <HeartIcon className="h-5 w-5" fill={isCurrentTrackSaved ? 'currentColor' : 'none'} />
+                      <HeartIcon className="h-5 w-5" fill={currentTrack.isSaved ? 'currentColor' : 'none'} />
                     </Button>
                     <Button onClick={togglePlay} className="h-8 w-8 rounded-full" variant="ghost" size="icon">
                       {playbackState?.paused ? (
@@ -187,9 +186,9 @@ export default function SpotifyPlayer() {
                 onClick={toggleSaveCurrentTrack}
                 variant="ghost"
                 size="icon"
-                tooltip={isCurrentTrackSaved ? 'Unlike track' : 'Like track'}
+                tooltip={currentTrack.isSaved ? 'Unlike track' : 'Like track'}
               >
-                <HeartIcon className="h-5 w-5" fill={isCurrentTrackSaved ? 'currentColor' : 'none'} />
+                <HeartIcon className="h-5 w-5" fill={currentTrack.isSaved ? 'currentColor' : 'none'} />
               </Button>
 
               <Button onClick={toggleMute} variant="ghost" size="icon" tooltip="Toggle Mute">

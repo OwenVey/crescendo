@@ -3,13 +3,13 @@
 import { Modal, ModalContent, ModalDescription, ModalHeader, ModalTitle, ModalTrigger } from '@/components/ui/modal';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { TRACK_ATTRIBUTES } from '@/lib/constants';
+import type { TrackWithSaved } from '@/types';
 import type { AudioFeatures } from '@spotify/web-api-ts-sdk';
-import { type Track } from '@spotify/web-api-ts-sdk';
 import { useState } from 'react';
 import useSWRImmutable from 'swr/immutable';
 
 type AudioFeaturesModalProps = {
-  track: Track;
+  track: TrackWithSaved;
   children?: React.ReactNode;
 };
 
