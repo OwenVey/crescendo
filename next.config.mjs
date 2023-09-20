@@ -14,9 +14,7 @@ const config = {
   },
   experimental: {
     serverActions: true,
-    swcPlugins: [['@swc-jotai/react-refresh', {}]],
   },
-  transpilePackages: ['jotai-devtools'],
 };
 
 export default config;

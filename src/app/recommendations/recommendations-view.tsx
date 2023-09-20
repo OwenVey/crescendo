@@ -1,9 +1,8 @@
 'use client';
 
-import { hideSavedAtom, recommendationsAtom } from '@/app/store';
+import { useStore } from '@/app/store';
 import { Button } from '@/components/ui/button';
 import type { TrackWithSaved } from '@/types';
-import { useAtomValue, useSetAtom } from 'jotai';
 import { RotateCcwIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect } from 'react';
@@ -16,12 +15,8 @@ type RecommendationsProps = {
 };
 
 export function RecommendationsView({ tracks, view }: RecommendationsProps) {
-  const setRecommendations = useSetAtom(recommendationsAtom);
-  const hideSaved = useAtomValue(hideSavedAtom);
-  useEffect(
-    () => setRecommendations(hideSaved ? tracks.filter((t) => !t.isSaved) : tracks),
-    [hideSaved, setRecommendations, tracks],
-  );
+  const setRecommendations = useStore((state) => state.setRecommendations);
+  useEffect(() => setRecommendations(tracks), [setRecommendations, tracks]);
 
   if (tracks.length === 0) {
     return (
@@ -41,5 +36,5 @@ export function RecommendationsView({ tracks, view }: RecommendationsProps) {
     );
   }
 
-  return view === 'list' ? <ListView tracks={tracks} /> : <GridView />;
+  return view === 'list' ? <ListView /> : <GridView />;
 }

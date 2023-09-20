@@ -1,19 +1,14 @@
 'use client';
 
-import { recommendationsAtom } from '@/app/store';
+import { useStore } from '@/app/store';
 import { cn } from '@/lib/utils';
-import type { TrackWithSaved } from '@/types';
-import { useAtomValue } from 'jotai';
 import { GridTrackItem } from './grid-track-item';
 
-type GridViewProps = {
-  tracks: Array<TrackWithSaved>;
-};
-
 export function GridView() {
-  const recommendations = useAtomValue(recommendationsAtom);
+  const filteredRecommendations = useStore(({ recommendations, hideSaved }) =>
+    hideSaved ? recommendations.filter((t) => !t.isSaved) : recommendations,
+  );
   return (
-    // <div className="flex flex-wrap gap-8 overflow-y-auto p-8">
     <div className="flex-1 overflow-y-auto overflow-x-hidden p-8 @container">
       <div
         className={cn('grid gap-8', [
@@ -27,18 +22,9 @@ export function GridView() {
           '@8xl:[--cards:7] @8xl:[--max-cards:8] @8xl:[--min-cards:4]',
           '@10xl:[--cards:8] @10xl:[--max-cards:9] @10xl:[--min-cards:4]',
           '@12xl:[--cards:9] @12xl:[--max-cards:9] @12xl:[--min-cards:4]',
-          // '@xs:bg-teal-300',
-          // '@sm:bg-red-300',
-          // '@lg:bg-blue-300',
-          // '@2xl:bg-orange-300',
-          // '@4xl:bg-green-300',
-          // '@6xl:bg-yellow-300',
-          // '@8xl:bg-purple-300',
-          // '@10xl:bg-gray-300',
-          // '@12xl:bg-pink-300',
         ])}
       >
-        {recommendations.map((track, index) => (
+        {filteredRecommendations.map((track, index) => (
           <GridTrackItem key={track.id} track={track} index={index} />
         ))}
       </div>

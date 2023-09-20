@@ -1,6 +1,6 @@
 'use client';
 
-import { hideSavedAtom, recommendationsAtom } from '@/app/store';
+import { useStore } from '@/app/store';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -20,7 +20,6 @@ import { useToast } from '@/components/ui/use-toast';
 import { useSpotifySdk } from '@/lib/hooks/useSpotifySdk';
 import { searchParamsToObject } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAtom, useAtomValue } from 'jotai';
 import { HeartOffIcon, LayoutGridIcon, LayoutListIcon, ListPlusIcon, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -39,14 +38,17 @@ type TopToolbarProps = {
   view: 'grid' | 'list';
 };
 export function TopToolbar({ view }: TopToolbarProps) {
-  const recommendations = useAtomValue(recommendationsAtom);
+  const recommendations = useStore(({ recommendations }) => recommendations);
+  const hideSaved = useStore(({ hideSaved }) => hideSaved);
+  const setHideSaved = useStore(({ setHideSaved }) => setHideSaved);
+  const numHidden = useStore((state) => state.recommendations.filter((t) => t.isSaved).length);
+
   const [isCreatePlaylistModalOpen, setIsCreatePlaylistModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const sdk = useSpotifySdk();
   const { data: session } = useSession();
   const { toast } = useToast();
 
-  const [hideSaved, setHideSaved] = useAtom(hideSavedAtom);
   const searchParams = useSearchParams();
 
   function updateTrackImageSize(cards: number) {
@@ -197,6 +199,7 @@ export function TopToolbar({ view }: TopToolbarProps) {
           <HeartOffIcon className="h-4 w-4" />
         </Toggle>
       </ToolbarButton>
+      {hideSaved && <div className="-ml-2 text-sm text-gray-500 dark:text-gray-400">{numHidden} hidden</div>}
     </Toolbar>
   );
 }

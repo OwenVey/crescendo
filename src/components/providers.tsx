@@ -2,8 +2,6 @@
 
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { SpotifyPlayerProvider } from '@/lib/hooks/useSpotifyPlayer';
-import { Provider as JotaiProvider } from 'jotai';
-import { DevTools as JotaiDevTools } from 'jotai-devtools';
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider } from 'next-themes';
 import * as React from 'react';
@@ -15,19 +13,12 @@ async function fetcher<T>(...args: Parameters<typeof fetch>): Promise<T> {
 }
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const areJotaiDevToolsEnabled = false;
-
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <TooltipProvider>
         <SWRConfig value={{ fetcher }}>
           <SessionProvider>
-            <JotaiProvider>
-              <SpotifyPlayerProvider>
-                {areJotaiDevToolsEnabled && <JotaiDevTools />}
-                {children}
-              </SpotifyPlayerProvider>
-            </JotaiProvider>
+            <SpotifyPlayerProvider>{children}</SpotifyPlayerProvider>
           </SessionProvider>
         </SWRConfig>
       </TooltipProvider>

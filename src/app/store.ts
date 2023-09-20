@@ -1,11 +1,33 @@
 import type { TrackWithSaved } from '@/types';
-import { atom } from 'jotai';
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
+import { immer } from 'zustand/middleware/immer';
 
-// export const viewAtom = atomWithSearchParam<'grid' | 'list'>('view', 'grid');
-export const recommendationsAtom = atom<Array<TrackWithSaved>>([]);
-export const hideSavedAtom = atom(false);
+interface Store {
+  recommendations: Array<TrackWithSaved>;
+  hideSaved: boolean;
 
-if (process.env.NODE_ENV !== 'production') {
-  // viewAtom.debugLabel = 'view';
-  recommendationsAtom.debugLabel = 'recommendations';
+  setRecommendations: (recommendations: Array<TrackWithSaved>) => void;
+  setHideSaved: (hideSaved: boolean) => void;
+  toggleSaveTrack: (track: TrackWithSaved) => void;
 }
+
+export const useStore = create<Store>()(
+  immer(
+    devtools((set) => ({
+      recommendations: [],
+      hideSaved: false,
+
+      setRecommendations: (recommendations) => set({ recommendations }),
+      setHideSaved: (hideSaved) => set({ hideSaved }),
+      toggleSaveTrack: async (track) => {
+        set((state) => {
+          const trackToUpdate = state.recommendations.find((r) => r.id === track.id);
+          if (trackToUpdate) {
+            trackToUpdate.isSaved = !trackToUpdate.isSaved;
+          }
+        });
+      },
+    })),
+  ),
+);

@@ -1,7 +1,6 @@
-import { recommendationsAtom } from '@/app/store';
+import { useStore } from '@/app/store';
 import { useToast } from '@/components/ui/use-toast';
 import type { TrackWithSaved } from '@/types';
-import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useSpotifySdk } from './useSpotifySdk';
@@ -32,7 +31,8 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
   const { data: session } = useSession();
   const { toast } = useToast();
 
-  const [recommendations, setRecommendations] = useAtom(recommendationsAtom);
+  const recommendations = useStore(({ recommendations }) => recommendations);
+  const toggleSaveTrack = useStore(({ toggleSaveTrack }) => toggleSaveTrack);
 
   const [player, setPlayer] = useState<Spotify.Player | undefined>(undefined);
   const [deviceId, setDeviceId] = useState<string | undefined>(undefined);
@@ -87,8 +87,9 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
         await sdk.currentUser.tracks.saveTracks([currentTrack.id]);
         toast({ description: `Added "${currentTrack.name}" to your Liked Songs` });
       }
-      // (track) => (track ? { ...track, isSaved: !track.isSaved } : undefined)
-      setRecommendations((prev) => prev.map((r) => (r.id === currentTrack.id ? { ...r, isSaved: !r.isSaved } : r)));
+
+      toggleSaveTrack(currentTrack);
+      // setRecommendations(recommendations.map((r) => (r.id === currentTrack.id ? { ...r, isSaved: !r.isSaved } : r)));
     } catch (error) {
       toast({ variant: 'destructive', title: 'Failed to add/remove like', description: error as string });
     }
@@ -198,10 +199,8 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
       };
     }
     return () => {
-      if (player) {
-        console.log('disconnecting player');
-        player.disconnect();
-      }
+      console.log('disconnecting player');
+      player?.disconnect();
     };
   }, [player, session?.user.access_token]);
 

@@ -10,21 +10,18 @@ import {
 } from '@tanstack/react-table';
 import * as React from 'react';
 
+import { useStore } from '@/app/store';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import type { TrackWithSaved } from '@/types';
 import { columns } from './columns';
 
-type ListViewProps = {
-  tracks: Array<TrackWithSaved>;
-};
-
-export function ListView({ tracks }: ListViewProps) {
+export function ListView() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const recommendations = useStore((state) => state.recommendations);
 
   const table = useReactTable({
-    data: tracks,
+    data: recommendations,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
