@@ -9,5 +9,10 @@
     "@typescript-eslint/consistent-type-imports": "error",
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": "warn"
+  },
+  "settings": {
+    "next": {
+      "rootDir": "src/"
+    }
   }
 }

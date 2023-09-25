@@ -1,6 +1,5 @@
 'use client';
 
-import type { DialogPortalProps } from '@radix-ui/react-dialog';
 import { Drawer as DrawerPrimitive } from 'vaul';
 
 import * as React from 'react';
@@ -12,10 +11,7 @@ const Drawer = DrawerPrimitive.Root;
 
 const DrawerTrigger = DrawerPrimitive.Trigger;
 
-const DrawerPortal = ({ className, ...props }: DialogPortalProps) => (
-  <DrawerPrimitive.Portal className={cn(className)} {...props} />
-);
-DrawerPortal.displayName = DrawerPrimitive.Portal.displayName;
+const DrawerPortal = DrawerPrimitive.Portal;
 
 const DrawerOverlay = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Overlay>,

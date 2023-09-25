@@ -12,6 +12,9 @@ const config = {
       },
     ],
   },
+  eslint: {
+    dirs: ['src'],
+  },
   experimental: {
     serverActions: true,
   },

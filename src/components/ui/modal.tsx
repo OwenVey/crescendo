@@ -35,7 +35,7 @@ export function ModalContent(props: DrawerContentProps) {
   return isDesktop ? <DialogContent {...props} /> : <DrawerContent {...props} />;
 }
 
-export const ModalHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
+export const ModalHeader = ({ ...props }: React.HTMLAttributes<HTMLDivElement>) => {
   const isDesktop = useMediaQuery('(min-width: 768px)');
   return isDesktop ? <DialogHeader {...props} /> : <DrawerHeader {...props} />;
 };
