@@ -23,7 +23,7 @@ export const columns: ColumnDef<TrackWithSaved>[] = [
     cell: ({ row }) => (
       <Image
         className="h-12 w-12 min-w-[48px] rounded-lg"
-        src={row.original.album.images[2].url}
+        src={row.original.album.images[2]?.url ?? ''}
         width={48}
         height={48}
         alt={`Album cover for ${row.original.name}`}

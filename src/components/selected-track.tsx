@@ -19,14 +19,14 @@ export function SelectedTrack({ track, remove }: SelectedTrackProps) {
           className="h-8 w-8 rounded"
           width={32}
           height={32}
-          src={track.album.images[2].url}
+          src={track.album.images[2]?.url ?? ''}
           alt={`Picture of the album "${track.album.name}"`}
           unoptimized
         />
 
         <div className="pr-1">
           <div className="line-clamp-1 text-xs">{track.name}</div>
-          <div className="line-clamp-1 text-xs text-gray-600 dark:text-gray-400">{track.artists[0].name}</div>
+          <div className="line-clamp-1 text-xs text-gray-600 dark:text-gray-400">{track.artists[0]?.name}</div>
         </div>
       </div>
 

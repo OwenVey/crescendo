@@ -122,14 +122,14 @@ export function SearchFilters() {
       const currentIds = seedArtists.map(({ id }) => id);
       const missingIds = paramIds.filter((id) => !currentIds.includes(id));
       if (missingIds.length === 0) return;
-      getArtists(missingIds);
+      void getArtists(missingIds);
     }
 
     async function getArtists(ids: Array<string>) {
       const idsParams = arrayToURLSearchParams('ids', ids).toString();
       try {
         setLoadingArtists(true);
-        const artists: Array<Artist> = await (await fetch(`/api/artists?${idsParams}`)).json();
+        const artists = (await (await fetch(`/api/artists?${idsParams}`)).json()) as Array<Artist>;
         setSeedArtists(artists);
       } catch (error) {
         console.error(error);
@@ -150,14 +150,14 @@ export function SearchFilters() {
       const currentIds = seedTracks.map(({ id }) => id);
       const missingIds = paramIds.filter((id) => !currentIds.includes(id));
       if (missingIds.length === 0) return;
-      getTracks(missingIds);
+      void getTracks(missingIds);
     }
 
     async function getTracks(ids: Array<string>) {
       const idsParams = arrayToURLSearchParams('ids', ids).toString();
       try {
         setLoadingTracks(true);
-        const tracks: Array<Track> = await (await fetch(`/api/tracks?${idsParams}`)).json();
+        const tracks = (await (await fetch(`/api/tracks?${idsParams}`)).json()) as Array<Track>;
         setSeedTracks(tracks);
       } catch (error) {
         console.error(error);
@@ -272,11 +272,7 @@ export function SearchFilters() {
       });
       const getTopTracks = sdk.currentUser.topItems('tracks', 'medium_term', 5);
       const getTopArtists = sdk.currentUser.topItems('artists', 'medium_term', 5);
-      const [savedAudioFeatures, topTracks, topArtists] = await Promise.all([
-        getSavedAudioFeatures,
-        getTopTracks,
-        getTopArtists,
-      ]);
+      const [savedAudioFeatures, topTracks] = await Promise.all([getSavedAudioFeatures, getTopTracks, getTopArtists]);
 
       const numericAttributes = savedAudioFeatures.map(
         ({

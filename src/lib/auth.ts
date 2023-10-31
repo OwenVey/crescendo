@@ -10,7 +10,7 @@ declare module 'next-auth' {
     };
   }
 
-  interface SpotifyToken extends JWT {}
+  type SpotifyToken = JWT;
 }
 
 export const authOptions: AuthOptions = {
@@ -44,9 +44,8 @@ export const authOptions: AuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ account, token, user, session }) {
+    async jwt({ account, token }) {
       console.log('-------------------- JWT Callback --------------------');
-      //   console.log({ account, token, user, session });
       if (account) {
         token.access_token = account.access_token;
         token.expires_at = account.expires_at;
@@ -62,7 +61,7 @@ export const authOptions: AuthOptions = {
 
       return token;
     },
-    async session({ session, token }) {
+    session({ session, token }) {
       console.log('-------------------- Session Callback --------------------');
       //   console.log({ session, token });
 
@@ -82,12 +81,13 @@ async function refreshAccessToken(token: JWT) {
       'Content-Type': 'application/x-www-form-urlencoded',
       Authorization: `Basic ${Buffer.from(`${env.SPOTIFY_CLIENT_ID}:${env.SPOTIFY_CLIENT_SECRET}`).toString('base64')}`,
     },
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     body: `grant_type=refresh_token&refresh_token=${token.refresh_token}`,
     cache: 'no-cache',
   });
 
   if (request.ok) {
-    const response = await request.json();
+    const response = (await request.json()) as { access_token: string; expires_in: number; refresh_token: string };
 
     console.log('Success, here is the response below:');
     console.log(response);

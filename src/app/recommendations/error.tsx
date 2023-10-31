@@ -3,7 +3,7 @@
 import type { ErrorProps } from '@/types';
 import { useEffect } from 'react';
 
-export default function Error({ error, reset }: ErrorProps) {
+export default function Error({ error }: ErrorProps) {
   useEffect(() => {
     // Log the error to an error reporting service
     console.error(error);

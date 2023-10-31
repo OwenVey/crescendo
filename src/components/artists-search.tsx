@@ -31,7 +31,9 @@ export function ArtistsSearch({ artists, add, remove, loading = false }: Artists
 
       try {
         setLoading(true);
-        const results: Array<Artist> = await (await fetch(`/api/search-artist?q=${debouncedSearchText}`)).json();
+        const results: Array<Artist> = (await (
+          await fetch(`/api/search-artist?q=${debouncedSearchText}`)
+        ).json()) as Array<Artist>;
         setSearchResults(results);
       } catch (error) {
         console.error(error);
@@ -39,7 +41,7 @@ export function ArtistsSearch({ artists, add, remove, loading = false }: Artists
         setLoading(false);
       }
     }
-    if (debouncedSearchText) fetchData();
+    if (debouncedSearchText) void fetchData();
   }, [debouncedSearchText]);
 
   return (

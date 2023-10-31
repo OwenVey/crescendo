@@ -99,7 +99,7 @@ export const TRACK_ATTRIBUTES: Array<TrackAttribute> = [
     max: 1,
     defaultValue: [0],
     step: 1,
-    formatter: (value) => ['Minor', 'Major'][value[0]],
+    formatter: (value) => ['Minor', 'Major'][value[0]] ?? 'Minor',
   },
   {
     id: 'popularity',

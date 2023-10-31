@@ -9,7 +9,7 @@ import { SWRConfig } from 'swr';
 
 async function fetcher<T>(...args: Parameters<typeof fetch>): Promise<T> {
   const response = await fetch(...args);
-  return response.json();
+  return response.json() as Promise<T>;
 }
 
 export function Providers({ children }: { children: React.ReactNode }) {

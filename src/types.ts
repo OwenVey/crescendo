@@ -34,7 +34,7 @@ export interface TrackAttributeWithValue extends TrackAttribute {
   value: SliderValue;
 }
 
-export type SearchParams = { [key: string]: string | string[] | undefined };
+export type SearchParams = Record<string, string | string[] | undefined>;
 
 export type PageProps = {
   searchParams: SearchParams;

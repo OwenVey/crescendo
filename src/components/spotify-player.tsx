@@ -76,7 +76,7 @@ export default function SpotifyPlayer() {
                 className="h-14 w-auto rounded md:h-12"
                 width={56}
                 height={56}
-                src={currentTrack.album.images[2].url}
+                src={currentTrack.album.images[2]?.url ?? ''}
                 alt={`Picture of the album "${currentTrack.album.name}"`}
                 unoptimized
               />
@@ -115,8 +115,8 @@ export default function SpotifyPlayer() {
                     max={currentTrack.duration_ms}
                     step={1000}
                     value={[position]}
-                    onValueChange={([position]) => setPosition(position)}
-                    onValueCommit={(v) => seek(v[0])}
+                    onValueChange={([position]: [number]) => setPosition(position)}
+                    onValueCommit={(v: [number]) => seek(v[0])}
                     onPointerDown={() => setIsScrubbing(true)}
                     onPointerUp={() => setIsScrubbing(false)}
                     thumbVisibility="never"
@@ -155,8 +155,8 @@ export default function SpotifyPlayer() {
                 max={currentTrack.duration_ms}
                 step={1000}
                 value={[position]}
-                onValueChange={([position]) => setPosition(position)}
-                onValueCommit={(v) => seek(v[0])}
+                onValueChange={([position]: [number]) => setPosition(position)}
+                onValueCommit={(v: [number]) => seek(v[0])}
                 onPointerDown={() => setIsScrubbing(true)}
                 onPointerUp={() => setIsScrubbing(false)}
                 thumbVisibility="never"
@@ -203,7 +203,7 @@ export default function SpotifyPlayer() {
                 max={1}
                 step={0.01}
                 value={[volume]}
-                onValueChange={([volume]) => setVolume(volume)}
+                onValueChange={([volume]: [number]) => setVolume(volume)}
                 thumbVisibility="never"
                 grow
               />

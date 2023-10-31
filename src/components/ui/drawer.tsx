@@ -25,7 +25,7 @@ const DrawerOverlay = React.forwardRef<
 ));
 DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName;
 
-export interface DrawerContentProps extends React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content> {}
+export type DrawerContentProps = React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>
 
 const DrawerContent = React.forwardRef<React.ElementRef<typeof DrawerPrimitive.Content>, DrawerContentProps>(
   ({ className, children, ...props }, ref) => (

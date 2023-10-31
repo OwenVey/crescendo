@@ -19,6 +19,7 @@ export function GridViewLoading() {
           '@12xl:[--cards:9] @12xl:[--max-cards:9] @12xl:[--min-cards:4]',
         ])}
       >
+        {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
         {[...Array(100)].map((_, index) => (
           <GridTrackItemSkeleton key={index} />
         ))}

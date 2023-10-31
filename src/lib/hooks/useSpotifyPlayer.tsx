@@ -14,9 +14,9 @@ type SpotifyPlayerContextType = {
   setVolume: (volume: number) => void;
   position: number;
   setPosition: (position: number) => void;
-  seek: (position: number) => void;
+  seek: (position: number) => Promise<void>;
   currentTrack?: TrackWithSaved;
-  toggleSaveCurrentTrack: () => void;
+  toggleSaveCurrentTrack: () => Promise<void>;
   playPreviousSong: () => void;
   playNextSong: () => void;
   isAutoPlayEnabled: boolean;
@@ -47,16 +47,16 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
 
   const sdk = useSpotifySdk();
 
-  async function togglePlay() {
-    player?.togglePlay();
+  function togglePlay() {
+    void player?.togglePlay();
   }
 
   const playTrack = useCallback(
-    async (track: TrackWithSaved) => {
+    (track: TrackWithSaved) => {
       console.log({ deviceId });
 
       if (deviceId) {
-        sdk.player.startResumePlayback(deviceId, undefined, [track.uri]);
+        void sdk.player.startResumePlayback(deviceId, undefined, [track.uri]);
       } else {
         toast({
           title: 'Unable to play track',
@@ -67,8 +67,8 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
     [deviceId, sdk.player, toast],
   );
 
-  async function setVolume(volume: number) {
-    player?.setVolume(volume);
+  function setVolume(volume: number) {
+    void player?.setVolume(volume);
     setVolumeState(volume);
   }
 
@@ -112,17 +112,22 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
   }
 
   useEffect(() => {
-    const id = setInterval(async () => {
+    const fetchData = async () => {
       if (currentTrack && !playbackState?.paused) {
         const newPosition = (await player?.getCurrentState())?.position ?? position;
 
         if (isAutoPlayEnabled && newPosition + 200 >= currentTrack.duration_ms) {
           playNextSong();
         }
+
         if (!isScrubbing) {
           setPosition(newPosition);
         }
       }
+    };
+
+    const id = setInterval(() => {
+      void fetchData();
     }, 200);
 
     return () => {
@@ -148,7 +153,7 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
         });
 
         // Ready
-        newPlayer.addListener('ready', async ({ device_id }) => {
+        newPlayer.addListener('ready', ({ device_id }) => {
           console.log('Ready with Device ID', device_id);
           setDeviceId(device_id);
         });
@@ -187,7 +192,7 @@ export const SpotifyPlayerProvider = ({ children }: { children: React.ReactNode 
           console.error('Failed to perform playback', message);
         });
 
-        newPlayer.connect().then((success) => {
+        void newPlayer.connect().then((success) => {
           if (success) {
             console.log('The Web Playback SDK successfully connected to Spotify!');
           } else {

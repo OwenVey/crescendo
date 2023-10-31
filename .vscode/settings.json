@@ -4,8 +4,14 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "tailwindCSS.experimental.classRegex": [["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]],
-  "[dotenv]": {
-    "editor.defaultFormatter": "foxundermoon.shell-format"
-  }
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ],
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "editor.wordWrap": "on",
+  "typescript.tsserver.experimental.enableProjectDiagnostics": true
 }

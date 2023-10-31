@@ -71,14 +71,14 @@ export function TracksCombobox({ tracks, add, remove }: TracksComboboxProps) {
                     className="h-8 w-8 rounded"
                     width={32}
                     height={32}
-                    src={track.album.images[2].url}
+                    src={track.album.images[2]?.url ?? ''}
                     alt={`Picture of the album "${track.album.name}"`}
                     unoptimized
                   />
 
                   <div>
                     <div className="line-clamp-1">{track.name}</div>
-                    <div className="line-clamp-1 text-gray-500 dark:text-gray-400">{track.artists[0].name}</div>
+                    <div className="line-clamp-1 text-gray-500 dark:text-gray-400">{track.artists[0]?.name}</div>
                   </div>
                 </div>
               </CommandItem>

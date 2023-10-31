@@ -4,6 +4,7 @@ export function ListViewLoading() {
   return (
     <div className="flex flex-col gap-2 p-8">
       <Skeleton className="mb-[72px] h-10 w-96" />
+      {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
       {[...Array(100)].map((_, index) => (
         <ListTrackItemSkeleton key={index} />
       ))}

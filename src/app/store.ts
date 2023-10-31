@@ -20,7 +20,7 @@ export const useStore = create<Store>()(
 
       setRecommendations: (recommendations) => set({ recommendations }),
       setHideSaved: (hideSaved) => set({ hideSaved }),
-      toggleSaveTrack: async (track) => {
+      toggleSaveTrack: (track) => {
         set((state) => {
           const trackToUpdate = state.recommendations.find((r) => r.id === track.id);
           if (trackToUpdate) {

@@ -39,7 +39,7 @@ export function MobileNav() {
       </Sheet>
 
       <Link href="/" className="flex flex-1 items-center">
-        <Image src={logo} alt="Logo" className="h-8 w-8" unoptimized />
+        <Image src={logo as string} alt="Logo" className="h-8 w-8" unoptimized />
         <h1 className="ml-2 text-lg font-semibold">Crescendo</h1>
       </Link>
 

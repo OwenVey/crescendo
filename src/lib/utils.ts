@@ -12,7 +12,7 @@ export function objectToURLSearchParams(obj: Record<string, string | string[] | 
     if (Array.isArray(obj[key])) {
       (obj[key] as string[]).forEach((item) => params.append(key, item));
     } else {
-      params.append(key, obj[key].toString());
+      params.append(key, obj[key]!.toString());
     }
   }
 
@@ -45,7 +45,7 @@ export const searchParamsToObject = (params: URLSearchParams) =>
     if (acc.hasOwnProperty(key)) {
       // if the current key is already an array, we'll add the value to it
       if (Array.isArray(acc[key])) {
-        acc[key] = [...acc[key], value];
+        acc[key] = [...acc[key]!, value];
       } else {
         // if it's not an array, but contains a value, we'll convert it into an array
         // and add the current value to it

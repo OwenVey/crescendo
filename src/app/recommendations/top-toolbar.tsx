@@ -114,7 +114,7 @@ export function TopToolbar({ view }: TopToolbarProps) {
           max={9}
           step={1}
           defaultValue={[5]}
-          onValueChange={([value]) => updateTrackImageSize(value)}
+          onValueChange={([value]: [number]) => updateTrackImageSize(value)}
         />
         <ZoomInIcon className="h-4 w-4 text-gray-500 dark:text-gray-500" />
       </div>

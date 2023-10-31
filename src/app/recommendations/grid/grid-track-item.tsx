@@ -25,7 +25,7 @@ type GridTrackItemProps = {
   index: number;
 };
 
-export function GridTrackItem({ track, index }: GridTrackItemProps) {
+export function GridTrackItem({ track }: GridTrackItemProps) {
   const { player, playTrack, currentTrack, playbackState } = useSpotifyPlayer();
 
   const [imageLoading, setImageLoading] = useState(true);
@@ -45,7 +45,7 @@ export function GridTrackItem({ track, index }: GridTrackItemProps) {
             isCurrentTrack ? 'opacity-100' : 'opacity-0',
           )}
         >
-          {playbackState?.paused || !isCurrentTrack ? (
+          {playbackState?.paused ?? !isCurrentTrack ? (
             <PlayIcon className="h-6 w-6" fill="white" strokeWidth={0} />
           ) : (
             <PauseIcon className="h-6 w-6" fill="white" strokeWidth={0} />
@@ -110,6 +110,9 @@ export function GridTrackItem({ track, index }: GridTrackItemProps) {
             <span className="line-clamp-1 text-sm text-gray-600 dark:text-gray-400">
               {track.artists.map((a) => a.name).join(', ')}
             </span>
+          </div>
+          <div className="line-clamp-1 text-sm text-gray-600 dark:text-gray-400">
+            {track.album.release_date} - {track.album.release_date_precision}
           </div>
         </div>
 
