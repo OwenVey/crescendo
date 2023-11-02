@@ -298,6 +298,8 @@ export const TrackAttributesSchema = z.object({
     .optional()
     .transform((v) => (typeof v === 'string' ? [v] : v))
     .default([]),
+  released_from: z.coerce.date().optional(),
+  released_to: z.coerce.date().optional(),
   min_acousticness: z.coerce.number().optional(),
   target_acousticness: z.coerce.number().optional(),
   max_acousticness: z.coerce.number().optional(),

@@ -5,7 +5,9 @@ import { SelectedArtist } from '@/components/selected-artist';
 import { SelectedTrack } from '@/components/selected-track';
 import { TracksCombobox } from '@/components/tracks-combobox';
 import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import { Label } from '@/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Slider } from '@/components/ui/slider';
 import { Toggle } from '@/components/ui/toggle';
@@ -13,14 +15,16 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useToast } from '@/components/ui/use-toast';
 import { GENRES, TRACK_ATTRIBUTES, TrackAttributesSchema } from '@/lib/constants';
 import { useSpotifySdk } from '@/lib/hooks/useSpotifySdk';
-import { arrayToURLSearchParams, objectToURLSearchParams, searchParamsToObject } from '@/lib/utils';
+import { arrayToURLSearchParams, cn, objectToURLSearchParams, searchParamsToObject } from '@/lib/utils';
 import type { SliderValue, TrackAttribute, TrackAttributeWithValue } from '@/types';
 import type { Artist, Track } from '@spotify/web-api-ts-sdk';
-import { InfoIcon, RotateCcwIcon, Wand2Icon, XIcon } from 'lucide-react';
+import { format } from 'date-fns';
+import { CalendarIcon, InfoIcon, RotateCcwIcon, Wand2Icon, XIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { type DateRange } from 'react-day-picker';
 import { LoadingArtist } from './loading-artist';
 import { LoadingTrack } from './loading-track';
 import { Badge } from './ui/badge';
@@ -55,6 +59,10 @@ export function SearchFilters() {
   const [seedArtists, setSeedArtists] = useState<Array<Artist>>([]);
   const [seedTracks, setSeedTracks] = useState<Array<Track>>([]);
   const [seedGenres, setSeedGenres] = useState<Array<string>>(paramAttributes.seed_genres);
+  const [releaseDate, setReleaseDate] = useState<DateRange | undefined>({
+    from: paramAttributes.released_from,
+    to: paramAttributes.released_to,
+  });
 
   const [loadingArtists, setLoadingArtists] = useState(
     !!paramAttributes.seed_artists.length && seedArtists.length === 0,
@@ -105,11 +113,13 @@ export function SearchFilters() {
       seed_artists: seedArtists.map(({ id }) => id),
       seed_tracks: seedTracks.map(({ id }) => id),
       seed_genres: seedGenres,
+      ...(releaseDate?.from && { released_from: releaseDate.from.toISOString() }),
+      ...(releaseDate?.to && { released_to: releaseDate.to.toISOString() }),
       ...trackAttributes,
     });
 
     setUrlParams(params.toString());
-  }, [seedArtists, seedTracks, seedGenres, enabledAttributes]);
+  }, [seedArtists, seedTracks, seedGenres, enabledAttributes, releaseDate]);
 
   useEffect(() => {
     console.log('Syncing artists params with state...');
@@ -172,6 +182,11 @@ export function SearchFilters() {
 
     setSeedGenres(paramAttributes.seed_genres);
   }, [paramAttributes.seed_genres]);
+
+  useEffect(() => {
+    console.log('Syncing release date params with state...');
+    setReleaseDate({ from: paramAttributes.released_from, to: paramAttributes.released_to });
+  }, [paramAttributes.released_from, paramAttributes.released_to]);
 
   useEffect(() => {
     console.log('Syncing track attribute params with state...');
@@ -381,6 +396,42 @@ export function SearchFilters() {
                 </Badge>
               ))}
             </div>
+          </div>
+
+          <div className="flex flex-col">
+            <Label className="mb-2">Release Date</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  id="date"
+                  variant={'outline'}
+                  className={cn('w-full justify-start text-left font-normal', !releaseDate && 'text-muted-foreground')}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {releaseDate?.from ? (
+                    releaseDate.to ? (
+                      <>
+                        {format(releaseDate.from, 'LLL dd, y')} - {format(releaseDate.to, 'LLL dd, y')}
+                      </>
+                    ) : (
+                      format(releaseDate.from, 'LLL dd, y')
+                    )
+                  ) : (
+                    <span>Pick a date range</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  initialFocus
+                  mode="range"
+                  defaultMonth={releaseDate?.from}
+                  selected={releaseDate}
+                  onSelect={setReleaseDate}
+                  numberOfMonths={2}
+                />
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div className="flex flex-col">

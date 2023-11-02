@@ -4,6 +4,7 @@ import { chunkArray } from '@/lib/utils';
 import type { TrackAttributes, TrackWithSaved } from '@/types';
 import type { AccessToken } from '@spotify/web-api-ts-sdk';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
+import { isAfter, isBefore } from 'date-fns';
 import { getServerSession } from 'next-auth/next';
 import { serverSdk } from '../api/api-utils';
 import { RecommendationsView } from './recommendations-view';
@@ -46,6 +47,24 @@ export async function Recommendations({ trackAttributes }: RecommendationsProps)
       const isSaved = (await Promise.all(isSavedPromises)).flat();
       tracks = tracks.map((t, i) => ({ ...t, isSaved: isSaved[i] }));
     }
+  }
+
+  if (trackAttributes.released_from) {
+    const { released_from } = trackAttributes;
+    const utcReleaseFrom = new Date(
+      Date.UTC(released_from.getUTCFullYear(), released_from.getUTCMonth(), released_from.getUTCDate()),
+    );
+
+    tracks = tracks.filter((track) => !isBefore(new Date(track.album.release_date), utcReleaseFrom));
+  }
+
+  if (trackAttributes.released_to) {
+    const { released_to } = trackAttributes;
+    const utcReleaseTo = new Date(
+      Date.UTC(released_to.getUTCFullYear(), released_to.getUTCMonth(), released_to.getUTCDate()),
+    );
+
+    tracks = tracks.filter((track) => !isAfter(new Date(track.album.release_date), utcReleaseTo));
   }
 
   return <RecommendationsView tracks={tracks} view={trackAttributes.view} />;
