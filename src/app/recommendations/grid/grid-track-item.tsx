@@ -111,9 +111,6 @@ export function GridTrackItem({ track }: GridTrackItemProps) {
               {track.artists.map((a) => a.name).join(', ')}
             </span>
           </div>
-          <div className="line-clamp-1 text-sm text-gray-600 dark:text-gray-400">
-            {track.album.release_date} - {track.album.release_date_precision}
-          </div>
         </div>
 
         <DropdownMenu>
