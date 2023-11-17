@@ -45,7 +45,7 @@ export function GridTrackItem({ track }: GridTrackItemProps) {
             isCurrentTrack ? 'opacity-100' : 'opacity-0',
           )}
         >
-          {playbackState?.paused ?? !isCurrentTrack ? (
+          {playbackState?.paused === false || !isCurrentTrack ? (
             <PlayIcon className="h-6 w-6" fill="white" strokeWidth={0} />
           ) : (
             <PauseIcon className="h-6 w-6" fill="white" strokeWidth={0} />
